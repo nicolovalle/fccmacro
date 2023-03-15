@@ -70,7 +70,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
     
 
 
-	  TString AnalysisResPath = "/home/nicolo/FCC/localcopy/workdir/MyExternalAnalysis/results/skimmed/";
+	  TString AnalysisResPath = "/home/nvalle/FCC/localcopy/workdir/MyExternalAnalysis/results/skimmed/";
 
 	  TString FileNameToCheck = Form("%s%s", AnalysisResPath.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
       
@@ -86,22 +86,24 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
 	    cout<<"From "<<FileNameToCheck<<" the signal has 0 events"<<endl;
 	    continue;
 	  }
-      
+
+	  /*
 	  Double_t Zmumu = CutFlowZmumu[(int)(m/10-1)][myid];
 	  Double_t Ztautau = CutFlowZtautau[(int)(m/10-1)][myid];
 	  Double_t Zbb = CutFlowZbb[(int)(m/10-1)][myid];
 	  Double_t Zcc = CutFlowZcc[(int)(m/10-1)][myid];
 	  Double_t Zuds = CutFlowZuds[(int)(m/10-1)][myid];
 	  Double_t munuqq = CutFlowmunuqq[(int)(m/10-1)][myid];
-      
-	  /*
+	  */
+     
+	  
 	    Double_t Zmumu = CutFlowOK("Zmumu",m,lt,AnalysisResPath)[myid];
 	    Double_t Ztautau = CutFlowOK("Ztautau",m,lt,AnalysisResPath)[myid];
 	    Double_t Zbb = CutFlowOK("Zbb",m,lt,AnalysisResPath)[myid];
 	    Double_t Zcc = CutFlowOK("Zcc",m,lt,AnalysisResPath)[myid];
 	    Double_t Zuds = CutFlowOK("Zuds",m,lt,AnalysisResPath)[myid];
 	    Double_t munuqq = CutFlowOK("munuqq",m,lt,AnalysisResPath)[myid];
-	  */
+	  
 
 	  Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
 
@@ -123,7 +125,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
       
       
 
-	  if (Z<20 && Z>0.099) {
+	  if (Z<100 && Z>0.1) {
 	    TDPlot_M.push_back(X);
 	    TDPlot_U2.push_back(Y);
 	    TDPlot_Z.push_back(Z);
@@ -199,7 +201,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
     H->SetMarkerSize(1.6);
     H->SetTitle("Significance");
 
-    gg->Draw("same C");
+    //gg->Draw("same");
 
     gStyle->SetOptStat(0);
     gPad->SetLogz();
