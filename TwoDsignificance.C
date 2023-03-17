@@ -1,4 +1,4 @@
-#include "results.h"
+
 
 #include "CutFlowOK.C"
 
@@ -38,7 +38,8 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw = true){
+std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "atlas", double addsigmabkg=0., Bool_t Draw = true){
+  // formulas: atals simple
 
   // V[0][n] = n-th x coordinate of the curve
   // V[1][n] = n-th y coordinate of the curve
@@ -59,6 +60,17 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
   std::vector<double> TDPlot_U2;
   std::vector<double> TDPlot_Z;
 
+
+  TString AnalysisResPath = "/home/nvalle/FCC/localcopy/workdir/MyExternalAnalysis/results/skimmed/";
+
+  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath);
+  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath);
+  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath);
+  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath);
+  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath);
+  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath);
+  
+
   for (int m : masses){
     for (TString mp : mps){
       for (int unit = 0; unit < 9; unit++){
@@ -66,11 +78,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
 
 
 	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
-
-    
-
-
-	  TString AnalysisResPath = "/home/nvalle/FCC/localcopy/workdir/MyExternalAnalysis/results/skimmed/";
+	  
 
 	  TString FileNameToCheck = Form("%s%s", AnalysisResPath.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
       
@@ -78,31 +86,23 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
      
 	  Int_t myid = dd0cut + 4; // 12 means d0Cut = 8
 
-      
 
-	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath)[myid];
+	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath)[m][myid];
 
 	  if (signal == 0){
-	    cout<<"From "<<FileNameToCheck<<" the signal has 0 events"<<endl;
+	    cout<<"From "<<FileNameToCheck<<" the signal m="<<m<<" lt="<<lt<<" has 0 events"<<endl;
 	    continue;
 	  }
 
-	  /*
-	  Double_t Zmumu = CutFlowZmumu[(int)(m/10-1)][myid];
-	  Double_t Ztautau = CutFlowZtautau[(int)(m/10-1)][myid];
-	  Double_t Zbb = CutFlowZbb[(int)(m/10-1)][myid];
-	  Double_t Zcc = CutFlowZcc[(int)(m/10-1)][myid];
-	  Double_t Zuds = CutFlowZuds[(int)(m/10-1)][myid];
-	  Double_t munuqq = CutFlowmunuqq[(int)(m/10-1)][myid];
-	  */
+	
      
 	  
-	    Double_t Zmumu = CutFlowOK("Zmumu",m,lt,AnalysisResPath)[myid];
-	    Double_t Ztautau = CutFlowOK("Ztautau",m,lt,AnalysisResPath)[myid];
-	    Double_t Zbb = CutFlowOK("Zbb",m,lt,AnalysisResPath)[myid];
-	    Double_t Zcc = CutFlowOK("Zcc",m,lt,AnalysisResPath)[myid];
-	    Double_t Zuds = CutFlowOK("Zuds",m,lt,AnalysisResPath)[myid];
-	    Double_t munuqq = CutFlowOK("munuqq",m,lt,AnalysisResPath)[myid];
+	  Double_t Zmumu = bkgMapZmumu[m][myid];
+	  Double_t Ztautau = bkgMapZtautau[m][myid];
+	  Double_t Zbb = bkgMapZbb[m][myid];
+	  Double_t Zcc = bkgMapZcc[m][myid];
+	  Double_t Zuds = bkgMapZuds[m][myid];
+	  Double_t munuqq = bkgMapmunuqq[m][myid];
 	  
 
 	  Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
@@ -115,8 +115,11 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
 	  Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
 	  Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
 
-	  Double_t Z = totsig / TMath::Sqrt(totsig + totbkg);// + SigmaBkg);
-	  //Double_t Z = AtlasZ(totsig,totbkg,0);
+	  Double_t Z;
+	  if (formula == "simple")
+	    Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
+	  else if (formula == "atlas")
+	    Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
 
 	  cout<<"M "<<m<<"     LT "<<lt<<"    logU2 "<<Y<<"    sig "<<totsig<<"    bkg "<<totbkg<<"   Errbkg "<<SigmaBkg<<"    Z "<<Z<<endl;
 	  cout<<"-------------------------------------------------"<<endl;
@@ -172,7 +175,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
       }
       upost = iY;
 
-      if (spre < 2 && spost >= 2){
+      if (spre < 2 && spost >= 2 && upre > -99 && upost > -99){
 
 	cx.push_back(i);
 
@@ -184,34 +187,34 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, Bool_t Draw 
     }
   }
 
+  std::vector<std::vector<double>> toret;
+  toret.push_back(cx);
+  toret.push_back(cy);
 
-  const Int_t npoint = cx.size();
-  double vcx[npoint], vcy[npoint];
-  for (int i = 0; i<npoint; i++) {vcx[i] = cx[i]; vcy[i] = cy[i];}
 
-  auto gg = new TGraph(npoint,vcx,vcy);
-    
-   
-
-  H->GetZaxis()->SetRangeUser(1e-5,1000);
+  // Drawing part
 
   if (Draw){
-  
+
+    const Int_t npoint = cx.size();
+    double vcx[npoint], vcy[npoint];
+    for (int i = 0; i<npoint; i++) {vcx[i] = cx[i]; vcy[i] = cy[i];}
+     
+    auto gg = new TGraph(npoint,vcx,vcy);
+    
+    H->GetZaxis()->SetRangeUser(1e-5,1000);
     H->Draw("colz text");
     H->SetMarkerSize(1.6);
     H->SetTitle("Significance");
 
-    //gg->Draw("same");
+    gg->Draw("same C");
 
     gStyle->SetOptStat(0);
     gPad->SetLogz();
     gStyle->SetPalette(kBlackBody);
   }
 
-  std::vector<std::vector<double>> toret;
-  toret.push_back(cx);
-  toret.push_back(cy);
-
+  
   return toret;
 }
 
@@ -223,114 +226,104 @@ void ScanD0Cut(){
   Int_t dcut;
 
   std::vector<std::vector<double>> XY;
-  
-  dcut = 2;
-  double_t x2[50], y2[50];
-  XY = TwoDsignificance(dcut,false);
-  for (int i=0; i<XY[0].size(); i++){
-    x2[i] = XY[0][i];
-    y2[i] = XY[1][i];
-  }
-  auto g2 = new TGraph(XY[0].size(), x2, y2);
-  g2->SetLineColor(dcut);
-  g2->SetTitle(Form("D0 cut = %d",dcut));
-
+  int colcounter=1;
 
   dcut = 4;
   double_t x4[50], y4[50];
-  XY = TwoDsignificance(dcut,false);
+  XY = TwoDsignificance(dcut,"simple",0.,false);
   for (int i=0; i<XY[0].size(); i++){
     x4[i] = XY[0][i];
     y4[i] = XY[1][i];
   }
   auto g4 = new TGraph(XY[0].size(), x4, y4);
-  g4->SetLineColor(dcut);
-  g4->SetTitle(Form("D0 cut = %d",dcut));
+  g4->SetLineColor(colcounter);
+  g4->SetTitle(Form("Impact par cut = %d #sigma",dcut));
+  g4->SetLineWidth(2);
+  colcounter++;
 
-
-  dcut = 6;
-  double_t x6[50], y6[50];
-  XY = TwoDsignificance(dcut,false);
-  for (int i=0; i<XY[0].size(); i++){
-    x6[i] = XY[0][i];
-    y6[i] = XY[1][i];
-  }
-  auto g6 = new TGraph(XY[0].size(), x6, y6);
-  g6->SetLineColor(dcut);
-  g6->SetTitle(Form("D0 cut = %d",dcut));
-
-
+ 
   dcut = 8;
   double_t x8[50], y8[50];
-  XY = TwoDsignificance(dcut,false);
+  XY = TwoDsignificance(dcut,"simple",0.,false);
   for (int i=0; i<XY[0].size(); i++){
     x8[i] = XY[0][i];
     y8[i] = XY[1][i];
   }
   auto g8 = new TGraph(XY[0].size(), x8, y8);
-  g8->SetLineColor(dcut);
-  g8->SetTitle(Form("D0 cut = %d",dcut));
+  g8->SetLineColor(colcounter);
+  g8->SetTitle(Form("Impact par cut = %d #sigma",dcut));
+  g8->SetLineWidth(2);
+  colcounter++;
 
-
-  dcut = 10;
-  double_t x10[50], y10[50];
-  XY = TwoDsignificance(dcut,false);
-  for (int i=0; i<XY[0].size(); i++){
-    x10[i] = XY[0][i];
-    y10[i] = XY[1][i];
-  }
-  auto g10 = new TGraph(XY[0].size(), x10, y10);
-  g10->SetLineColor(dcut);
-  g10->SetTitle(Form("D0 cut = %d",dcut));
-  
-
-
+ 
   dcut = 12;
   double_t x12[50], y12[50];
-  XY = TwoDsignificance(dcut,false);
+  XY = TwoDsignificance(dcut,"simple",0.,false);
   for (int i=0; i<XY[0].size(); i++){
     x12[i] = XY[0][i];
     y12[i] = XY[1][i];
   }
   auto g12 = new TGraph(XY[0].size(), x12, y12);
-  g12->SetLineColor(dcut);
-  g12->SetTitle(Form("D0 cut = %d",dcut));
+  g12->SetLineColor(colcounter);
+  g12->SetTitle(Form("Impact par cut = %d #sigma",dcut));
+  g12->SetLineWidth(2);
+  colcounter++;
 
 
   dcut = 16;
   double_t x16[50], y16[50];
-  XY = TwoDsignificance(dcut,false);
+  XY = TwoDsignificance(dcut,"simple",0.,false);
   for (int i=0; i<XY[0].size(); i++){
     x16[i] = XY[0][i];
     y16[i] = XY[1][i];
   }
   auto g16 = new TGraph(XY[0].size(), x16, y16);
-  g16->SetLineColor(dcut);
-  g16->SetTitle(Form("D0 cut = %d",dcut));
+  g16->SetLineColor(colcounter);
+  g16->SetTitle(Form("Impact par cut = %d #sigma",dcut));
+  g16->SetLineWidth(2);
+  colcounter++;
 
   
   dcut = 20;
   double_t x20[50], y20[50];
-  XY = TwoDsignificance(dcut,false);
+  XY = TwoDsignificance(dcut,"simple",0.,false);
   for (int i=0; i<XY[0].size(); i++){
     x20[i] = XY[0][i];
     y20[i] = XY[1][i];
   }
   auto g20 = new TGraph(XY[0].size(), x20, y20);
-  g20->SetLineColor(dcut);
-  g20->SetTitle(Form("D0 cut = %d",dcut));
+  g20->SetLineColor(colcounter+1);
+  g20->SetTitle(Form("Impact par cut = %d #sigma",dcut));
+  g20->SetLineWidth(2);
+  colcounter++;
 
 
-  // g2->Draw("");
-  g4->Draw();
-  g6->Draw("same");
   
+
+  auto gax = (TGraph*)g4->Clone("ciao");
+  gax->SetMarkerColor(0);
+  gax->SetLineColor(0);
+  gax->SetTitle("Curve at significance #approx 2");
+  gax->GetYaxis()->SetRangeUser(-9,-6);
+  gax->GetYaxis()->SetTitle("Log (U^{2})");
+  gax->GetXaxis()->SetRangeUser(0,90);
+  gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
+  
+  gax->Draw("A C");
+
+
+  
+  
+  g4->Draw("same");
   g8->Draw("same");
-  g10->Draw("same");
   g12->Draw("same");
   g16->Draw("same");
   g20->Draw("same");
-  
+
 
   c->BuildLegend();
+
+  c->SetGridy();
+  c->SaveAs("temp.png");
 }
+

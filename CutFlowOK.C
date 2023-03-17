@@ -5,26 +5,30 @@ Double_t Z_mass = 91.1876;
 
 std::vector<int> possible_masses = {1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
 
-std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false){
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false){
 
-  // standard ouptut:
-  // 0: Nnocut(opt,lifetime)  <--- written in lumisettings.h, not read from the file!
-  // 1: nOneMuon  2: selection  3: sliding(mass)
-  // 4...24:  sliding(mass) & d0cut = index-4
+  // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses
 
-  // When CutByCutFlow is set:
-  // 0: Nnocut(opt,lifetime) <--- written in lumisettings.h, not read from the file!
-  // 1: entries of the tree,   2: one muon selection (should be equal to 1)
-  // 3: 1& cos(pmiss)<0.94
-  // 4: 1& cos(pmiss,mu)<0.8
-  // 5: 1& ejet>3
-  // 6: 1& cosjj
-  // 7:
-  // 8: 1& cos(j,mu)<0.8
-  // 9: 1& Mj > 0.2 & M2j > 0
-  // 10: 1& cos(jmu) > -0.98
-  // 11: 1& Mtot > 80
-  // 12: selection
+  // To be read like this: CutFlowOK[M] where M(int) is the Mass in GeV. CutFlowOK[M] is a vector:
+  
+  //// Standard ouptut:
+  //// 0: Nnocut(opt,lifetime)  <--- written in lumisettings.h, not read from the file!
+  //// 1: nOneMuon  2: selection  3: sliding(mass)
+  //// 4...24:  sliding(mass) & d0cut = index-4
+    
+  //// When CutByCutFlow is set:
+  //// 0: Nnocut(opt,lifetime) <--- written in lumisettings.h, not read from the file!
+  //// 1: entries of the tree,   2: one muon selection (should be equal to 1)
+  //// 3: 1& cos(pmiss)<0.94
+  //// 4: 1& cos(pmiss,mu)<0.8
+  //// 5: 1& ejet>3
+  //// 6: 1& cosjj
+  //// 7:
+  //// 8: 1& cos(j,mu)<0.8
+  //// 9: 1& Mj > 0.2 & M2j > 0
+  //// 10: 1& cos(jmu) > -0.98
+  //// 11: 1& Mtot > 80
+  //// 12: selection
  
     
 
@@ -51,9 +55,12 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
   
   
 
+  std::map<int,std::vector<double>> toret;
+  toret.clear();
+
+  for (int im : possible_masses)
+    toret[im] = std::vector<double>{};
   
-  std::vector<double> toreturn;
-  toreturn.clear();
   
   //TFile *File = new TFile(fname);
   //TTree *T = (TTree*)File->Get("eventsTree");
@@ -113,11 +120,11 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
   Long64_t EntriesTree = T->GetEntries();
 
   Double_t nPreselection = 0, nOneMuon = 0, nSelection = 0;
-  Int_t nSliding[200], nBcut[25][200];
-  Int_t nCutByCut[50];
+  Int_t nSliding[200], nBcut[25][200]; //first index: Dcut (in sigma). Second index analysis mass (in gev)
+  Int_t nCutByCut[50][200]; //first index: see above. Second index: analysis mass
 
   for (int i=0;i<200;i++) for (int j=0; j<25; j++) nSliding[i] = nBcut[j][i] = 0;
-  for (int i=0;i<50;i++) nCutByCut[i] = 0;
+  for (int i=0;i<50;i++) for (int j=0; j<200;j ++) nCutByCut[i][j] = 0;
 
 
   
@@ -139,11 +146,11 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
 
     nPreselection = oNEntries * SF;
 
-    nCutByCut[0] ++;
+    for (int j=0; j<200; j++) nCutByCut[0][j] ++;
 
     if (oNMuon != 1  || oNJet != 2 || oEMiss < 0) {nPreselection--; nOneMuon--; continue;}
 
-    nCutByCut[1] ++;
+    for (int j=0; j<200; j++) nCutByCut[1][j] ++;
 
     TLorentzVector lvj1(oPxJet1, oPyJet1, oPzJet1, oEJet1);
     TLorentzVector lvj2(oPxJet2, oPyJet2, oPzJet2, oEJet2);
@@ -168,21 +175,21 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
 
     Bool_t selection = sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
 
-    if (sel1) nCutByCut[2]++;
-    if (sel2) nCutByCut[3]++;
-    if (sel3) nCutByCut[4]++;
-    if (sel41) nCutByCut[5]++;
-    if (sel42) nCutByCut[6]++;
-    if (sel6) nCutByCut[7]++;
-    if (s21)  nCutByCut[8]++;
-    if (s22)  nCutByCut[9]++;
-    if (s23)  nCutByCut[10]++;
+    if (sel1)  for (int j=0; j<200; j++) nCutByCut[2][j]++;
+    if (sel2)  for (int j=0; j<200; j++) nCutByCut[3][j]++;
+    if (sel3)  for (int j=0; j<200; j++) nCutByCut[4][j]++;
+    if (sel41) for (int j=0; j<200; j++) nCutByCut[5][j]++;
+    if (sel42) for (int j=0; j<200; j++) nCutByCut[6][j]++;
+    if (sel6)  for (int j=0; j<200; j++) nCutByCut[7][j]++;
+    if (s21)   for (int j=0; j<200; j++) nCutByCut[8][j]++;
+    if (s22)   for (int j=0; j<200; j++) nCutByCut[9][j]++;
+    if (s23)   for (int j=0; j<200; j++) nCutByCut[10][j]++;
     
       
    
     if (selection){
 
-      nCutByCut[11]++;
+      for (int j=0; j<200; j++) nCutByCut[11][j]++;
 
       nSelection ++;
 
@@ -196,6 +203,7 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
 	if (slid1 && slid2){
 	  nSliding[im]++;
 	  for (int d0cut = 0; d0cut < 21; d0cut++)
+	    //if (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*d0cut)
 	    if (TMath::Abs(oMuD0sig) < 1.*d0cut)
 	      nBcut[d0cut][im]++;
 	  
@@ -209,17 +217,21 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
   }
 
   if (!CutByCutFlow){
-    toreturn.push_back(1.*Nnocut(opt,lifetime)*SF);
-    toreturn.push_back(1.*nOneMuon);
-    toreturn.push_back(1.*nSelection);
-    toreturn.push_back(1.*nSliding[mass]);
-    for (int d0cut = 0; d0cut < 21; d0cut++)
-      toreturn.push_back(1.*nBcut[d0cut][mass]);
+    for (int im : possible_masses){
+      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      toret[im].push_back(1.*nOneMuon);
+      toret[im].push_back(1.*nSelection);
+      toret[im].push_back(1.*nSliding[im]);
+      for (int d0cut = 0; d0cut < 21; d0cut++)
+	toret[im].push_back(1.*nBcut[d0cut][im]);
+    }
   }
   if (CutByCutFlow){
-    toreturn.push_back(1.*Nnocut(opt,lifetime)*SF);
-    for (int cbc = 0; cbc<12; cbc++)
-      toreturn.push_back(nCutByCut[cbc]);
+    for (int im : possible_masses){
+      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      for (int cbc = 0; cbc<12; cbc++)
+	toret[im].push_back(nCutByCut[cbc][im]);
+    }
   }
   
   
@@ -232,28 +244,11 @@ std::vector<double> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifet
     cout<<"Mass "<<im<<" sliding:  "<<nSliding[im]<<"  bcut 4:  "<<nBcut[4][im]<<endl;
   }
 
-  return toreturn;
-}
-
-
-std::vector<std::vector<double>> cutflowallmass(TString opt, TString lifetime = "n/a"){
-
-  std::vector<std::vector<double>> toret;
-  toret.clear();
-
-  for (int M=10; M<81; M+=10){
-
-    std::vector<double> v1;
-    v1.clear();
-
-    v1 = CutFlowOK(opt,M,lifetime);
-
-    toret.push_back(v1);
-  }
-
   return toret;
-  
 }
+
+
+
 
 
 //TString maketablestring
@@ -326,11 +321,13 @@ TString maketableline2(TString a1, Int_t a2, TString b, double c, std::vector<do
 }
 
 
-void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false){
+void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top=""){
+
+  // iopt. 1: summary and b cut     2: selection cut flow
 
   TString Headers;
   if (iopt == 1){
-    Headers =  "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>M_ana</td><td>Log(ctau)</td><td>log(U2)</td><td>xsec/pb</td><td>Ngen</td><td>Weight</td><td>EvtSel</td><td>KinSel</td><td>D0=4sig</td><td>D0=8sig</td><td>D0=16sig</td><td>D0=20sig</td></tr>";
+    Headers =  "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>M_ana</td><td>Log(ctau)</td><td>log(U2)</td><td>xsec/pb</td><td>Ngen</td><td>Weight</td><td>EvtSel</td><td>KinSel</td><td>b=4sig</td><td>b=8sig</td><td>b=16sig</td><td>b=20sig</td></tr>";
   }
   if (iopt == 2){
     Headers = "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>Log(ctau)</td><td>log(U2)</td><td>Ngen</td><td>MyAnalysis</td><td>one muon</td><td style=\"background-color: #ffb299;\">cos(pmiss)<.94</td><td style=\"background-color: #ffb299;\">cos(pmiss,mu)<.8</td><td style=\"background-color: #ffb299;\">Ejet>3</td><td style=\"background-color: #ffb299;\">cosjj>-.8</td><td style=\"background-color: #ffb299;\">cosjj<.98</td><td style=\"background-color: #ffb299;\">cos(j,mu)<.8</td><td style=\"background-color: #ffb299;\">Mj>.2</td><td style=\"background-color: #ffb299;\">cos(j,mu)>-.98</td><td style=\"background-color: #ffb299;\">M>80</td><td>evt.sel.</td></tr>";
@@ -338,7 +335,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
 
   ofstream Outfile;
   Outfile.open(outfile);
-  if (iopt == 1) Outfile<<"<br><br>Red numbers are multiplied by the weight<br><br>"<<endl;
+  Outfile<<"<br>"<<endl<<comments_on_top<<"<br>"<<endl;
+  if (iopt == 1) Outfile<<"<br>Red numbers are multiplied by the weight<br><br>"<<endl;
   Outfile<<"<table border=\"1\">"<<endl;
   
   
@@ -371,8 +369,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
 
 	  enabled_masses.insert(m);
 
-	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath);
-	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true);
+	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath)[m];
+	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true)[m];
 
 	  Double_t w = Weight("signal",mstr,lt);
 	  
@@ -416,8 +414,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
       TString mstr = Form("%d",m);
       Double_t w = Weight(bkg);
 
-      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN);
-      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true);
+      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN)[m];
+      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true)[m];
 
 
       TString line;
