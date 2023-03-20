@@ -346,8 +346,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
   std::set<int> enabled_masses;
 
   TString AnalysisResPath;
-  if (iopt == 1) AnalysisResPath = "/home/nvalle/FCC/localcopy/workdir/MyExternalAnalysis/results/skimmed/";
-  if (iopt == 2) AnalysisResPath = "/home/nvalle/FCC/localcopy/workdir/MyExternalAnalysis/results/";
+  if (iopt == 1) AnalysisResPath = "../MyExternalAnalysis/results/skimmed/";
+  if (iopt == 2) AnalysisResPath = "../MyExternalAnalysis/results/";
     
   for ( int m : possible_masses ){
     bool PrintHeader = true;
