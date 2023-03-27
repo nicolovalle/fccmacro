@@ -5,8 +5,10 @@ Double_t Z_mass = 91.1876;
 
 std::vector<int> possible_masses = {1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
 
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false){
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2){
 
+  // CUT BY CUT FLOW NOT IMPLEMENTED YET FOR LESS THAN 2 JETS
+  
   // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses
 
   // To be read like this: CutFlowOK[M] where M(int) is the Mass in GeV. CutFlowOK[M] is a vector:
@@ -69,15 +71,15 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   Long64_t oNEntries;
   Int_t oNReco;
   Int_t oNMuon;
-  Int_t oNJet;
-  Double_t oPxJet1;
-  Double_t oPyJet1;
-  Double_t oPzJet1;
-  Double_t oEJet1;
-  Double_t oPxJet2;
-  Double_t oPyJet2;
-  Double_t oPzJet2;
-  Double_t oEJet2;
+  std::vector<Int_t>* oNJet = 0;
+  std::vector<Double_t>* oPxJet1 = 0;
+  std::vector<Double_t>* oPyJet1 = 0;
+  std::vector<Double_t>* oPzJet1 = 0;
+  std::vector<Double_t>* oEJet1 = 0;
+  std::vector<Double_t>* oPxJet2 = 0;
+  std::vector<Double_t>* oPyJet2 = 0;
+  std::vector<Double_t>* oPzJet2 = 0;
+  std::vector<Double_t>* oEJet2 = 0;
   Double_t oPxMu;
   Double_t oPyMu;
   Double_t oPzMu;
@@ -86,6 +88,10 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   Double_t oPyMiss;
   Double_t oPzMiss;
   Double_t oEMiss;
+  Double_t oPxVis;
+  Double_t oPyVis;
+  Double_t oPzVis;
+  Double_t oEVis;
   Double_t oMuD0;
   Double_t oMuZ0;
   Double_t oMuD0sig;
@@ -112,6 +118,10 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   T->SetBranchAddress("PyMiss",&oPyMiss);
   T->SetBranchAddress("PzMiss",&oPzMiss);
   T->SetBranchAddress("EMiss",&oEMiss);
+  T->SetBranchAddress("PxVis",&oPxVis);
+  T->SetBranchAddress("PyVis",&oPyVis);
+  T->SetBranchAddress("PzVis",&oPzVis);
+  T->SetBranchAddress("EVis",&oEVis);
   T->SetBranchAddress("MuD0",&oMuD0);
   T->SetBranchAddress("MuZ0",&oMuZ0);
   T->SetBranchAddress("MuD0sig",&oMuD0sig);
@@ -148,42 +158,63 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
     for (int j=0; j<200; j++) nCutByCut[0][j] ++;
 
-    if (oNMuon != 1  || oNJet != 2 || oEMiss < 0) {nPreselection--; nOneMuon--; continue;}
+    if (oNMuon != 1  || oNJet->at(jalg) < 1 || oEMiss < 0) {nPreselection--; nOneMuon--; continue;}
 
     for (int j=0; j<200; j++) nCutByCut[1][j] ++;
 
-    TLorentzVector lvj1(oPxJet1, oPyJet1, oPzJet1, oEJet1);
-    TLorentzVector lvj2(oPxJet2, oPyJet2, oPzJet2, oEJet2);
+    TLorentzVector lvj1(oPxJet1->at(jalg), oPyJet1->at(jalg), oPzJet1->at(jalg), oEJet1->at(jalg));
+    TLorentzVector lvj2(oPxJet2->at(jalg), oPyJet2->at(jalg), oPzJet2->at(jalg), oEJet2->at(jalg));
     TLorentzVector lvmu(oPxMu, oPyMu, oPzMu, oEMu);
     TLorentzVector lvmiss(oPxMiss, oPyMiss, oPzMiss, oEMiss);
+    TLorentzVector lvvis(oPxVis, oPyVis, oPzVis, oEVis);
 
-    Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
-    Double_t cosj1mu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
-    Double_t cosj2mu = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+    Bool_t selection;
     
-    Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
-    Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
-    Bool_t sel3 = (oEJet1 >= 3. && oEJet2 >= 3.);
-    Bool_t sel41 = cosjj > -0.8;
-    Bool_t sel42 = cosjj < 0.98;
-    //Bool_t sel5_old = (TMath::Min(lvj1.M(), lvj1.M()) > 1.8 && TMath::Min(lvj1.M2(), lvj1.M2()) > 0);
-    Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < 0.8);
+    if (oNJet->at(jalg) == 2){
 
-    Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
-    Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
-    Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
+      Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
+      Double_t cosj1mu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      Double_t cosj2mu = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+    
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3. && oEJet2->at(jalg) >= 3.);
+      Bool_t sel41 = cosjj > -0.8;
+      Bool_t sel42 = cosjj < 0.98;
+      //Bool_t sel5_old = (TMath::Min(lvj1.M(), lvj1.M()) > 1.8 && TMath::Min(lvj1.M2(), lvj1.M2()) > 0);
+      Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < 0.8);
 
-    Bool_t selection = sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
+      Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
+      Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
+      Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-    if (sel1)  for (int j=0; j<200; j++) nCutByCut[2][j]++;
-    if (sel2)  for (int j=0; j<200; j++) nCutByCut[3][j]++;
-    if (sel3)  for (int j=0; j<200; j++) nCutByCut[4][j]++;
-    if (sel41) for (int j=0; j<200; j++) nCutByCut[5][j]++;
-    if (sel42) for (int j=0; j<200; j++) nCutByCut[6][j]++;
-    if (sel6)  for (int j=0; j<200; j++) nCutByCut[7][j]++;
-    if (s21)   for (int j=0; j<200; j++) nCutByCut[8][j]++;
-    if (s22)   for (int j=0; j<200; j++) nCutByCut[9][j]++;
-    if (s23)   for (int j=0; j<200; j++) nCutByCut[10][j]++;
+      selection = sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
+
+      if (sel1)  for (int j=0; j<200; j++) nCutByCut[2][j]++;
+      if (sel2)  for (int j=0; j<200; j++) nCutByCut[3][j]++;
+      if (sel3)  for (int j=0; j<200; j++) nCutByCut[4][j]++;
+      if (sel41) for (int j=0; j<200; j++) nCutByCut[5][j]++;
+      if (sel42) for (int j=0; j<200; j++) nCutByCut[6][j]++;
+      if (sel6)  for (int j=0; j<200; j++) nCutByCut[7][j]++;
+      if (s21)   for (int j=0; j<200; j++) nCutByCut[8][j]++;
+      if (s22)   for (int j=0; j<200; j++) nCutByCut[9][j]++;
+      if (s23)   for (int j=0; j<200; j++) nCutByCut[10][j]++;
+    }
+
+    else if (oNJet->at(jalg) == 1){
+
+      Double_t cosjmu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.50);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3.);
+      
+      Bool_t sel4 = (-0.5 < cosjmu && cosjmu < 0.96);
+      Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
+
+      selection = sel1 && sel2 && sel3 && sel4 && sel5;
+      
+    }
     
       
    
@@ -198,13 +229,13 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
 	Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
 	Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-	Bool_t slid2 = (TMath::Abs( (lvj1+lvj2+lvmu).M() - 1.*im) <= 4.);
+	Bool_t slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
 
 	if (slid1 && slid2){
 	  nSliding[im]++;
 	  for (int d0cut = 0; d0cut < 21; d0cut++)
-	    //if (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*d0cut)
-	    if (TMath::Abs(oMuD0sig) < 1.*d0cut)
+	    if (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*d0cut)
+	      //if (TMath::Abs(oMuD0sig) < 1.*d0cut)
 	      nBcut[d0cut][im]++;
 	  
 	}
@@ -240,9 +271,9 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   cout << "One muon    : "<<nOneMuon<<endl;
   cout << "Selection   : "<<nSelection<<endl;
 
-  for (int im : possible_masses){
-    cout<<"Mass "<<im<<" sliding:  "<<nSliding[im]<<"  bcut 4:  "<<nBcut[4][im]<<endl;
-  }
+  //for (int im : possible_masses){
+  //  cout<<"Mass "<<im<<" sliding:  "<<nSliding[im]<<"  bcut 4:  "<<nBcut[4][im]<<endl;
+  //}
 
   return toret;
 }
@@ -321,7 +352,7 @@ TString maketableline2(TString a1, Int_t a2, TString b, double c, std::vector<do
 }
 
 
-void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top=""){
+void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top=""){
 
   // iopt. 1: summary and b cut     2: selection cut flow
 
@@ -345,9 +376,7 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
 
   std::set<int> enabled_masses;
 
-  TString AnalysisResPath;
-  if (iopt == 1) AnalysisResPath = "../MyExternalAnalysis/results/skimmed/";
-  if (iopt == 2) AnalysisResPath = "../MyExternalAnalysis/results/";
+  
     
   for ( int m : possible_masses ){
     bool PrintHeader = true;
@@ -369,8 +398,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
 
 	  enabled_masses.insert(m);
 
-	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath)[m];
-	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true)[m];
+	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg)[m];
+	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true,jalg)[m];
 
 	  Double_t w = Weight("signal",mstr,lt);
 	  
@@ -414,8 +443,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, Bool_t Proces
       TString mstr = Form("%d",m);
       Double_t w = Weight(bkg);
 
-      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN)[m];
-      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true)[m];
+      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, false, jalg)[m];
+      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true, jalg)[m];
 
 
       TString line;

@@ -3,9 +3,9 @@ Double_t LUMI = 1.5e8;
 
 Double_t
 Nsignal =  1.e5, //0 
-  NZbb =    9.7e8, // 1.e7, //1
-  NZcc =     9.7e8, // 1.e7, //2
-  NZuds =    9.3e8, // 1.e8, //5
+  NZbb =    9.8e8, // 1.e7, //1
+  NZcc =     1.e9, // 1.e7, //2
+  NZuds =    1.e9, // 1.e8, //5
   NZmumu =   1.e7, //3
   NZtautau = 1.e7, //4
   Nmunuqq =  5.e5; //6 
@@ -46,9 +46,9 @@ TString AnalysisResults(TString opt, TString HNMass = "50", TString lifetime="n/
 
   
   TString toret="FILE-NOT-FOUND";
-  if      (opt == "Zbb")     toret = "AnalysisResults_Zbb_highstat.root";
-  else if (opt == "Zcc")     toret = "AnalysisResults_Zcc_highstat.root";
-  else if (opt == "Zuds")    toret = "AnalysisResults_Zuds_highstat.root";
+  if      (opt == "Zbb")     toret = "AnalysisResults-Zbb_highstat.root";
+  else if (opt == "Zcc")     toret = "AnalysisResults-Zcc_highstat.root";
+  else if (opt == "Zuds")    toret = "AnalysisResults-Zuds_highstat.root";
   else if (opt == "Zmumu")   toret = "AnalysisResults-Zmumu.root";
   else if (opt == "Ztautau") toret = "AnalysisResults-Ztautau.root";
   else if (opt == "munuqq")  toret = "AnalysisResults-munuqq.root";
