@@ -434,3 +434,67 @@ Double_t Coupling(TString HNMass, TString lifetime){
   return -1;
   
 }
+
+
+void DrawCol()
+{
+   Int_t i,n;
+   Double_t x,y;
+   TLatex *l;
+
+   TGraph *g = (TGraph*)gPad->GetListOfPrimitives()->FindObject("Graph");
+   n = g->GetN();
+   TMarker *m;
+   for (i=1; i<n; i++) {
+      g->GetPoint(i,x,y);
+      m = new TMarker(x,y,20);
+      m->SetMarkerColor((i%60)+12);;
+      m->Paint();
+   }
+}
+
+
+
+void MapPoint(){
+
+  Double_t x[1000], y[10000];
+  Int_t npoint = 0;
+
+  for (int m = 0; m < 95; m++){
+    for (TString mp : std::vector<TString>{"m","p"}){
+      for (int unit = 0; unit < 9; unit++){
+	for (int decimal = 0; decimal < 6; decimal += 5){
+
+	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
+
+	  if (Coupling(Form("%d",m), lt) > 0){
+	    x[npoint] = 1.*m;
+	    y[npoint] = ( mp == "m" ? -1. : 1.)*(unit+0.1*decimal);
+	    //y[npoint] = 2.*TMath::Log10(Coupling(Form("%d",m), lt));
+	    npoint++;
+	  }
+	  
+	}
+      }
+    }
+  }
+
+  cout<<"N points = "<<npoint<<endl;
+  
+  auto g = new TGraph(npoint,x,y);
+  g->SetMarkerStyle(8);
+  g->SetMarkerSize(1);
+
+  TExec *ex = new TExec("ex","DrawCol();");
+
+   g->GetListOfFunctions()->Add(ex);
+  g->GetYaxis()->SetRangeUser(-8,3);
+  g->GetXaxis()->SetLimits(0,90);
+  g->GetXaxis()->SetTitle("M_{HN} (GeV)");
+  g->GetYaxis()->SetTitle("decay length");
+  g->Draw("A P");
+
+
+}
+
+

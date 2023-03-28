@@ -3,11 +3,57 @@
 Double_t Muon_mass = 0.105658;
 Double_t Z_mass = 91.1876;
 
+
+  Long64_t oNEntries;
+  Int_t oNReco;
+  Int_t oNMuon;
+  std::vector<Int_t>* oNJet = 0;
+  std::vector<Double_t>* oPxJet1 = 0;
+  std::vector<Double_t>* oPyJet1 = 0;
+  std::vector<Double_t>* oPzJet1 = 0;
+  std::vector<Double_t>* oEJet1 = 0;
+  std::vector<Double_t>* oPxJet2 = 0;
+  std::vector<Double_t>* oPyJet2 = 0;
+  std::vector<Double_t>* oPzJet2 = 0;
+  std::vector<Double_t>* oEJet2 = 0;
+  Double_t oPxMu;
+  Double_t oPyMu;
+  Double_t oPzMu;
+  Double_t oEMu;
+  Double_t oPxMiss;
+  Double_t oPyMiss;
+  Double_t oPzMiss;
+  Double_t oEMiss;
+  Double_t oPxVis;
+  Double_t oPyVis;
+  Double_t oPzVis;
+  Double_t oEVis;
+  Double_t oMuD0;
+  Double_t oMuZ0;
+  Double_t oMuD0sig;
+  Double_t oMuZ0sig;
+
+
 std::vector<int> possible_masses = {1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
 
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2){
+std::vector<int> possible_dcut = {0,1,2,3,4,5,6,7,8,10,12,16,20,25,30,35,40,45,50,75,100,125,150,175,200,225,250,275,300,350,400,500}; // sigma units
+
+int dcut_id(int dcut){
+  // used to return the correct index in CutFlowOK[M] vector
+  std::vector<int>::iterator itr = std::find(possible_dcut.begin(), possible_dcut.end(), dcut);
+  if (itr != possible_dcut.cend()) return std::distance(possible_dcut.begin(), itr) + 4;
+  else return -1;
+}
+
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma jalg"){
 
   // CUT BY CUT FLOW NOT IMPLEMENTED YET FOR LESS THAN 2 JETS
+
+  // analysis options available:
+  // ">" or "<" for the type of cut in impact parameter
+  // "dsigma" or "dmm" to cut in number of sigma or in unit 10-5 m
+  // "d2d" or "d3d" to cut on D0 or D0+Z0
+  // "jalg" or "massdep" for the type of analysis (not implemented!)
   
   // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses
 
@@ -68,35 +114,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   //TTree *T = (TTree*)File->Get("eventsTree");
 
   
-  Long64_t oNEntries;
-  Int_t oNReco;
-  Int_t oNMuon;
-  std::vector<Int_t>* oNJet = 0;
-  std::vector<Double_t>* oPxJet1 = 0;
-  std::vector<Double_t>* oPyJet1 = 0;
-  std::vector<Double_t>* oPzJet1 = 0;
-  std::vector<Double_t>* oEJet1 = 0;
-  std::vector<Double_t>* oPxJet2 = 0;
-  std::vector<Double_t>* oPyJet2 = 0;
-  std::vector<Double_t>* oPzJet2 = 0;
-  std::vector<Double_t>* oEJet2 = 0;
-  Double_t oPxMu;
-  Double_t oPyMu;
-  Double_t oPzMu;
-  Double_t oEMu;
-  Double_t oPxMiss;
-  Double_t oPyMiss;
-  Double_t oPzMiss;
-  Double_t oEMiss;
-  Double_t oPxVis;
-  Double_t oPyVis;
-  Double_t oPzVis;
-  Double_t oEVis;
-  Double_t oMuD0;
-  Double_t oMuZ0;
-  Double_t oMuD0sig;
-  Double_t oMuZ0sig;
-
+ 
 
   T->SetBranchAddress("NEntries_tchain",&oNEntries);
   T->SetBranchAddress("NReco",&oNReco);
@@ -130,7 +148,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   Long64_t EntriesTree = T->GetEntries();
 
   Double_t nPreselection = 0, nOneMuon = 0, nSelection = 0;
-  Int_t nSliding[200], nBcut[25][200]; //first index: Dcut (in sigma). Second index analysis mass (in gev)
+  Int_t nSliding[200], nBcut[500][200]; //first index: Dcut (in sigma). Second index analysis mass (in gev)
   Int_t nCutByCut[50][200]; //first index: see above. Second index: analysis mass
 
   for (int i=0;i<200;i++) for (int j=0; j<25; j++) nSliding[i] = nBcut[j][i] = 0;
@@ -233,11 +251,23 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
 	if (slid1 && slid2){
 	  nSliding[im]++;
-	  for (int d0cut = 0; d0cut < 21; d0cut++)
-	    if (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*d0cut)
-	      //if (TMath::Abs(oMuD0sig) < 1.*d0cut)
-	      nBcut[d0cut][im]++;
-	  
+	  for (int id0 = 0; id0 < possible_dcut.size(); id0++){
+	    Bool_t cut_condition = false;
+	    
+	    if (analysis_opt.Contains("d3d") and analysis_opt.Contains("dsigma"))
+	      cut_condition =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*possible_dcut[id0]);
+	    else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
+	      cut_condition =  (TMath::Abs(oMuD0sig) < 1.*possible_dcut[id0]);
+	    else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
+	      cut_condition = (TMath::Abs(oMuD0) < 1.*possible_dcut[id0]/100.);
+	    else
+	      cout<<"CutFlowOK.C:: ERROR - OPTIONS NOT SUPPORTED"<<endl;
+	    
+	    if (analysis_opt.Contains(">")) cut_condition = !cut_condition;
+	    
+	    if (cut_condition) nBcut[id0][im]++;
+	    
+	  } // loop on id0
 	}
 
 	
@@ -253,8 +283,8 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
       toret[im].push_back(1.*nOneMuon);
       toret[im].push_back(1.*nSelection);
       toret[im].push_back(1.*nSliding[im]);
-      for (int d0cut = 0; d0cut < 21; d0cut++)
-	toret[im].push_back(1.*nBcut[d0cut][im]);
+      for (int id0 = 0; id0 < possible_dcut.size(); id0++)
+	toret[im].push_back(1.*nBcut[id0][im]);
     }
   }
   if (CutByCutFlow){
@@ -271,9 +301,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   cout << "One muon    : "<<nOneMuon<<endl;
   cout << "Selection   : "<<nSelection<<endl;
 
-  //for (int im : possible_masses){
-  //  cout<<"Mass "<<im<<" sliding:  "<<nSliding[im]<<"  bcut 4:  "<<nBcut[4][im]<<endl;
-  //}
+  
 
   return toret;
 }
@@ -284,12 +312,12 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
 //TString maketablestring
 
-TString maketableline1(TString A1, int A2, int B1, TString C1, double D1, double E1, double F1, double F2, double G1, double H1, double H2, double I1, double I2, double J1, double J2, double K1, double K2, double L1, double L2, double M1, double M2, TString bkgcolor="#ffffff" , TString color="#990000" ){
+TString maketableline1(TString A1, int A2, int B1, TString C1, double D1, double E1, double F1, double G1, double H1,  double I1,  double J1, double K1,  double L1,  double M1,  double N1, double O1,  TString bkgcolor="#ffffff" , TString color="#990000" ){
 
 /*
-     A             B           C             D           E        F          G          H            I               J               K             L            M
-| type        |   Mana  |  lifetime   |  log(U2)    |  xsec   |  Ngen   |  weight  |   Nsel    |   Nsliding   |   Ndcut = 4    |  Ndcut = 8 |  Ndcut = 16  | Ndcut  = 20 |    
-| M if signal |         |             |             |         |  wghted |          |  wghted   | wghted       | wghted         | wghted     | wghted       | wghted      |    
+     A             B           C             D           E        F          G          H            I               J               K             L            M                N              O
+| type        |   Mana  |  lifetime   |  log(U2)    |  xsec   |  Ngen   |  weight  |   Nsel    |   Nsliding   |   Ndcut = 4    |  Ndcut = 8 |  Ndcut = 20  | Ndcut  = 50 | Ndcut  = 100 | Ndcut  = 200 |    
+| M if signal |         |             |             |         |  wghted |          |  wghted   | wghted       | wghted         | wghted     | wghted       | wghted      | wghted       | wghted       |   
    
 */
   
@@ -302,16 +330,18 @@ TString maketableline1(TString A1, int A2, int B1, TString C1, double D1, double
   if (D1>0) D = Form("<td> %3.3f </td>", 2.*TMath::Log10(D1));
   if (D1<=0) D = Form("<td> </td>");	      
   TString E = Form("<td> %f </td>", E1);
-  TString F = Form("<td> %10.2f k <br> <ccc style=\"color:%s;\"> %10.2f k </ccc></td>", F1/1000., color.Data(), F2/1000.);
+  TString F = Form("<td> %10.2f k <br> <ccc style=\"color:%s;\"> %10.2f k </ccc></td>", F1/1000., color.Data(), (F1/1000.)*G1);
   TString G = Form("<td> %10.2f </td>", G1);
-  TString H = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", H1, color.Data(), H2);
-  TString I = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", I1, color.Data(), I2);
-  TString J = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", J1, color.Data(), J2);
-  TString K = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", K1, color.Data(), K2);
-  TString L = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", L1, color.Data(), L2);
-  TString M = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", M1, color.Data(), M2);
+  TString H = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", H1, color.Data(), H1*G1);
+  TString I = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", I1, color.Data(), I1*G1);
+  TString J = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", J1, color.Data(), J1*G1);
+  TString K = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", K1, color.Data(), K1*G1);
+  TString L = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", L1, color.Data(), L1*G1);
+  TString M = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", M1, color.Data(), M1*G1);
+  TString N = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", N1, color.Data(), N1*G1);
+  TString O = Form("<td> %10.2f <br> <ccc style=\"color:%s;\"> %10.2f </ccc></td>", O1, color.Data(), O1*G1);
 
-  return "<tr align=\"center\" style=\"background-color:"+bkgcolor+";\">"+A+B+C+D+E+F+G+H+I+J+K+L+M+"</tr>";
+  return "<tr align=\"center\" style=\"background-color:"+bkgcolor+";\">"+A+B+C+D+E+F+G+H+I+J+K+L+M+N+O+"</tr>";
   
   
 }
@@ -352,13 +382,13 @@ TString maketableline2(TString a1, Int_t a2, TString b, double c, std::vector<do
 }
 
 
-void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top=""){
+void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top="jalg==2 - asking D0 > dcut in sigma unit"){
 
   // iopt. 1: summary and b cut     2: selection cut flow
 
   TString Headers;
   if (iopt == 1){
-    Headers =  "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>M_ana</td><td>Log(ctau)</td><td>log(U2)</td><td>xsec/pb</td><td>Ngen</td><td>Weight</td><td>EvtSel</td><td>KinSel</td><td>b=4sig</td><td>b=8sig</td><td>b=16sig</td><td>b=20sig</td></tr>";
+    Headers =  "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>M_ana</td><td>Log(ctau)</td><td>log(U2)</td><td>xsec/pb</td><td>Ngen</td><td>Weight</td><td>EvtSel</td><td>KinSel</td><td>b=4sig</td><td>b=8sig</td><td>b=20sig</td><td>b=50sig</td><td>b=100sig</td><td>b=200sig</td></tr>";
   }
   if (iopt == 2){
     Headers = "<tr align=\"center\" style=\"background-color: #ff00ff;\"><td>Sample</td><td>Log(ctau)</td><td>log(U2)</td><td>Ngen</td><td>MyAnalysis</td><td>one muon</td><td style=\"background-color: #ffb299;\">cos(pmiss)<.94</td><td style=\"background-color: #ffb299;\">cos(pmiss,mu)<.8</td><td style=\"background-color: #ffb299;\">Ejet>3</td><td style=\"background-color: #ffb299;\">cosjj>-.8</td><td style=\"background-color: #ffb299;\">cosjj<.98</td><td style=\"background-color: #ffb299;\">cos(j,mu)<.8</td><td style=\"background-color: #ffb299;\">Mj>.2</td><td style=\"background-color: #ffb299;\">cos(j,mu)>-.98</td><td style=\"background-color: #ffb299;\">M>80</td><td>evt.sel.</td></tr>";
@@ -397,9 +427,9 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString Analy
 	  if (PrintHeader) {Outfile<<Headers<<endl; PrintHeader = false;}
 
 	  enabled_masses.insert(m);
-
-	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg)[m];
-	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true,jalg)[m];
+	  //4 8 20 50 100 200
+	  if (iopt == 1) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,"> d2d dsigma jalg")[m];
+	  if (iopt == 2) V = CutFlowOK("signal",m,lt,AnalysisResPath,-1,true,jalg,"> d2d dsigma jalg")[m];
 
 	  Double_t w = Weight("signal",mstr,lt);
 	  
@@ -407,8 +437,8 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString Analy
 	  
 	  TString line;
 
-	  //                                    A1      A2 B  C1           D                    E                       F1    F2   G1, H            I            J            K              L             M
-	  if (iopt == 1)  line = maketableline1("Signal",m, m, lt_for_tab, Coupling(mstr,lt), xsec("signal",mstr,lt), V[0], V[0]*w, w, V[2],V[2]*w, V[3],V[3]*w, V[8],V[8]*w, V[12],V[12]*w, V[20],V[20]*w, V[24],V[24]*w);
+	  //                                    A1      A2 B  C1           D                    E                       F1  G1, H    I      J                K              L                M               N                   O
+	  if (iopt == 1)  line = maketableline1("Signal",m, m, lt_for_tab, Coupling(mstr,lt), xsec("signal",mstr,lt), V[0],  w, V[2], V[3], V[dcut_id(4)], V[dcut_id(8)], V[dcut_id(20)], V[dcut_id(50)], V[dcut_id(100)], V[dcut_id(200)]);
 	  
 
 	  if (iopt == 2) line = maketableline2("Signal",m,lt_for_tab,Coupling(mstr,lt), V);
@@ -443,16 +473,18 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString Analy
       TString mstr = Form("%d",m);
       Double_t w = Weight(bkg);
 
-      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, false, jalg)[m];
-      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true, jalg)[m];
+      if (iopt == 1) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, false, jalg,"> d2d dsigma jalg")[m];
+      if (iopt == 2) V = CutFlowOK(bkg, m, "n/a", AnalysisResPath, RunOnN, true, jalg,"> d2d dsigma jalg")[m];
 
 
       TString line;
       
 
 				   
-      //                                   A1  A2  B  C1  D       E             F1    F2   G1, H            I            J            K              L             M
-      if (iopt == 1)  line = maketableline1(bkg, -1, m, "", -1, xsec(bkg,mstr), V[0], V[0]*w, w, V[2],V[2]*w, V[3],V[3]*w, V[8],V[8]*w, V[12],V[12]*w, V[20],V[20]*w, V[24],V[24]*w, SomeColors[cindex]);
+      
+      if (iopt == 1)  line = maketableline1(bkg, -1, m,  "",        -1,                xsec(bkg,mstr),         V[0],  w, V[2], V[3], V[dcut_id(4)], V[dcut_id(8)], V[dcut_id(20)], V[dcut_id(50)], V[dcut_id(100)], V[dcut_id(200)], SomeColors[cindex]);
+
+                       
 
       if (iopt == 2) line = maketableline2(bkg,-1,"",-1,V,"#ffffcc");
       Outfile<<line;

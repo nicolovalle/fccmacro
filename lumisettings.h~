@@ -4,7 +4,7 @@ Double_t LUMI = 1.5e8;
 Double_t
 Nsignal =  1.e5, //0 
   NZbb =    9.8e8, // 1.e7, //1
-  NZcc =     1.e9, // 1.e7, //2
+  NZcc =     9.9e8, // 1.e7, //2
   NZuds =    1.e9, // 1.e8, //5
   NZmumu =   1.e7, //3
   NZtautau = 1.e7, //4
