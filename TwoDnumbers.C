@@ -1,38 +1,6 @@
 #include "CutFlowOK.C"
 
 
-
-
-
-Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
-  // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
-
-  Double_t n = s+b;
-
-  if (b<=1.) return AtlasZ(s,1.01,sig);
-
-  if (sig<1e-6)
-
-    return TMath::Sqrt(2 *( n *TMath::Log(n/b) - (n-b) ));
-
-   
-
-  
-
-  
-  Double_t FirstLog = n*(b+sig*sig) / (b*b + n*sig*sig);
-  FirstLog = TMath::Log(FirstLog);
-
-  Double_t SecondLog = sig*sig*(n-b) / (b* (b+sig*sig));
-  SecondLog = TMath::Log( 1. + SecondLog);
-
-  Double_t Rad = n*FirstLog - (b*b / (sig*sig)) * SecondLog;
-  Rad = TMath::Sqrt(2.*Rad);
-
-  return Rad;
-  
-}
-
 Double_t GetUpp(Double_t n){
 
   if (n==0 || n==1) return 1.14;
@@ -215,6 +183,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 
   if (Draw){
 
+    auto c = new TCanvas();
+
     const Int_t npoint = cx.size();
     double vcx[npoint], vcy[npoint];
     for (int i = 0; i<npoint; i++) {vcx[i] = cx[i]; vcy[i] = cy[i];}
@@ -233,6 +203,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     gStyle->SetOptStat(0);
     gPad->SetLogz();
     gStyle->SetPalette(kBlackBody);
+
+    c->SaveAs("temp.png");
   }
 
   
@@ -253,42 +225,42 @@ void CompareAnalyses(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",0,AnalysisOptions);
-  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",0,"< d3d dsigma anymass1L2M");
+  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
     y0[i] = XY[1][i];
   }
   auto g0 = new TGraph(XY[0].size(), x0, y0);
   g0->SetLineColor(colcounter);
-  g0->SetTitle("2 jet, HM analysis");
+  g0->SetTitle("D0#mu < 1mm");
   g0->SetLineWidth(2);
   colcounter++;
   
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d3d dsigma anymass1L2M");
+  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
   }
   auto g1 = new TGraph(XY[0].size(), x1, y1);
   g1->SetLineColor(colcounter);
-  g1->SetTitle("1 or 2 jet, LM or HM analysis");
+  g1->SetTitle("D0#mu > 1mm");
   g1->SetLineWidth(2);
   colcounter++;
 
 
   Double_t x2[50], y2[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d3d dsigma anymass1L2L");
+  XY = TwoDsignificance(0,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x2[i] = XY[0][i];
     y2[i] = XY[1][i];
   }
   auto g2 = new TGraph(XY[0].size(), x2, y2);
   g2->SetLineColor(colcounter);
-  g2->SetTitle("1 or 2 jet, LM analysis");
+  g2->SetTitle("no D0#mu cut");
   g2->SetLineWidth(2);
   colcounter++;
 
