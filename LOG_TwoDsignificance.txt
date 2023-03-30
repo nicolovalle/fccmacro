@@ -6352,3 +6352,1247 @@ dcut=100) 40 -11.5203 -10.5203 -11.1818
 =========================================
 dcut=100) 50 -11.0518 -10.5518 -10.8819
 =========================================
+M 5     LT m0p5    logU2 -6.33224    sig 3930.69    bkg 0   Errbkg 35706    Z 239.049
+Events: 139 0 0 0 0 0 0
+M 5     LT m1p0    logU2 -5.83224    sig 18779.2    bkg 0   Errbkg 35706    Z 575.919
+Events: 210 0 0 0 0 0 0
+M 5     LT m1p5    logU2 -5.33224    sig 47507.6    bkg 0   Errbkg 35706    Z 962.937
+Events: 168 0 0 0 0 0 0
+M 5     LT m2p0    logU2 -4.83224    sig 103733    bkg 0   Errbkg 35706    Z 1478.73
+Events: 116 0 0 0 0 0 0
+M 5     LT m2p5    logU2 -4.33224    sig 313890    bkg 0   Errbkg 35706    Z 2704.01
+Events: 111 0 0 0 0 0 0
+M 5     LT m3p0    logU2 -3.83224    sig 742224    bkg 0   Errbkg 35706    Z 4308.91
+Events: 83 0 0 0 0 0 0
+M 5     LT m3p5    logU2 -3.33224    sig 480732    bkg 0   Errbkg 35706    Z 3407.04
+Events: 17 0 0 0 0 0 0
+M 5     LT p0p0    logU2 -6.83224    sig 357.698    bkg 0   Errbkg 35706    Z 59.1412
+Events: 40 0 0 0 0 0 0
+M 5     LT p0p5    logU2 -7.33224    sig 59.3845    bkg 0   Errbkg 35706    Z 19.3745
+Events: 21 0 0 0 0 0 0
+M 5     LT p1p0    logU2 -7.83224    sig 4.47123    bkg 0   Errbkg 35706    Z 3.09826
+Events: 5 0 0 0 0 0 0
+M 5     LT p1p5    logU2 -8.33224    sig 1.13113    bkg 0   Errbkg 35706    Z 0.977428
+Events: 4 0 0 0 0 0 0
+M 5     LT p2p0    logU2 -8.83224    sig 0.178849    bkg 0   Errbkg 35706    Z 0.173063
+Events: 2 0 0 0 0 0 0
+M 10     LT m0p5    logU2 -7.9043    sig 1882.5    bkg 0   Errbkg 35706    Z 156.857
+Events: 2497 0 0 0 0 0 0
+M 10     LT m1p0    logU2 -7.4043    sig 8315.57    bkg 0   Errbkg 35706    Z 365.15
+Events: 3488 0 0 0 0 0 0
+M 10     LT m1p5    logU2 -6.9043    sig 20883.2    bkg 0   Errbkg 35706    Z 610.964
+Events: 2770 0 0 0 0 0 0
+M 10     LT m2p0    logU2 -6.4043    sig 70877.9    bkg 0   Errbkg 35706    Z 1200.04
+Events: 2973 0 0 0 0 0 0
+M 10     LT m2p5    logU2 -5.9043    sig 196920    bkg 0   Errbkg 35706    Z 2098.43
+Events: 2612 0 0 0 0 0 0
+M 10     LT m3p0    logU2 -5.4043    sig 332814    bkg 0   Errbkg 35706    Z 2791.32
+Events: 1396 0 0 0 0 0 0
+M 10     LT m3p5    logU2 -4.9043    sig 227679    bkg 0   Errbkg 35706    Z 2270.97
+Events: 302 0 0 0 0 0 0
+M 10     LT m4p0    logU2 -4.4043    sig 19072.4    bkg 0   Errbkg 35706    Z 580.907
+Events: 8 0 0 0 0 0 0
+M 10     LT p0p0    logU2 -8.4043    sig 260.815    bkg 0   Errbkg 35706    Z 48.8741
+Events: 1094 0 0 0 0 0 0
+M 10     LT p0p5    logU2 -8.9043    sig 29.93    bkg 0   Errbkg 35706    Z 12.3248
+Events: 397 0 0 0 0 0 0
+M 10     LT p1p0    logU2 -9.4043    sig 3.48072    bkg 0   Errbkg 35706    Z 2.5376
+Events: 146 0 0 0 0 0 0
+M 10     LT p1p5    logU2 -9.9043    sig 0.429726    bkg 0   Errbkg 35706    Z 0.401647
+Events: 57 0 0 0 0 0 0
+M 20     LT m0p5    logU2 -9.44983    sig 112.638    bkg 0   Errbkg 35706    Z 29.1253
+Events: 5651 0 0 0 0 0 0
+M 20     LT m1p0    logU2 -8.94983    sig 373.839    bkg 0   Errbkg 35706    Z 60.7286
+Events: 5931 0 0 0 0 0 0
+M 20     LT m1p5    logU2 -8.44983    sig 1117.02    bkg 0   Errbkg 35706    Z 115.928
+Events: 5604 0 0 0 0 0 0
+M 20     LT m2p0    logU2 -7.94983    sig 3230.99    bkg 0   Errbkg 35706    Z 213.795
+Events: 5126 0 0 0 0 0 0
+M 20     LT m2p5    logU2 -7.44983    sig 7779.64    bkg 0   Errbkg 35706    Z 351.718
+Events: 3903 0 0 0 0 0 0
+M 20     LT m3p0    logU2 -6.94983    sig 11320.4    bkg 0   Errbkg 35706    Z 434.158
+Events: 1796 0 0 0 0 0 0
+M 20     LT m3p5    logU2 -6.44983    sig 6258.8    bkg 0   Errbkg 35706    Z 311.132
+Events: 314 0 0 0 0 0 0
+M 20     LT m4p0    logU2 -5.94983    sig 504.251    bkg 0   Errbkg 35706    Z 72.6087
+Events: 8 0 0 0 0 0 0
+M 20     LT p0p0    logU2 -9.94983    sig 21.7143    bkg 0   Errbkg 35706    Z 9.90328
+Events: 3445 0 0 0 0 0 0
+M 20     LT p0p5    logU2 -10.4498    sig 2.90217    bkg 0   Errbkg 35706    Z 2.18882
+Events: 1456 0 0 0 0 0 0
+M 20     LT p1p0    logU2 -10.9498    sig 0.307593    bkg 0   Errbkg 35706    Z 0.292224
+Events: 488 0 0 0 0 0 0
+M 30     LT m0p5    logU2 -10.3598    sig 12.6677    bkg 2034.32   Errbkg 35716.1    Z 0.280568
+Events: 5792 2 0 0 0 0 0
+M 30     LT m1p0    logU2 -9.85985    sig 40.8686    bkg 2034.32   Errbkg 35716.1    Z 0.903098
+Events: 5909 2 0 0 0 0 0
+M 30     LT m1p5    logU2 -9.35985    sig 122.828    bkg 2034.32   Errbkg 35716.1    Z 2.69651
+Events: 5616 2 0 0 0 0 0
+M 30     LT m2p0    logU2 -8.85985    sig 353.771    bkg 2034.32   Errbkg 35716.1    Z 7.63124
+Events: 5115 2 0 0 0 0 0
+M 30     LT m2p5    logU2 -8.35985    sig 799.605    bkg 2034.32   Errbkg 35716.1    Z 16.7239
+Events: 3656 2 0 0 0 0 0
+M 30     LT m3p0    logU2 -7.85985    sig 1158.48    bkg 2034.32   Errbkg 35716.1    Z 23.6911
+Events: 1675 2 0 0 0 0 0
+M 30     LT m3p5    logU2 -7.35985    sig 535.84    bkg 2034.32   Errbkg 35716.1    Z 11.4088
+Events: 245 2 0 0 0 0 0
+M 30     LT m4p0    logU2 -6.85985    sig 34.5817    bkg 2034.32   Errbkg 35716.1    Z 0.764562
+Events: 5 2 0 0 0 0 0
+M 30     LT p0p0    logU2 -10.8598    sig 2.90625    bkg 2034.32   Errbkg 35716.1    Z 0.0644197
+Events: 4202 2 0 0 0 0 0
+M 40     LT m1p0    logU2 -10.5203    sig 7.69803    bkg 0   Errbkg 35706    Z 4.70354
+Events: 5966 0 0 0 0 0 0
+M 40     LT m1p5    logU2 -10.0203    sig 23.2948    bkg 0   Errbkg 35706    Z 10.3935
+Events: 5709 0 0 0 0 0 0
+M 40     LT m2p0    logU2 -9.52026    sig 64.5546    bkg 0   Errbkg 35706    Z 20.4476
+Events: 5003 0 0 0 0 0 0
+M 40     LT m2p5    logU2 -9.02026    sig 138.325    bkg 0   Errbkg 35706    Z 33.1109
+Events: 3390 0 0 0 0 0 0
+M 40     LT m3p0    logU2 -8.52026    sig 176.774    bkg 0   Errbkg 35706    Z 38.5351
+Events: 1370 0 0 0 0 0 0
+M 40     LT m3p5    logU2 -8.02026    sig 70.1824    bkg 0   Errbkg 35706    Z 21.5765
+Events: 172 0 0 0 0 0 0
+M 40     LT m4p0    logU2 -7.52026    sig 1.29032    bkg 0   Errbkg 35706    Z 1.09824
+Events: 1 0 0 0 0 0 0
+M 40     LT p0p0    logU2 -11.5203    sig 0.589933    bkg 0   Errbkg 35706    Z 0.540471
+Events: 4572 0 0 0 0 0 0
+M 50     LT m1p0    logU2 -11.0518    sig 1.62737    bkg 0   Errbkg 35706    Z 1.34467
+Events: 5419 0 0 0 0 0 0
+M 50     LT m1p5    logU2 -10.5518    sig 4.89669    bkg 0   Errbkg 35706    Z 3.32726
+Events: 5157 0 0 0 0 0 0
+M 50     LT m2p0    logU2 -10.0518    sig 13.0825    bkg 0   Errbkg 35706    Z 6.937
+Events: 4357 0 0 0 0 0 0
+M 50     LT m2p5    logU2 -9.55175    sig 25.9979    bkg 0   Errbkg 35706    Z 11.2031
+Events: 2738 0 0 0 0 0 0
+M 50     LT m3p0    logU2 -9.05175    sig 27.1737    bkg 0   Errbkg 35706    Z 11.5451
+Events: 905 0 0 0 0 0 0
+M 50     LT m3p5    logU2 -8.55175    sig 6.74161    bkg 0   Errbkg 35706    Z 4.25577
+Events: 71 0 0 0 0 0 0
+M 60     LT m1p5    logU2 -11.0146    sig 0.962532    bkg 1017.16   Errbkg 35706    Z 0.0301753
+Events: 4185 1 0 0 0 0 0
+M 60     LT m2p0    logU2 -10.5146    sig 2.43067    bkg 1017.16   Errbkg 35706    Z 0.0761829
+Events: 3342 1 0 0 0 0 0
+M 60     LT m2p5    logU2 -10.0146    sig 4.33772    bkg 1017.16   Errbkg 35706    Z 0.135912
+Events: 1886 1 0 0 0 0 0
+M 60     LT m3p0    logU2 -9.51464    sig 3.62201    bkg 1017.16   Errbkg 35706    Z 0.1135
+Events: 498 1 0 0 0 0 0
+M 60     LT m3p5    logU2 -9.01464    sig 0.367993    bkg 1017.16   Errbkg 35706    Z 0.0115377
+Events: 16 1 0 0 0 0 0
+M 70     LT m2p0    logU2 -10.955    sig 0.371434    bkg 20343.2   Errbkg 35975.9    Z 0.00260418
+Events: 2487 20 0 0 0 0 0
+M 70     LT m2p5    logU2 -10.455    sig 0.548294    bkg 20343.2   Errbkg 35975.9    Z 0.00384416
+Events: 1161 20 0 0 0 0 0
+M 70     LT m3p0    logU2 -9.95499    sig 0.288246    bkg 20343.2   Errbkg 35975.9    Z 0.00202093
+Events: 193 20 0 0 0 0 0
+M 80     LT m3p0    logU2 -10.4871    sig 0.00207252    bkg 189464   Errbkg 38278.8    Z 9.30945e-07
+Events: 13 180 1 2 0 0 0
+dcut=200) 5 -8.33224 -7.83224 -8.09116
+=========================================
+dcut=200) 10 -9.9043 -9.4043 -9.53015
+=========================================
+dcut=200) 20 -10.9498 -10.4498 -10.4996
+=========================================
+dcut=200) 30 -9.85985 -9.35985 -9.55403
+=========================================
+dcut=200) 40 -11.5203 -10.5203 -11.1697
+=========================================
+dcut=200) 50 -11.0518 -10.5518 -10.8865
+=========================================
+M 10     LT m3p5    logU2 -4.9043    sig 753.905    bkg 7.6608   Errbkg 35706    Z 74.1449
+Events: 1 0 0 0 0 0 8
+M 10     LT m4p0    logU2 -4.4043    sig 2384.05    bkg 7.6608   Errbkg 35706    Z 150.686
+Events: 1 0 0 0 0 0 8
+M 10     LT m4p5    logU2 -3.9043    sig 15078.1    bkg 7.6608   Errbkg 35706    Z 445.765
+Events: 2 0 0 0 0 0 8
+M 10     LT m5p0    logU2 -3.4043    sig 262246    bkg 7.6608   Errbkg 35706    Z 2225.28
+Events: 11 0 0 0 0 0 8
+M 20     LT m1p0    logU2 -8.94983    sig 0.126063    bkg 4169.39   Errbkg 35706    Z 0.00195231
+Events: 2 0 0 0 0 0 4354
+M 20     LT m1p5    logU2 -8.44983    sig 0.199325    bkg 4169.39   Errbkg 35706    Z 0.00308689
+Events: 1 0 0 0 0 0 4354
+M 20     LT m2p0    logU2 -7.94983    sig 7.56377    bkg 4169.39   Errbkg 35706    Z 0.117104
+Events: 12 0 0 0 0 0 4354
+M 20     LT m2p5    logU2 -7.44983    sig 39.8649    bkg 4169.39   Errbkg 35706    Z 0.616403
+Events: 20 0 0 0 0 0 4354
+M 20     LT m3p0    logU2 -6.94983    sig 428.613    bkg 4169.39   Errbkg 35706    Z 6.52876
+Events: 68 0 0 0 0 0 4354
+M 20     LT m3p5    logU2 -6.44983    sig 4145.95    bkg 4169.39   Errbkg 35706    Z 56.4695
+Events: 208 0 0 0 0 0 4354
+M 20     LT m4p0    logU2 -5.94983    sig 35297.6    bkg 4169.39   Errbkg 35706    Z 326.84
+Events: 560 0 0 0 0 0 4354
+M 20     LT m4p5    logU2 -5.44983    sig 263906    bkg 4169.39   Errbkg 35706    Z 1305.55
+Events: 1324 0 0 0 0 0 4354
+M 20     LT m5p0    logU2 -4.94983    sig 1.41632e+06    bkg 4169.39   Errbkg 35706    Z 3705.81
+Events: 2247 0 0 0 0 0 4354
+M 20     LT m5p5    logU2 -4.44983    sig 5.44755e+06    bkg 4169.39   Errbkg 35706    Z 8206.52
+Events: 2733 0 0 0 0 0 4354
+M 20     LT m6p0    logU2 -3.94983    sig 1.71824e+07    bkg 4169.39   Errbkg 35706    Z 15867
+Events: 2726 0 0 0 0 0 4354
+M 20     LT m6p5    logU2 -3.44983    sig 5.46748e+07    bkg 4169.39   Errbkg 35706    Z 30455.3
+Events: 2743 0 0 0 0 0 4354
+M 30     LT m0p5    logU2 -10.3598    sig 0.0021871    bkg 22655   Errbkg 35706.2    Z 1.46626e-05
+Events: 1 0 0 1 0 0 20742
+M 30     LT m1p5    logU2 -9.35985    sig 0.196839    bkg 22655   Errbkg 35706.2    Z 0.00130776
+Events: 9 0 0 1 0 0 20742
+M 30     LT m2p0    logU2 -8.85985    sig 1.86741    bkg 22655   Errbkg 35706.2    Z 0.0124066
+Events: 27 0 0 1 0 0 20742
+M 30     LT m2p5    logU2 -8.35985    sig 13.3413    bkg 22655   Errbkg 35706.2    Z 0.0886287
+Events: 61 0 0 1 0 0 20742
+M 30     LT m3p0    logU2 -7.85985    sig 139.018    bkg 22655   Errbkg 35706.2    Z 0.922669
+Events: 201 0 0 1 0 0 20742
+M 30     LT m3p5    logU2 -7.35985    sig 1266.33    bkg 22655   Errbkg 35706.2    Z 8.33668
+Events: 579 0 0 1 0 0 20742
+M 30     LT m4p0    logU2 -6.85985    sig 10139.4    bkg 22655   Errbkg 35706.2    Z 63.0949
+Events: 1466 0 0 1 0 0 20742
+M 30     LT m4p5    logU2 -6.35985    sig 69790.4    bkg 22655   Errbkg 35706.2    Z 347.015
+Events: 3191 0 0 1 0 0 20742
+M 30     LT m5p0    logU2 -5.85985    sig 344156    bkg 22655   Errbkg 35706.2    Z 1163.8
+Events: 4976 0 0 1 0 0 20742
+M 30     LT m5p5    logU2 -5.35985    sig 1.20684e+06    bkg 22655   Errbkg 35706.2    Z 2721.67
+Events: 5518 0 0 1 0 0 20742
+M 30     LT m6p0    logU2 -4.85985    sig 3.82612e+06    bkg 22655   Errbkg 35706.2    Z 5645.85
+Events: 5532 0 0 1 0 0 20742
+M 30     LT m6p5    logU2 -4.35985    sig 1.21012e+07    bkg 22655   Errbkg 35706.2    Z 11319.7
+Events: 5533 0 0 1 0 0 20742
+M 30     LT m7p0    logU2 -3.85985    sig 3.83648e+07    bkg 22655   Errbkg 35706.2    Z 22228.4
+Events: 5547 0 0 1 0 0 20742
+M 40     LT m1p0    logU2 -10.5203    sig 0.00387095    bkg 27736.1   Errbkg 35706.3    Z 2.31739e-05
+Events: 3 1 0 0 0 0 27902
+M 40     LT m1p5    logU2 -10.0203    sig 0.065286    bkg 27736.1   Errbkg 35706.3    Z 0.000392006
+Events: 16 1 0 0 0 0 27902
+M 40     LT m2p0    logU2 -9.52026    sig 0.374192    bkg 27736.1   Errbkg 35706.3    Z 0.00224683
+Events: 29 1 0 0 0 0 27902
+M 40     LT m2p5    logU2 -9.02026    sig 3.14189    bkg 27736.1   Errbkg 35706.3    Z 0.0188651
+Events: 77 1 0 0 0 0 27902
+M 40     LT m3p0    logU2 -8.52026    sig 35.4837    bkg 27736.1   Errbkg 35706.3    Z 0.213017
+Events: 275 1 0 0 0 0 27902
+M 40     LT m3p5    logU2 -8.02026    sig 324.39    bkg 27736.1   Errbkg 35706.3    Z 1.94402
+Events: 795 1 0 0 0 0 27902
+M 40     LT m4p0    logU2 -7.52026    sig 2606.44    bkg 27736.1   Errbkg 35706.3    Z 15.4144
+Events: 2020 1 0 0 0 0 27902
+M 40     LT m4p5    logU2 -7.02026    sig 17121.2    bkg 27736.1   Errbkg 35706.3    Z 94.2765
+Events: 4196 1 0 0 0 0 27902
+M 40     LT m5p0    logU2 -6.52026    sig 78386.8    bkg 27736.1   Errbkg 35706.3    Z 357.814
+Events: 6075 1 0 0 0 0 27902
+M 40     LT m5p5    logU2 -6.02026    sig 263184    bkg 27736.1   Errbkg 35706.3    Z 917.136
+Events: 6450 1 0 0 0 0 27902
+M 40     LT m6p0    logU2 -5.52026    sig 830578    bkg 27736.1   Errbkg 35706.3    Z 2056.87
+Events: 6437 1 0 0 0 0 27902
+M 40     LT m6p5    logU2 -5.02026    sig 2.63388e+06    bkg 27736.1   Errbkg 35706.3    Z 4362.02
+Events: 6455 1 0 0 0 0 27902
+M 40     LT m7p0    logU2 -4.52026    sig 8.35352e+06    bkg 27736.1   Errbkg 35706.3    Z 8889.54
+Events: 6474 1 0 0 0 0 27902
+M 40     LT p0p0    logU2 -11.5203    sig 0.000129032    bkg 27736.1   Errbkg 35706.3    Z 1.878e-06
+Events: 1 1 0 0 0 0 27902
+M 50     LT m1p0    logU2 -11.0518    sig 0.00120123    bkg 33155.1   Errbkg 35737    Z 6.99909e-06
+Events: 4 3 2 1 0 0 26870
+M 50     LT m1p5    logU2 -10.5518    sig 0.0104447    bkg 33155.1   Errbkg 35737    Z 5.72999e-05
+Events: 11 3 2 1 0 0 26870
+M 50     LT m2p0    logU2 -10.0518    sig 0.108095    bkg 33155.1   Errbkg 35737    Z 0.000593645
+Events: 36 3 2 1 0 0 26870
+M 50     LT m2p5    logU2 -9.55175    sig 0.996999    bkg 33155.1   Errbkg 35737    Z 0.00547542
+Events: 105 3 2 1 0 0 26870
+M 50     LT m3p0    logU2 -9.05175    sig 10.2089    bkg 33155.1   Errbkg 35737    Z 0.0560637
+Events: 340 3 2 1 0 0 26870
+M 50     LT m3p5    logU2 -8.55175    sig 86.2166    bkg 33155.1   Errbkg 35737    Z 0.47329
+Events: 908 3 2 1 0 0 26870
+M 50     LT m4p0    logU2 -8.05175    sig 717.03    bkg 33155.1   Errbkg 35737    Z 3.92381
+Events: 2388 3 2 1 0 0 26870
+M 50     LT m4p5    logU2 -7.55175    sig 4431.42    bkg 33155.1   Errbkg 35737    Z 23.823
+Events: 4667 3 2 1 0 0 26870
+M 50     LT m5p0    logU2 -7.05175    sig 18553.2    bkg 33155.1   Errbkg 35737    Z 94.0967
+Events: 6179 3 2 1 0 0 26870
+M 50     LT m5p5    logU2 -6.55175    sig 60465.6    bkg 33155.1   Errbkg 35737    Z 270.99
+Events: 6368 3 2 1 0 0 26870
+M 50     LT m6p0    logU2 -6.05175    sig 190457    bkg 33155.1   Errbkg 35737    Z 687.54
+Events: 6343 3 2 1 0 0 26870
+M 50     LT m6p5    logU2 -5.55175    sig 602377    bkg 33155.1   Errbkg 35737    Z 1596.57
+Events: 6344 3 2 1 0 0 26870
+M 50     LT m7p0    logU2 -5.05175    sig 1.88714e+06    bkg 33155.1   Errbkg 35737    Z 3437.27
+Events: 6284 3 2 1 0 0 26870
+M 60     LT m1p5    logU2 -11.0146    sig 0.00344994    bkg 61976.5   Errbkg 36373    Z 1.42495e-05
+Events: 15 14 11 5 0 0 26192
+M 60     LT m2p0    logU2 -10.5146    sig 0.0225466    bkg 61976.5   Errbkg 36373    Z 9.05375e-05
+Events: 31 14 11 5 0 0 26192
+M 60     LT m2p5    logU2 -10.0146    sig 0.271395    bkg 61976.5   Errbkg 36373    Z 0.00109015
+Events: 118 14 11 5 0 0 26192
+M 60     LT m3p0    logU2 -9.51464    sig 2.50922    bkg 61976.5   Errbkg 36373    Z 0.0100791
+Events: 345 14 11 5 0 0 26192
+M 60     LT m3p5    logU2 -9.01464    sig 22.9536    bkg 61976.5   Errbkg 36373    Z 0.0921955
+Events: 998 14 11 5 0 0 26192
+M 60     LT m4p0    logU2 -8.51464    sig 184.591    bkg 61976.5   Errbkg 36373    Z 0.74111
+Events: 2538 14 11 5 0 0 26192
+M 60     LT m4p5    logU2 -8.01464    sig 1063.73    bkg 61976.5   Errbkg 36373    Z 4.26072
+Events: 4625 14 11 5 0 0 26192
+M 60     LT m5p0    logU2 -7.51464    sig 4108.58    bkg 61976.5   Errbkg 36373    Z 16.3261
+Events: 5649 14 11 5 0 0 26192
+M 60     LT m5p5    logU2 -7.01464    sig 13213.3    bkg 61976.5   Errbkg 36373    Z 51.3399
+Events: 5745 14 11 5 0 0 26192
+M 60     LT m6p0    logU2 -6.51464    sig 41551.3    bkg 61976.5   Errbkg 36373    Z 152.1
+Events: 5713 14 11 5 0 0 26192
+M 60     LT m6p5    logU2 -6.01464    sig 131696    bkg 61976.5   Errbkg 36373    Z 421.845
+Events: 5726 14 11 5 0 0 26192
+M 60     LT m7p0    logU2 -5.51464    sig 416459    bkg 61976.5   Errbkg 36373    Z 1059.58
+Events: 5726 14 11 5 0 0 26192
+M 70     LT m2p0    logU2 -10.955    sig 0.00612336    bkg 106392   Errbkg 37099.1    Z 1.9001e-05
+Events: 41 52 21 6 0 0 21042
+M 70     LT m2p5    logU2 -10.455    sig 0.0642274    bkg 106392   Errbkg 37099.1    Z 0.000196865
+Events: 136 52 21 6 0 0 21042
+M 70     LT m3p0    logU2 -9.95499    sig 0.64818    bkg 106392   Errbkg 37099.1    Z 0.0019872
+Events: 434 52 21 6 0 0 21042
+M 70     LT m3p5    logU2 -9.45499    sig 5.47826    bkg 106392   Errbkg 37099.1    Z 0.0167952
+Events: 1160 52 21 6 0 0 21042
+M 70     LT m4p0    logU2 -8.95499    sig 39.7421    bkg 106392   Errbkg 37099.1    Z 0.121834
+Events: 2661 52 21 6 0 0 21042
+M 70     LT m4p5    logU2 -8.45499    sig 197.924    bkg 106392   Errbkg 37099.1    Z 0.606612
+Events: 4191 52 21 6 0 0 21042
+M 70     LT m5p0    logU2 -7.95499    sig 691.79    bkg 106392   Errbkg 37099.1    Z 2.11861
+Events: 4632 52 21 6 0 0 21042
+M 70     LT m5p5    logU2 -7.45499    sig 2176.19    bkg 106392   Errbkg 37099.1    Z 6.64925
+Events: 4608 52 21 6 0 0 21042
+M 70     LT m6p0    logU2 -6.95499    sig 6880.56    bkg 106392   Errbkg 37099.1    Z 20.8731
+Events: 4607 52 21 6 0 0 21042
+M 70     LT m6p5    logU2 -6.45499    sig 21634.3    bkg 106392   Errbkg 37099.1    Z 64.2502
+Events: 4581 52 21 6 0 0 21042
+M 70     LT m7p0    logU2 -5.95499    sig 69283.6    bkg 106392   Errbkg 37099.1    Z 194.007
+Events: 4639 52 21 6 0 0 21042
+M 80     LT m3p0    logU2 -10.4871    sig 0.0728571    bkg 356359   Errbkg 40271.4    Z 0.000122232
+Events: 457 304 34 3 0 0 12423
+M 80     LT m3p5    logU2 -9.98714    sig 0.556579    bkg 356359   Errbkg 40271.4    Z 0.000932367
+Events: 1104 304 34 3 0 0 12423
+M 80     LT m4p0    logU2 -9.48714    sig 3.30647    bkg 356359   Errbkg 40271.4    Z 0.00553885
+Events: 2074 304 34 3 0 0 12423
+M 80     LT m4p5    logU2 -8.98714    sig 13.007    bkg 356359   Errbkg 40271.4    Z 0.0217887
+Events: 2580 304 34 3 0 0 12423
+M 80     LT m5p0    logU2 -8.48714    sig 41.6417    bkg 356359   Errbkg 40271.4    Z 0.0697552
+Events: 2612 304 34 3 0 0 12423
+M 80     LT m5p5    logU2 -7.98714    sig 131.885    bkg 356359   Errbkg 40271.4    Z 0.220915
+Events: 2616 304 34 3 0 0 12423
+M 80     LT m6p0    logU2 -7.48714    sig 413.707    bkg 356359   Errbkg 40271.4    Z 0.692892
+Events: 2595 304 34 3 0 0 12423
+M 80     LT m6p5    logU2 -6.98714    sig 1307.25    bkg 356359   Errbkg 40271.4    Z 2.18852
+Events: 2593 304 34 3 0 0 12423
+M 80     LT m7p0    logU2 -6.48714    sig 4162.58    bkg 356359   Errbkg 40271.4    Z 6.95948
+Events: 2611 304 34 3 0 0 12423
+M 85     LT m4p0    logU2 -9.92701    sig 0.266676    bkg 347598   Errbkg 40103.8    Z 0.000452235
+Events: 830 278 68 2 0 0 5751
+M 85     LT m4p5    logU2 -9.42701    sig 0.919503    bkg 347598   Errbkg 40103.8    Z 0.00155961
+Events: 905 278 68 2 0 0 5751
+M 85     LT m5p0    logU2 -8.92701    sig 2.87239    bkg 347598   Errbkg 40103.8    Z 0.00487196
+Events: 894 278 68 2 0 0 5751
+M 85     LT m5p5    logU2 -8.42701    sig 9.00199    bkg 347598   Errbkg 40103.8    Z 0.0152685
+Events: 886 278 68 2 0 0 5751
+M 85     LT m6p0    logU2 -7.92701    sig 28.6275    bkg 347598   Errbkg 40103.8    Z 0.0485555
+Events: 891 278 68 2 0 0 5751
+M 85     LT m6p5    logU2 -7.42701    sig 93.6775    bkg 347598   Errbkg 40103.8    Z 0.158883
+Events: 922 278 68 2 0 0 5751
+M 85     LT m7p0    logU2 -6.92701    sig 293.986    bkg 347598   Errbkg 40103.8    Z 0.498571
+Events: 915 278 68 2 0 0 5751
+dcut=8) 20 -7.44983 -6.94983 -7.33282
+=========================================
+dcut=8) 30 -7.85985 -7.35985 -7.78719
+=========================================
+dcut=8) 40 -8.02026 -7.52026 -8.01818
+=========================================
+dcut=8) 50 -8.55175 -8.05175 -8.33052
+=========================================
+dcut=8) 60 -8.51464 -8.01464 -8.3358
+=========================================
+dcut=8) 70 -8.45499 -7.95499 -7.99421
+=========================================
+dcut=8) 80 -7.48714 -6.98714 -7.05017
+=========================================
+M 5     LT m2p0    logU2 -4.83224    sig 894.246    bkg 10.5336   Errbkg 35706    Z 79.1814
+Events: 1 0 0 0 0 0 11
+M 5     LT m2p5    logU2 -4.33224    sig 11311.3    bkg 10.5336   Errbkg 35706    Z 368.007
+Events: 4 0 0 0 0 0 11
+M 5     LT m3p0    logU2 -3.83224    sig 62597.2    bkg 10.5336   Errbkg 35706    Z 981.294
+Events: 7 0 0 0 0 0 11
+M 5     LT m3p5    logU2 -3.33224    sig 424175    bkg 10.5336   Errbkg 35706    Z 2854.34
+Events: 15 0 0 0 0 0 11
+M 10     LT m0p5    logU2 -7.9043    sig 0.753905    bkg 568.814   Errbkg 35706    Z 0.0316035
+Events: 1 0 0 0 0 0 594
+M 10     LT m1p0    logU2 -7.4043    sig 4.7681    bkg 568.814   Errbkg 35706    Z 0.199644
+Events: 2 0 0 0 0 0 594
+M 10     LT m1p5    logU2 -6.9043    sig 52.7733    bkg 568.814   Errbkg 35706    Z 2.17978
+Events: 7 0 0 0 0 0 594
+M 10     LT m2p0    logU2 -6.4043    sig 309.927    bkg 568.814   Errbkg 35706    Z 12.0224
+Events: 13 0 0 0 0 0 594
+M 10     LT m2p5    logU2 -5.9043    sig 2864.84    bkg 568.814   Errbkg 35706    Z 81.3421
+Events: 38 0 0 0 0 0 594
+M 10     LT m3p0    logU2 -5.4043    sig 25509.4    bkg 568.814   Errbkg 35706    Z 385.35
+Events: 107 0 0 0 0 0 594
+M 10     LT m3p5    logU2 -4.9043    sig 245773    bkg 568.814   Errbkg 35706    Z 1580.98
+Events: 326 0 0 0 0 0 594
+M 10     LT m4p0    logU2 -4.4043    sig 2.11704e+06    bkg 568.814   Errbkg 35706    Z 5530.72
+Events: 888 0 0 0 0 0 594
+M 10     LT m4p5    logU2 -3.9043    sig 1.5357e+07    bkg 568.814   Errbkg 35706    Z 16813.4
+Events: 2037 0 0 0 0 0 594
+M 10     LT m5p0    logU2 -3.4043    sig 8.63981e+07    bkg 568.814   Errbkg 35706    Z 43460.7
+Events: 3624 0 0 0 0 0 594
+M 20     LT m1p0    logU2 -8.94983    sig 0.126063    bkg 12756.2   Errbkg 35706.1    Z 0.00111616
+Events: 2 0 0 0 0 0 13321
+M 20     LT m1p5    logU2 -8.44983    sig 1.79392    bkg 12756.2   Errbkg 35706.1    Z 0.015883
+Events: 9 0 0 0 0 0 13321
+M 20     LT m2p0    logU2 -7.94983    sig 20.8004    bkg 12756.2   Errbkg 35706.1    Z 0.184116
+Events: 33 0 0 0 0 0 13321
+M 20     LT m2p5    logU2 -7.44983    sig 147.5    bkg 12756.2   Errbkg 35706.1    Z 1.30346
+Events: 74 0 0 0 0 0 13321
+M 20     LT m3p0    logU2 -6.94983    sig 1285.84    bkg 12756.2   Errbkg 35706.1    Z 11.2012
+Events: 204 0 0 0 0 0 13321
+M 20     LT m3p5    logU2 -6.44983    sig 11640.6    bkg 12756.2   Errbkg 35706.1    Z 91.4233
+Events: 584 0 0 0 0 0 13321
+M 20     LT m4p0    logU2 -5.94983    sig 103813    bkg 12756.2   Errbkg 35706.1    Z 555.143
+Events: 1647 0 0 0 0 0 13321
+M 20     LT m4p5    logU2 -5.44983    sig 735110    bkg 12756.2   Errbkg 35706.1    Z 2149.24
+Events: 3688 0 0 0 0 0 13321
+M 20     LT m5p0    logU2 -4.94983    sig 3.67158e+06    bkg 12756.2   Errbkg 35706.1    Z 5865.7
+Events: 5825 0 0 0 0 0 13321
+M 20     LT m5p5    logU2 -4.44983    sig 1.32132e+07    bkg 12756.2   Errbkg 35706.1    Z 12540.1
+Events: 6629 0 0 0 0 0 13321
+M 20     LT m6p0    logU2 -3.94983    sig 4.1689e+07    bkg 12756.2   Errbkg 35706.1    Z 24321.7
+Events: 6614 0 0 0 0 0 13321
+M 20     LT m6p5    logU2 -3.44983    sig 1.33089e+08    bkg 12756.2   Errbkg 35706.1    Z 46871.8
+Events: 6677 0 0 0 0 0 13321
+M 30     LT m0p5    logU2 -10.3598    sig 0.0021871    bkg 29899.3   Errbkg 35706.3    Z 1.26363e-05
+Events: 1 0 0 1 0 0 28307
+M 30     LT m1p5    logU2 -9.35985    sig 0.196839    bkg 29899.3   Errbkg 35706.3    Z 0.00113836
+Events: 9 0 0 1 0 0 28307
+M 30     LT m2p0    logU2 -8.85985    sig 2.14406    bkg 29899.3   Errbkg 35706.3    Z 0.0123995
+Events: 31 0 0 1 0 0 28307
+M 30     LT m2p5    logU2 -8.35985    sig 15.7471    bkg 29899.3   Errbkg 35706.3    Z 0.0910612
+Events: 72 0 0 1 0 0 28307
+M 30     LT m3p0    logU2 -7.85985    sig 165.3    bkg 29899.3   Errbkg 35706.3    Z 0.955088
+Events: 239 0 0 1 0 0 28307
+M 30     LT m3p5    logU2 -7.35985    sig 1550.66    bkg 29899.3   Errbkg 35706.3    Z 8.8919
+Events: 709 0 0 1 0 0 28307
+M 30     LT m4p0    logU2 -6.85985    sig 12352.6    bkg 29899.3   Errbkg 35706.3    Z 67.2117
+Events: 1786 0 0 1 0 0 28307
+M 30     LT m4p5    logU2 -6.35985    sig 84422.2    bkg 29899.3   Errbkg 35706.3    Z 371.224
+Events: 3860 0 0 1 0 0 28307
+M 30     LT m5p0    logU2 -5.85985    sig 412904    bkg 29899.3   Errbkg 35706.3    Z 1249.46
+Events: 5970 0 0 1 0 0 28307
+M 30     LT m5p5    logU2 -5.35985    sig 1.43408e+06    bkg 29899.3   Errbkg 35706.3    Z 2919.72
+Events: 6557 0 0 1 0 0 28307
+M 30     LT m6p0    logU2 -4.85985    sig 4.5551e+06    bkg 29899.3   Errbkg 35706.3    Z 6086.03
+Events: 6586 0 0 1 0 0 28307
+M 30     LT m6p5    logU2 -4.35985    sig 1.43671e+07    bkg 29899.3   Errbkg 35706.3    Z 12211.6
+Events: 6569 0 0 1 0 0 28307
+M 30     LT m7p0    logU2 -3.85985    sig 4.55924e+07    bkg 29899.3   Errbkg 35706.3    Z 24034.7
+Events: 6592 0 0 1 0 0 28307
+M 30     LT p0p0    logU2 -10.8598    sig 0.000691634    bkg 29899.3   Errbkg 35706.3    Z 4.14999e-06
+Events: 1 0 0 1 0 0 28307
+M 40     LT m1p0    logU2 -10.5203    sig 0.00387095    bkg 23301.5   Errbkg 35706.3    Z 2.53275e-05
+Events: 3 1 0 0 0 0 23271
+M 40     LT m1p5    logU2 -10.0203    sig 0.0693663    bkg 23301.5   Errbkg 35706.3    Z 0.000454416
+Events: 17 1 0 0 0 0 23271
+M 40     LT m2p0    logU2 -9.52026    sig 0.412902    bkg 23301.5   Errbkg 35706.3    Z 0.00270491
+Events: 32 1 0 0 0 0 23271
+M 40     LT m2p5    logU2 -9.02026    sig 3.3051    bkg 23301.5   Errbkg 35706.3    Z 0.0216512
+Events: 81 1 0 0 0 0 23271
+M 40     LT m3p0    logU2 -8.52026    sig 34.4515    bkg 23301.5   Errbkg 35706.3    Z 0.225636
+Events: 267 1 0 0 0 0 23271
+M 40     LT m3p5    logU2 -8.02026    sig 319.901    bkg 23301.5   Errbkg 35706.3    Z 2.09091
+Events: 784 1 0 0 0 0 23271
+M 40     LT m4p0    logU2 -7.52026    sig 2616.76    bkg 23301.5   Errbkg 35706.3    Z 16.8357
+Events: 2028 1 0 0 0 0 23271
+M 40     LT m4p5    logU2 -7.02026    sig 17382.4    bkg 23301.5   Errbkg 35706.3    Z 102.872
+Events: 4260 1 0 0 0 0 23271
+M 40     LT m5p0    logU2 -6.52026    sig 79380.3    bkg 23301.5   Errbkg 35706.3    Z 381.861
+Events: 6152 1 0 0 0 0 23271
+M 40     LT m5p5    logU2 -6.02026    sig 267387    bkg 23301.5   Errbkg 35706.3    Z 965.643
+Events: 6553 1 0 0 0 0 23271
+M 40     LT m6p0    logU2 -5.52026    sig 843610    bkg 23301.5   Errbkg 35706.3    Z 2140.8
+Events: 6538 1 0 0 0 0 23271
+M 40     LT m6p5    logU2 -5.02026    sig 2.67387e+06    bkg 23301.5   Errbkg 35706.3    Z 4503.68
+Events: 6553 1 0 0 0 0 23271
+M 40     LT m7p0    logU2 -4.52026    sig 8.47352e+06    bkg 23301.5   Errbkg 35706.3    Z 9126.73
+Events: 6567 1 0 0 0 0 23271
+M 40     LT p0p0    logU2 -11.5203    sig 0.000129032    bkg 23301.5   Errbkg 35706.3    Z 1.54477e-06
+Events: 1 1 0 0 0 0 23271
+M 50     LT m1p0    logU2 -11.0518    sig 0.00120123    bkg 31071.4   Errbkg 35737    Z 6.64067e-06
+Events: 4 3 2 1 0 0 24694
+M 50     LT m1p5    logU2 -10.5518    sig 0.00949522    bkg 31071.4   Errbkg 35737    Z 5.38931e-05
+Events: 10 3 2 1 0 0 24694
+M 50     LT m2p0    logU2 -10.0518    sig 0.105092    bkg 31071.4   Errbkg 35737    Z 0.000596203
+Events: 35 3 2 1 0 0 24694
+M 50     LT m2p5    logU2 -9.55175    sig 0.930532    bkg 31071.4   Errbkg 35737    Z 0.00527897
+Events: 98 3 2 1 0 0 24694
+M 50     LT m3p0    logU2 -9.05175    sig 9.39821    bkg 31071.4   Errbkg 35737    Z 0.0533142
+Events: 313 3 2 1 0 0 24694
+M 50     LT m3p5    logU2 -8.55175    sig 79.475    bkg 31071.4   Errbkg 35737    Z 0.450677
+Events: 837 3 2 1 0 0 24694
+M 50     LT m4p0    logU2 -8.05175    sig 666.886    bkg 31071.4   Errbkg 35737    Z 3.76989
+Events: 2221 3 2 1 0 0 24694
+M 50     LT m4p5    logU2 -7.55175    sig 4127.57    bkg 31071.4   Errbkg 35737    Z 22.9244
+Events: 4347 3 2 1 0 0 24694
+M 50     LT m5p0    logU2 -7.05175    sig 17391.2    bkg 31071.4   Errbkg 35737    Z 91.1114
+Events: 5792 3 2 1 0 0 24694
+M 50     LT m5p5    logU2 -6.55175    sig 56658    bkg 31071.4   Errbkg 35737    Z 262.307
+Events: 5967 3 2 1 0 0 24694
+M 50     LT m6p0    logU2 -6.05175    sig 178176    bkg 31071.4   Errbkg 35737    Z 664.692
+Events: 5934 3 2 1 0 0 24694
+M 50     LT m6p5    logU2 -5.55175    sig 564776    bkg 31071.4   Errbkg 35737    Z 1546.08
+Events: 5948 3 2 1 0 0 24694
+M 50     LT m7p0    logU2 -5.05175    sig 1.77002e+06    bkg 31071.4   Errbkg 35737    Z 3329.31
+Events: 5894 3 2 1 0 0 24694
+M 60     LT m1p5    logU2 -11.0146    sig 0.00298994    bkg 57973.8   Errbkg 36372.9    Z 1.19626e-05
+Events: 13 14 11 5 0 0 22012
+M 60     LT m2p0    logU2 -10.5146    sig 0.021092    bkg 57973.8   Errbkg 36372.9    Z 8.7655e-05
+Events: 29 14 11 5 0 0 22012
+M 60     LT m2p5    logU2 -10.0146    sig 0.236896    bkg 57973.8   Errbkg 36372.9    Z 0.000983876
+Events: 103 14 11 5 0 0 22012
+M 60     LT m3p0    logU2 -9.51464    sig 2.15284    bkg 57973.8   Errbkg 36372.9    Z 0.00894115
+Events: 296 14 11 5 0 0 22012
+M 60     LT m3p5    logU2 -9.01464    sig 20.2166    bkg 57973.8   Errbkg 36372.9    Z 0.0839591
+Events: 879 14 11 5 0 0 22012
+M 60     LT m4p0    logU2 -8.51464    sig 161.245    bkg 57973.8   Errbkg 36372.9    Z 0.669374
+Events: 2217 14 11 5 0 0 22012
+M 60     LT m4p5    logU2 -8.01464    sig 921.823    bkg 57973.8   Errbkg 36372.9    Z 3.81845
+Events: 4008 14 11 5 0 0 22012
+M 60     LT m5p0    logU2 -7.51464    sig 3537.64    bkg 57973.8   Errbkg 36372.9    Z 14.5468
+Events: 4864 14 11 5 0 0 22012
+M 60     LT m5p5    logU2 -7.01464    sig 11325    bkg 57973.8   Errbkg 36372.9    Z 45.6164
+Events: 4924 14 11 5 0 0 22012
+M 60     LT m6p0    logU2 -6.51464    sig 35689.1    bkg 57973.8   Errbkg 36372.9    Z 135.956
+Events: 4907 14 11 5 0 0 22012
+M 60     LT m6p5    logU2 -6.01464    sig 113135    bkg 57973.8   Errbkg 36372.9    Z 379.625
+Events: 4919 14 11 5 0 0 22012
+M 60     LT m7p0    logU2 -5.51464    sig 358347    bkg 57973.8   Errbkg 36372.9    Z 961.68
+Events: 4927 14 11 5 0 0 22012
+M 70     LT m2p0    logU2 -10.955    sig 0.00552596    bkg 102566   Errbkg 37099.1    Z 1.68727e-05
+Events: 37 52 21 6 0 0 17047
+M 70     LT m2p5    logU2 -10.455    sig 0.058088    bkg 102566   Errbkg 37099.1    Z 0.000181379
+Events: 123 52 21 6 0 0 17047
+M 70     LT m3p0    logU2 -9.95499    sig 0.580972    bkg 102566   Errbkg 37099.1    Z 0.00181406
+Events: 389 52 21 6 0 0 17047
+M 70     LT m3p5    logU2 -9.45499    sig 5.03905    bkg 102566   Errbkg 37099.1    Z 0.0157342
+Events: 1067 52 21 6 0 0 17047
+M 70     LT m4p0    logU2 -8.95499    sig 36.0382    bkg 102566   Errbkg 37099.1    Z 0.112522
+Events: 2413 52 21 6 0 0 17047
+M 70     LT m4p5    logU2 -8.45499    sig 179.176    bkg 102566   Errbkg 37099.1    Z 0.559307
+Events: 3794 52 21 6 0 0 17047
+M 70     LT m5p0    logU2 -7.95499    sig 626.524    bkg 102566   Errbkg 37099.1    Z 1.95431
+Events: 4195 52 21 6 0 0 17047
+M 70     LT m5p5    logU2 -7.45499    sig 1959.89    bkg 102566   Errbkg 37099.1    Z 6.10037
+Events: 4150 52 21 6 0 0 17047
+M 70     LT m6p0    logU2 -6.95499    sig 6224.91    bkg 102566   Errbkg 37099.1    Z 19.2453
+Events: 4168 52 21 6 0 0 17047
+M 70     LT m6p5    logU2 -6.45499    sig 19537.4    bkg 102566   Errbkg 37099.1    Z 59.2075
+Events: 4137 52 21 6 0 0 17047
+M 70     LT m7p0    logU2 -5.95499    sig 62622.5    bkg 102566   Errbkg 37099.1    Z 179.461
+Events: 4193 52 21 6 0 0 17047
+M 80     LT m3p0    logU2 -10.4871    sig 0.0699874    bkg 354496   Errbkg 40271.4    Z 0.000117267
+Events: 439 304 34 3 0 0 10478
+M 80     LT m3p5    logU2 -9.98714    sig 0.531875    bkg 354496   Errbkg 40271.4    Z 0.000893278
+Events: 1055 304 34 3 0 0 10478
+M 80     LT m4p0    logU2 -9.48714    sig 3.17415    bkg 354496   Errbkg 40271.4    Z 0.00533115
+Events: 1991 304 34 3 0 0 10478
+M 80     LT m4p5    logU2 -8.98714    sig 12.4726    bkg 354496   Errbkg 40271.4    Z 0.0209483
+Events: 2474 304 34 3 0 0 10478
+M 80     LT m5p0    logU2 -8.48714    sig 39.904    bkg 354496   Errbkg 40271.4    Z 0.0670197
+Events: 2503 304 34 3 0 0 10478
+M 80     LT m5p5    logU2 -7.98714    sig 126.138    bkg 354496   Errbkg 40271.4    Z 0.211843
+Events: 2502 304 34 3 0 0 10478
+M 80     LT m6p0    logU2 -7.48714    sig 396.489    bkg 354496   Errbkg 40271.4    Z 0.665802
+Events: 2487 304 34 3 0 0 10478
+M 80     LT m6p5    logU2 -6.98714    sig 1254.32    bkg 354496   Errbkg 40271.4    Z 2.10546
+Events: 2488 304 34 3 0 0 10478
+M 80     LT m7p0    logU2 -6.48714    sig 3985.62    bkg 354496   Errbkg 40271.4    Z 6.68158
+Events: 2500 304 34 3 0 0 10478
+M 85     LT m4p0    logU2 -9.92701    sig 0.26025    bkg 347157   Errbkg 40103.8    Z 0.000441622
+Events: 810 278 68 2 0 0 5290
+M 85     LT m4p5    logU2 -9.42701    sig 0.903247    bkg 347157   Errbkg 40103.8    Z 0.00153298
+Events: 889 278 68 2 0 0 5290
+M 85     LT m5p0    logU2 -8.92701    sig 2.80813    bkg 347157   Errbkg 40103.8    Z 0.00476599
+Events: 874 278 68 2 0 0 5290
+M 85     LT m5p5    logU2 -8.42701    sig 8.83942    bkg 347157   Errbkg 40103.8    Z 0.0150023
+Events: 870 278 68 2 0 0 5290
+M 85     LT m6p0    logU2 -7.92701    sig 27.8242    bkg 347157   Errbkg 40103.8    Z 0.0472231
+Events: 866 278 68 2 0 0 5290
+M 85     LT m6p5    logU2 -7.42701    sig 92.3567    bkg 347157   Errbkg 40103.8    Z 0.156742
+Events: 909 278 68 2 0 0 5290
+M 85     LT m7p0    logU2 -6.92701    sig 286.275    bkg 347157   Errbkg 40103.8    Z 0.485804
+Events: 891 278 68 2 0 0 5290
+dcut=8) 10 -7.4043 -6.9043 -6.9497
+=========================================
+dcut=8) 20 -7.44983 -6.94983 -7.41465
+=========================================
+dcut=8) 30 -7.85985 -7.35985 -7.79402
+=========================================
+dcut=8) 40 -8.52026 -8.02026 -8.04463
+=========================================
+dcut=8) 50 -8.55175 -8.05175 -8.31837
+=========================================
+dcut=8) 60 -8.51464 -8.01464 -8.30337
+=========================================
+dcut=8) 70 -7.95499 -7.45499 -7.94948
+=========================================
+dcut=8) 80 -7.48714 -6.98714 -7.02377
+=========================================
+M 5     LT m2p0    logU2 -4.83224    sig 894.246    bkg 10.5336   Errbkg 35706    Z 79.1814
+Events: 1 0 0 0 0 0 11
+M 5     LT m2p5    logU2 -4.33224    sig 11311.3    bkg 10.5336   Errbkg 35706    Z 368.007
+Events: 4 0 0 0 0 0 11
+M 5     LT m3p0    logU2 -3.83224    sig 62597.2    bkg 10.5336   Errbkg 35706    Z 981.294
+Events: 7 0 0 0 0 0 11
+M 5     LT m3p5    logU2 -3.33224    sig 424175    bkg 10.5336   Errbkg 35706    Z 2854.34
+Events: 15 0 0 0 0 0 11
+M 10     LT m0p5    logU2 -7.9043    sig 0.753905    bkg 568.814   Errbkg 35706    Z 0.0316035
+Events: 1 0 0 0 0 0 594
+M 10     LT m1p0    logU2 -7.4043    sig 4.7681    bkg 568.814   Errbkg 35706    Z 0.199644
+Events: 2 0 0 0 0 0 594
+M 10     LT m1p5    logU2 -6.9043    sig 52.7733    bkg 568.814   Errbkg 35706    Z 2.17978
+Events: 7 0 0 0 0 0 594
+M 10     LT m2p0    logU2 -6.4043    sig 309.927    bkg 568.814   Errbkg 35706    Z 12.0224
+Events: 13 0 0 0 0 0 594
+M 10     LT m2p5    logU2 -5.9043    sig 2864.84    bkg 568.814   Errbkg 35706    Z 81.3421
+Events: 38 0 0 0 0 0 594
+M 10     LT m3p0    logU2 -5.4043    sig 25509.4    bkg 568.814   Errbkg 35706    Z 385.35
+Events: 107 0 0 0 0 0 594
+M 10     LT m3p5    logU2 -4.9043    sig 245773    bkg 568.814   Errbkg 35706    Z 1580.98
+Events: 326 0 0 0 0 0 594
+M 10     LT m4p0    logU2 -4.4043    sig 2.11704e+06    bkg 568.814   Errbkg 35706    Z 5530.72
+Events: 888 0 0 0 0 0 594
+M 10     LT m4p5    logU2 -3.9043    sig 1.5357e+07    bkg 568.814   Errbkg 35706    Z 16813.4
+Events: 2037 0 0 0 0 0 594
+M 10     LT m5p0    logU2 -3.4043    sig 8.63981e+07    bkg 568.814   Errbkg 35706    Z 43460.7
+Events: 3624 0 0 0 0 0 594
+M 20     LT m1p0    logU2 -8.94983    sig 0.126063    bkg 13144   Errbkg 35706.1    Z 0.00109957
+Events: 2 0 0 0 0 0 13726
+M 20     LT m1p5    logU2 -8.44983    sig 2.19257    bkg 13144   Errbkg 35706.1    Z 0.019124
+Events: 11 0 0 0 0 0 13726
+M 20     LT m2p0    logU2 -7.94983    sig 21.4307    bkg 13144   Errbkg 35706.1    Z 0.186876
+Events: 34 0 0 0 0 0 13726
+M 20     LT m2p5    logU2 -7.44983    sig 159.46    bkg 13144   Errbkg 35706.1    Z 1.38807
+Events: 80 0 0 0 0 0 13726
+M 20     LT m3p0    logU2 -6.94983    sig 1355.17    bkg 13144   Errbkg 35706.1    Z 11.6255
+Events: 215 0 0 0 0 0 13726
+M 20     LT m3p5    logU2 -6.44983    sig 12677.1    bkg 13144   Errbkg 35706.1    Z 97.5496
+Events: 636 0 0 0 0 0 13726
+M 20     LT m4p0    logU2 -5.94983    sig 112322    bkg 13144   Errbkg 35706.1    Z 584.359
+Events: 1782 0 0 0 0 0 13726
+M 20     LT m4p5    logU2 -5.44983    sig 784343    bkg 13144   Errbkg 35706.1    Z 2231.47
+Events: 3935 0 0 0 0 0 13726
+M 20     LT m5p0    logU2 -4.94983    sig 3.90101e+06    bkg 13144   Errbkg 35706.1    Z 6065.57
+Events: 6189 0 0 0 0 0 13726
+M 20     LT m5p5    logU2 -4.44983    sig 1.40125e+07    bkg 13144   Errbkg 35706.1    Z 12944.8
+Events: 7030 0 0 0 0 0 13726
+M 20     LT m6p0    logU2 -3.94983    sig 4.42228e+07    bkg 13144   Errbkg 35706.1    Z 25101.1
+Events: 7016 0 0 0 0 0 13726
+M 20     LT m6p5    logU2 -3.44983    sig 1.41022e+08    bkg 13144   Errbkg 35706.1    Z 48330.1
+Events: 7075 0 0 0 0 0 13726
+M 30     LT m0p5    logU2 -10.3598    sig 0.0021871    bkg 38173.1   Errbkg 35891.6    Z 1.10542e-05
+Events: 1 0 0 3 0 0 31115
+M 30     LT m1p0    logU2 -9.85985    sig 0.00691632    bkg 38173.1   Errbkg 35891.6    Z 3.53929e-05
+Events: 1 0 0 3 0 0 31115
+M 30     LT m1p5    logU2 -9.35985    sig 0.262452    bkg 38173.1   Errbkg 35891.6    Z 0.00134329
+Events: 12 0 0 3 0 0 31115
+M 30     LT m2p0    logU2 -8.85985    sig 2.55905    bkg 38173.1   Errbkg 35891.6    Z 0.0130977
+Events: 37 0 0 3 0 0 31115
+M 30     LT m2p5    logU2 -8.35985    sig 20.9962    bkg 38173.1   Errbkg 35891.6    Z 0.107454
+Events: 96 0 0 3 0 0 31115
+M 30     LT m3p0    logU2 -7.85985    sig 206.106    bkg 38173.1   Errbkg 35891.6    Z 1.05396
+Events: 298 0 0 3 0 0 31115
+M 30     LT m3p5    logU2 -7.35985    sig 1880.91    bkg 38173.1   Errbkg 35891.6    Z 9.54947
+Events: 860 0 0 3 0 0 31115
+M 30     LT m4p0    logU2 -6.85985    sig 15050    bkg 38173.1   Errbkg 35891.6    Z 72.6538
+Events: 2176 0 0 3 0 0 31115
+M 30     LT m4p5    logU2 -6.35985    sig 99010.1    bkg 38173.1   Errbkg 35891.6    Z 391.082
+Events: 4527 0 0 3 0 0 31115
+M 30     LT m5p0    logU2 -5.85985    sig 474321    bkg 38173.1   Errbkg 35891.6    Z 1308.98
+Events: 6858 0 0 3 0 0 31115
+M 30     LT m5p5    logU2 -5.35985    sig 1.6307e+06    bkg 38173.1   Errbkg 35891.6    Z 3057.43
+Events: 7456 0 0 3 0 0 31115
+M 30     LT m6p0    logU2 -4.85985    sig 5.18034e+06    bkg 38173.1   Errbkg 35891.6    Z 6400.54
+Events: 7490 0 0 3 0 0 31115
+M 30     LT m6p5    logU2 -4.35985    sig 1.6353e+07    bkg 38173.1   Errbkg 35891.6    Z 12885.3
+Events: 7477 0 0 3 0 0 31115
+M 30     LT m7p0    logU2 -3.85985    sig 5.20315e+07    bkg 38173.1   Errbkg 35891.6    Z 25448.7
+Events: 7523 0 0 3 0 0 31115
+M 30     LT p0p0    logU2 -10.8598    sig 0.000691634    bkg 38173.1   Errbkg 35891.6    Z 3.38518e-06
+Events: 1 0 0 3 0 0 31115
+M 40     LT m1p0    logU2 -10.5203    sig 0.00387095    bkg 26660   Errbkg 35706.3    Z 2.37849e-05
+Events: 3 1 1 0 0 0 25953
+M 40     LT m1p5    logU2 -10.0203    sig 0.0734467    bkg 26660   Errbkg 35706.3    Z 0.00044983
+Events: 18 1 1 0 0 0 25953
+M 40     LT m2p0    logU2 -9.52026    sig 0.477418    bkg 26660   Errbkg 35706.3    Z 0.00292393
+Events: 37 1 1 0 0 0 25953
+M 40     LT m2p5    logU2 -9.02026    sig 3.87635    bkg 26660   Errbkg 35706.3    Z 0.0237401
+Events: 95 1 1 0 0 0 25953
+M 40     LT m3p0    logU2 -8.52026    sig 39.2257    bkg 26660   Errbkg 35706.3    Z 0.240178
+Events: 304 1 1 0 0 0 25953
+M 40     LT m3p5    logU2 -8.02026    sig 360.297    bkg 26660   Errbkg 35706.3    Z 2.20169
+Events: 883 1 1 0 0 0 25953
+M 40     LT m4p0    logU2 -7.52026    sig 2935.47    bkg 26660   Errbkg 35706.3    Z 17.6626
+Events: 2275 1 1 0 0 0 25953
+M 40     LT m4p5    logU2 -7.02026    sig 19116.5    bkg 26660   Errbkg 35706.3    Z 106.119
+Events: 4685 1 1 0 0 0 25953
+M 40     LT m5p0    logU2 -6.52026    sig 86219    bkg 26660   Errbkg 35706.3    Z 391.619
+Events: 6682 1 1 0 0 0 25953
+M 40     LT m5p5    logU2 -6.02026    sig 289258    bkg 26660   Errbkg 35706.3    Z 991.757
+Events: 7089 1 1 0 0 0 25953
+M 40     LT m6p0    logU2 -5.52026    sig 912513    bkg 26660   Errbkg 35706.3    Z 2205.75
+Events: 7072 1 1 0 0 0 25953
+M 40     LT m6p5    logU2 -5.02026    sig 2.8991e+06    bkg 26660   Errbkg 35706.3    Z 4657.59
+Events: 7105 1 1 0 0 0 25953
+M 40     LT m7p0    logU2 -4.52026    sig 9.16125e+06    bkg 26660   Errbkg 35706.3    Z 9435.99
+Events: 7100 1 1 0 0 0 25953
+M 40     LT p0p0    logU2 -11.5203    sig 0.000129032    bkg 26660   Errbkg 35706.3    Z -nan
+Events: 1 1 1 0 0 0 25953
+M 50     LT m1p0    logU2 -11.0518    sig 0.000600617    bkg 40298.2   Errbkg 35882.8    Z 2.11993e-06
+Events: 2 6 5 2 0 0 25751
+M 50     LT m1p5    logU2 -10.5518    sig 0.00949522    bkg 40298.2   Errbkg 35882.8    Z 4.73115e-05
+Events: 10 6 5 2 0 0 25751
+M 50     LT m2p0    logU2 -10.0518    sig 0.120105    bkg 40298.2   Errbkg 35882.8    Z 0.000598298
+Events: 40 6 5 2 0 0 25751
+M 50     LT m2p5    logU2 -9.55175    sig 1.02548    bkg 40298.2   Errbkg 35882.8    Z 0.0051084
+Events: 108 6 5 2 0 0 25751
+M 50     LT m3p0    logU2 -9.05175    sig 9.8486    bkg 40298.2   Errbkg 35882.8    Z 0.0490585
+Events: 328 6 5 2 0 0 25751
+M 50     LT m3p5    logU2 -8.55175    sig 83.558    bkg 40298.2   Errbkg 35882.8    Z 0.416098
+Events: 880 6 5 2 0 0 25751
+M 50     LT m4p0    logU2 -8.05175    sig 690.607    bkg 40298.2   Errbkg 35882.8    Z 3.43048
+Events: 2300 6 5 2 0 0 25751
+M 50     LT m4p5    logU2 -7.55175    sig 4289.94    bkg 40298.2   Errbkg 35882.8    Z 21.0069
+Events: 4518 6 5 2 0 0 25751
+M 50     LT m5p0    logU2 -7.05175    sig 18036.8    bkg 40298.2   Errbkg 35882.8    Z 84.155
+Events: 6007 6 5 2 0 0 25751
+M 50     LT m5p5    logU2 -6.55175    sig 58557    bkg 40298.2   Errbkg 35882.8    Z 245.563
+Events: 6167 6 5 2 0 0 25751
+M 50     LT m6p0    logU2 -6.05175    sig 184632    bkg 40298.2   Errbkg 35882.8    Z 635.818
+Events: 6149 6 5 2 0 0 25751
+M 50     LT m6p5    logU2 -5.55175    sig 585191    bkg 40298.2   Errbkg 35882.8    Z 1503.36
+Events: 6163 6 5 2 0 0 25751
+M 50     LT m7p0    logU2 -5.05175    sig 1.846e+06    bkg 40298.2   Errbkg 35882.8    Z 3289.02
+Events: 6147 6 5 2 0 0 25751
+M 60     LT m1p5    logU2 -11.0146    sig 0.00321994    bkg 89528.9   Errbkg 36941.8    Z 1.11318e-05
+Events: 14 32 23 7 0 0 20110
+M 60     LT m2p0    logU2 -10.5146    sig 0.0225466    bkg 89528.9   Errbkg 36941.8    Z 7.52612e-05
+Events: 31 32 23 7 0 0 20110
+M 60     LT m2p5    logU2 -10.0146    sig 0.250695    bkg 89528.9   Errbkg 36941.8    Z 0.000837837
+Events: 109 32 23 7 0 0 20110
+M 60     LT m3p0    logU2 -9.51464    sig 2.15284    bkg 89528.9   Errbkg 36941.8    Z 0.00719496
+Events: 296 32 23 7 0 0 20110
+M 60     LT m3p5    logU2 -9.01464    sig 19.5726    bkg 89528.9   Errbkg 36941.8    Z 0.0654111
+Events: 851 32 23 7 0 0 20110
+M 60     LT m4p0    logU2 -8.51464    sig 152.808    bkg 89528.9   Errbkg 36941.8    Z 0.510553
+Events: 2101 32 23 7 0 0 20110
+M 60     LT m4p5    logU2 -8.01464    sig 872.374    bkg 89528.9   Errbkg 36941.8    Z 2.91084
+Events: 3793 32 23 7 0 0 20110
+M 60     LT m5p0    logU2 -7.51464    sig 3347.08    bkg 89528.9   Errbkg 36941.8    Z 11.1176
+Events: 4602 32 23 7 0 0 20110
+M 60     LT m5p5    logU2 -7.01464    sig 10743.1    bkg 89528.9   Errbkg 36941.8    Z 35.22
+Events: 4671 32 23 7 0 0 20110
+M 60     LT m6p0    logU2 -6.51464    sig 33689    bkg 89528.9   Errbkg 36941.8    Z 106.451
+Events: 4632 32 23 7 0 0 20110
+M 60     LT m6p5    logU2 -6.01464    sig 107247    bkg 89528.9   Errbkg 36941.8    Z 308.917
+Events: 4663 32 23 7 0 0 20110
+M 60     LT m7p0    logU2 -5.51464    sig 338782    bkg 89528.9   Errbkg 36941.8    Z 814.43
+Events: 4658 32 23 7 0 0 20110
+M 70     LT m2p0    logU2 -10.955    sig 0.00507791    bkg 117069   Errbkg 37283.7    Z 1.4858e-05
+Events: 34 71 24 5 0 0 12451
+M 70     LT m2p5    logU2 -10.455    sig 0.0443925    bkg 117069   Errbkg 37283.7    Z 0.00012981
+Events: 94 71 24 5 0 0 12451
+M 70     LT m3p0    logU2 -9.95499    sig 0.424155    bkg 117069   Errbkg 37283.7    Z 0.00123965
+Events: 284 71 24 5 0 0 12451
+M 70     LT m3p5    logU2 -9.45499    sig 3.76866    bkg 117069   Errbkg 37283.7    Z 0.0110145
+Events: 798 71 24 5 0 0 12451
+M 70     LT m4p0    logU2 -8.95499    sig 27.7045    bkg 117069   Errbkg 37283.7    Z 0.0809676
+Events: 1855 71 24 5 0 0 12451
+M 70     LT m4p5    logU2 -8.45499    sig 139.317    bkg 117069   Errbkg 37283.7    Z 0.407095
+Events: 2950 71 24 5 0 0 12451
+M 70     LT m5p0    logU2 -7.95499    sig 482.849    bkg 117069   Errbkg 37283.7    Z 1.41024
+Events: 3233 71 24 5 0 0 12451
+M 70     LT m5p5    logU2 -7.45499    sig 1524.47    bkg 117069   Errbkg 37283.7    Z 4.44588
+Events: 3228 71 24 5 0 0 12451
+M 70     LT m6p0    logU2 -6.95499    sig 4862.84    bkg 117069   Errbkg 37283.7    Z 14.1157
+Events: 3256 71 24 5 0 0 12451
+M 70     LT m6p5    logU2 -6.45499    sig 15093.4    bkg 117069   Errbkg 37283.7    Z 43.2127
+Events: 3196 71 24 5 0 0 12451
+M 70     LT m7p0    logU2 -5.95499    sig 48613.5    bkg 117069   Errbkg 37283.7    Z 133.639
+Events: 3255 71 24 5 0 0 12451
+M 80     LT m3p0    logU2 -10.4871    sig 0.0449578    bkg 183932   Errbkg 38072.9    Z 0.000104923
+Events: 282 160 18 0 0 0 7270
+M 80     LT m3p5    logU2 -9.98714    sig 0.352903    bkg 183932   Errbkg 38072.9    Z 0.000822883
+Events: 700 160 18 0 0 0 7270
+M 80     LT m4p0    logU2 -9.48714    sig 2.09165    bkg 183932   Errbkg 38072.9    Z 0.00487708
+Events: 1312 160 18 0 0 0 7270
+M 80     LT m4p5    logU2 -8.98714    sig 8.30331    bkg 183932   Errbkg 38072.9    Z 0.0193606
+Events: 1647 160 18 0 0 0 7270
+M 80     LT m5p0    logU2 -8.48714    sig 26.3848    bkg 183932   Errbkg 38072.9    Z 0.0615198
+Events: 1655 160 18 0 0 0 7270
+M 80     LT m5p5    logU2 -7.98714    sig 84.4951    bkg 183932   Errbkg 38072.9    Z 0.197002
+Events: 1676 160 18 0 0 0 7270
+M 80     LT m6p0    logU2 -7.48714    sig 265.442    bkg 183932   Errbkg 38072.9    Z 0.618781
+Events: 1665 160 18 0 0 0 7270
+M 80     LT m6p5    logU2 -6.98714    sig 848.48    bkg 183932   Errbkg 38072.9    Z 1.97688
+Events: 1683 160 18 0 0 0 7270
+M 80     LT m7p0    logU2 -6.48714    sig 2667.17    bkg 183932   Errbkg 38072.9    Z 6.2041
+Events: 1673 160 18 0 0 0 7270
+M 85     LT m4p0    logU2 -9.92701    sig 0.162255    bkg 139649   Errbkg 37184.7    Z 0.000434206
+Events: 505 96 17 1 0 1 3787
+M 85     LT m4p5    logU2 -9.42701    sig 0.56999    bkg 139649   Errbkg 37184.7    Z 0.00152527
+Events: 561 96 17 1 0 1 3787
+M 85     LT m5p0    logU2 -8.92701    sig 1.79926    bkg 139649   Errbkg 37184.7    Z 0.00481475
+Events: 560 96 17 1 0 1 3787
+M 85     LT m5p5    logU2 -8.42701    sig 5.65926    bkg 139649   Errbkg 37184.7    Z 0.0151439
+Events: 557 96 17 1 0 1 3787
+M 85     LT m6p0    logU2 -7.92701    sig 17.4785    bkg 139649   Errbkg 37184.7    Z 0.046771
+Events: 544 96 17 1 0 1 3787
+M 85     LT m6p5    logU2 -7.42701    sig 57.9135    bkg 139649   Errbkg 37184.7    Z 0.154964
+Events: 570 96 17 1 0 1 3787
+M 85     LT m7p0    logU2 -6.92701    sig 178.641    bkg 139649   Errbkg 37184.7    Z 0.477935
+Events: 556 96 17 1 0 1 3787
+dcut=8) 10 -7.4043 -6.9043 -6.9497
+=========================================
+dcut=8) 20 -7.44983 -6.94983 -7.41995
+=========================================
+dcut=8) 30 -7.85985 -7.35985 -7.80417
+=========================================
+dcut=8) 40 -8.52026 -8.02026 -8.07167
+=========================================
+dcut=8) 50 -8.55175 -8.05175 -8.28903
+=========================================
+dcut=8) 60 -8.51464 -8.01464 -8.20438
+=========================================
+dcut=8) 70 -7.95499 -7.45499 -7.85785
+=========================================
+dcut=8) 80 -6.98714 -6.48714 -6.98441
+=========================================
+M 5     LT m0p5    logU2 -6.33224    sig 5316.33    bkg 43862.7   Errbkg 40147.2    Z 24.8957
+Events: 188 0 0 0 2 0 0
+M 5     LT m1p0    logU2 -5.83224    sig 24681.2    bkg 43862.7   Errbkg 40147.2    Z 108.789
+Events: 276 0 0 0 2 0 0
+M 5     LT m1p5    logU2 -5.33224    sig 70413.1    bkg 43862.7   Errbkg 40147.2    Z 279.327
+Events: 249 0 0 0 2 0 0
+M 5     LT m2p0    logU2 -4.83224    sig 206571    bkg 43862.7   Errbkg 40147.2    Z 677.815
+Events: 231 0 0 0 2 0 0
+M 5     LT m2p5    logU2 -4.33224    sig 658885    bkg 43862.7   Errbkg 40147.2    Z 1606.54
+Events: 233 0 0 0 2 0 0
+M 5     LT m3p0    logU2 -3.83224    sig 1.99417e+06    bkg 43862.7   Errbkg 40147.2    Z 3414.43
+Events: 223 0 0 0 2 0 0
+M 5     LT m3p5    logU2 -3.33224    sig 6.41918e+06    bkg 43862.7   Errbkg 40147.2    Z 7190.2
+Events: 227 0 0 0 2 0 0
+M 5     LT p0p0    logU2 -6.83224    sig 572.318    bkg 43862.7   Errbkg 40147.2    Z 2.72677
+Events: 64 0 0 0 2 0 0
+M 5     LT p0p5    logU2 -7.33224    sig 90.4907    bkg 43862.7   Errbkg 40147.2    Z 0.431924
+Events: 32 0 0 0 2 0 0
+M 5     LT p1p0    logU2 -7.83224    sig 6.25972    bkg 43862.7   Errbkg 40147.2    Z 0.029888
+Events: 7 0 0 0 2 0 0
+M 5     LT p1p5    logU2 -8.33224    sig 1.97948    bkg 43862.7   Errbkg 40147.2    Z 0.00945151
+Events: 7 0 0 0 2 0 0
+M 5     LT p2p0    logU2 -8.83224    sig 0.178849    bkg 43862.7   Errbkg 40147.2    Z 0.000853968
+Events: 2 0 0 0 2 0 0
+M 10     LT m0p5    logU2 -7.9043    sig 2319.76    bkg 131806   Errbkg 55269.8    Z 6.37102
+Events: 3077 0 0 0 5 1 1
+M 10     LT m1p0    logU2 -7.4043    sig 9831.83    bkg 131806   Errbkg 55269.8    Z 26.7545
+Events: 4124 0 0 0 5 1 1
+M 10     LT m1p5    logU2 -6.9043    sig 26816.4    bkg 131806   Errbkg 55269.8    Z 71.5504
+Events: 3557 0 0 0 5 1 1
+M 10     LT m2p0    logU2 -6.4043    sig 103754    bkg 131806   Errbkg 55269.8    Z 256.983
+Events: 4352 0 0 0 5 1 1
+M 10     LT m2p5    logU2 -5.9043    sig 326893    bkg 131806   Errbkg 55269.8    Z 700.19
+Events: 4336 0 0 0 5 1 1
+M 10     LT m3p0    logU2 -5.4043    sig 1.01394e+06    bkg 131806   Errbkg 55269.8    Z 1710.97
+Events: 4253 0 0 0 5 1 1
+M 10     LT m3p5    logU2 -4.9043    sig 3.04728e+06    bkg 131806   Errbkg 55269.8    Z 3760.8
+Events: 4042 0 0 0 5 1 1
+M 10     LT m4p0    logU2 -4.4043    sig 8.24405e+06    bkg 131806   Errbkg 55269.8    Z 7284.32
+Events: 3458 0 0 0 5 1 1
+M 10     LT m4p5    logU2 -3.9043    sig 1.76715e+07    bkg 131806   Errbkg 55269.8    Z 11804.1
+Events: 2344 0 0 0 5 1 1
+M 10     LT m5p0    logU2 -3.4043    sig 1.76897e+07    bkg 131806   Errbkg 55269.8    Z 11811.6
+Events: 742 0 0 0 5 1 1
+M 10     LT p0p0    logU2 -8.4043    sig 344.019    bkg 131806   Errbkg 55269.8    Z 0.947164
+Events: 1443 0 0 0 5 1 1
+M 10     LT p0p5    logU2 -8.9043    sig 40.4093    bkg 131806   Errbkg 55269.8    Z 0.111299
+Events: 536 0 0 0 5 1 1
+M 10     LT p1p0    logU2 -9.4043    sig 4.60122    bkg 131806   Errbkg 55269.8    Z 0.0126737
+Events: 193 0 0 0 5 1 1
+M 10     LT p1p5    logU2 -9.9043    sig 0.527733    bkg 131806   Errbkg 55269.8    Z 0.0014536
+Events: 70 0 0 0 5 1 1
+M 20     LT m0p5    logU2 -9.44983    sig 124.857    bkg 134979   Errbkg 59471    Z 0.339792
+Events: 6264 1 3 0 6 0 3
+M 20     LT m1p0    logU2 -8.94983    sig 418.528    bkg 134979   Errbkg 59471    Z 1.13859
+Events: 6640 1 3 0 6 0 3
+M 20     LT m1p5    logU2 -8.44983    sig 1330.49    bkg 134979   Errbkg 59471    Z 3.6155
+Events: 6675 1 3 0 6 0 3
+M 20     LT m2p0    logU2 -7.94983    sig 4170.79    bkg 134979   Errbkg 59471    Z 11.2946
+Events: 6617 1 3 0 6 0 3
+M 20     LT m2p5    logU2 -7.44983    sig 13185.3    bkg 134979   Errbkg 59471    Z 35.327
+Events: 6615 1 3 0 6 0 3
+M 20     LT m3p0    logU2 -6.94983    sig 40560.7    bkg 134979   Errbkg 59471    Z 105.467
+Events: 6435 1 3 0 6 0 3
+M 20     LT m3p5    logU2 -6.44983    sig 121648    bkg 134979   Errbkg 59471    Z 294.061
+Events: 6103 1 3 0 6 0 3
+M 20     LT m4p0    logU2 -5.94983    sig 313959    bkg 134979   Errbkg 59471    Z 671.654
+Events: 4981 1 3 0 6 0 3
+M 20     LT m4p5    logU2 -5.44983    sig 599170    bkg 134979   Errbkg 59471    Z 1135.06
+Events: 3006 1 3 0 6 0 3
+M 20     LT m5p0    logU2 -4.94983    sig 522530    bkg 134979   Errbkg 59471    Z 1018.36
+Events: 829 1 3 0 6 0 3
+M 20     LT m5p5    logU2 -4.44983    sig 99662.4    bkg 134979   Errbkg 59471    Z 245.276
+Events: 50 1 3 0 6 0 3
+M 20     LT m6p5    logU2 -3.44983    sig 39864.9    bkg 134979   Errbkg 59471    Z 103.733
+Events: 2 1 3 0 6 0 3
+M 20     LT p0p0    logU2 -9.94983    sig 24.8596    bkg 134979   Errbkg 59471    Z 0.0676624
+Events: 3944 1 3 0 6 0 3
+M 20     LT p0p5    logU2 -10.4498    sig 3.39251    bkg 134979   Errbkg 59471    Z 0.00923392
+Events: 1702 1 3 0 6 0 3
+M 20     LT p1p0    logU2 -10.9498    sig 0.36117    bkg 134979   Errbkg 59471    Z 0.000983046
+Events: 573 1 3 0 6 0 3
+M 30     LT m0p5    logU2 -10.3598    sig 13.6563    bkg 138989   Errbkg 49812    Z 0.0366298
+Events: 6244 11 8 4 2 3 0
+M 30     LT m1p0    logU2 -9.85985    sig 45.2397    bkg 138989   Errbkg 49812    Z 0.12134
+Events: 6541 11 8 4 2 3 0
+M 30     LT m1p5    logU2 -9.35985    sig 142.883    bkg 138989   Errbkg 49812    Z 0.383192
+Events: 6533 11 8 4 2 3 0
+M 30     LT m2p0    logU2 -8.85985    sig 453.158    bkg 138989   Errbkg 49812    Z 1.21485
+Events: 6552 11 8 4 2 3 0
+M 30     LT m2p5    logU2 -8.35985    sig 1426.43    bkg 138989   Errbkg 49812    Z 3.81961
+Events: 6522 11 8 4 2 3 0
+M 30     LT m3p0    logU2 -7.85985    sig 4408.46    bkg 138989   Errbkg 49812    Z 11.7632
+Events: 6374 11 8 4 2 3 0
+M 30     LT m3p5    logU2 -7.35985    sig 12899.5    bkg 138989   Errbkg 49812    Z 34.0851
+Events: 5898 11 8 4 2 3 0
+M 30     LT m4p0    logU2 -6.85985    sig 33260.7    bkg 138989   Errbkg 49812    Z 85.9712
+Events: 4809 11 8 4 2 3 0
+M 30     LT m4p5    logU2 -6.35985    sig 59576.7    bkg 138989   Errbkg 49812    Z 150.044
+Events: 2724 11 8 4 2 3 0
+M 30     LT m5p0    logU2 -5.85985    sig 44333.6    bkg 138989   Errbkg 49812    Z 113.311
+Events: 641 11 8 4 2 3 0
+M 30     LT m5p5    logU2 -5.35985    sig 6342.6    bkg 138989   Errbkg 49812    Z 16.8858
+Events: 29 11 8 4 2 3 0
+M 30     LT m6p0    logU2 -4.85985    sig 1383.27    bkg 138989   Errbkg 49812    Z 3.70423
+Events: 2 11 8 4 2 3 0
+M 30     LT m7p0    logU2 -3.85985    sig 6916.32    bkg 138989   Errbkg 49812    Z 18.401
+Events: 1 11 8 4 2 3 0
+M 30     LT p0p0    logU2 -10.8598    sig 3.14624    bkg 138989   Errbkg 49812    Z 0.00843917
+Events: 4549 11 8 4 2 3 0
+M 40     LT m1p0    logU2 -10.5203    sig 8.41287    bkg 46142.7   Errbkg 36283    Z 0.0391633
+Events: 6520 5 3 6 1 0 0
+M 40     LT m1p5    logU2 -10.0203    sig 26.7101    bkg 46142.7   Errbkg 36283    Z 0.124332
+Events: 6546 5 3 6 1 0 0
+M 40     LT m2p0    logU2 -9.52026    sig 84.1287    bkg 46142.7   Errbkg 36283    Z 0.391526
+Events: 6520 5 3 6 1 0 0
+M 40     LT m2p5    logU2 -9.02026    sig 264.204    bkg 46142.7   Errbkg 36283    Z 1.22878
+Events: 6475 5 3 6 1 0 0
+M 40     LT m3p0    logU2 -8.52026    sig 813.932    bkg 46142.7   Errbkg 36283    Z 3.77805
+Events: 6308 5 3 6 1 0 0
+M 40     LT m3p5    logU2 -8.02026    sig 2362.54    bkg 46142.7   Errbkg 36283    Z 10.9064
+Events: 5790 5 3 6 1 0 0
+M 40     LT m4p0    logU2 -7.52026    sig 5867.07    bkg 46142.7   Errbkg 36283    Z 26.7629
+Events: 4547 5 3 6 1 0 0
+M 40     LT m4p5    logU2 -7.02026    sig 9384.86    bkg 46142.7   Errbkg 36283    Z 42.3214
+Events: 2300 5 3 6 1 0 0
+M 40     LT m5p0    logU2 -6.52026    sig 5058.04    bkg 46142.7   Errbkg 36283    Z 23.1351
+Events: 392 5 3 6 1 0 0
+M 40     LT m5p5    logU2 -6.02026    sig 285.626    bkg 46142.7   Errbkg 36283    Z 1.32831
+Events: 7 5 3 6 1 0 0
+M 40     LT p0p0    logU2 -11.5203    sig 0.621288    bkg 46142.7   Errbkg 36283    Z 0.00289228
+Events: 4815 5 3 6 1 0 0
+M 50     LT m1p0    logU2 -11.0518    sig 1.76341    bkg 84205.3   Errbkg 38012    Z 0.00607691
+Events: 5872 17 14 20 0 0 1
+M 50     LT m1p5    logU2 -10.5518    sig 5.66295    bkg 84205.3   Errbkg 38012    Z 0.019515
+Events: 5964 17 14 20 0 0 1
+M 50     LT m2p0    logU2 -10.0518    sig 17.8657    bkg 84205.3   Errbkg 38012    Z 0.0615651
+Events: 5950 17 14 20 0 0 1
+M 50     LT m2p5    logU2 -9.55175    sig 55.604    bkg 84205.3   Errbkg 38012    Z 0.191597
+Events: 5856 17 14 20 0 0 1
+M 50     LT m3p0    logU2 -9.05175    sig 170.309    bkg 84205.3   Errbkg 38012    Z 0.586706
+Events: 5672 17 14 20 0 0 1
+M 50     LT m3p5    logU2 -8.55175    sig 487.39    bkg 84205.3   Errbkg 38012    Z 1.67799
+Events: 5133 17 14 20 0 0 1
+M 50     LT m4p0    logU2 -8.05175    sig 1126.89    bkg 84205.3   Errbkg 38012    Z 3.87478
+Events: 3753 17 14 20 0 0 1
+M 50     LT m4p5    logU2 -7.55175    sig 1537.28    bkg 84205.3   Errbkg 38012    Z 5.28164
+Events: 1619 17 14 20 0 0 1
+M 50     LT m5p0    logU2 -7.05175    sig 576.503    bkg 84205.3   Errbkg 38012    Z 1.98444
+Events: 192 17 14 20 0 0 1
+M 50     LT m5p5    logU2 -6.55175    sig 18.9904    bkg 84205.3   Errbkg 38012    Z 0.0654409
+Events: 2 17 14 20 0 0 1
+M 60     LT m1p5    logU2 -11.0146    sig 1.12399    bkg 295736   Errbkg 40644.8    Z 0.00206687
+Events: 4887 190 59 20 0 0 3
+M 60     LT m2p0    logU2 -10.5146    sig 3.55291    bkg 295736   Errbkg 40644.8    Z 0.00653327
+Events: 4885 190 59 20 0 0 3
+M 60     LT m2p5    logU2 -10.0146    sig 10.9915    bkg 295736   Errbkg 40644.8    Z 0.0202116
+Events: 4779 190 59 20 0 0 3
+M 60     LT m3p0    logU2 -9.51464    sig 33.4563    bkg 295736   Errbkg 40644.8    Z 0.0615201
+Events: 4600 190 59 20 0 0 3
+M 60     LT m3p5    logU2 -9.01464    sig 93.0792    bkg 295736   Errbkg 40644.8    Z 0.17115
+Events: 4047 190 59 20 0 0 3
+M 60     LT m4p0    logU2 -8.51464    sig 194.701    bkg 295736   Errbkg 40644.8    Z 0.357988
+Events: 2677 190 59 20 0 0 3
+M 60     LT m4p5    logU2 -8.01464    sig 202.396    bkg 295736   Errbkg 40644.8    Z 0.372135
+Events: 880 190 59 20 0 0 3
+M 60     LT m5p0    logU2 -7.51464    sig 40.0021    bkg 295736   Errbkg 40644.8    Z 0.0735564
+Events: 55 190 59 20 0 0 3
+M 60     LT m7p0    logU2 -5.51464    sig 72.7312    bkg 295736   Errbkg 40644.8    Z 0.133737
+Events: 1 190 59 20 0 0 3
+M 70     LT m2p0    logU2 -10.955    sig 0.620251    bkg 958609   Errbkg 48165.5    Z 0.000633471
+Events: 4153 790 122 21 0 0 2
+M 70     LT m2p5    logU2 -10.455    sig 1.8796    bkg 958609   Errbkg 48165.5    Z 0.00191978
+Events: 3980 790 122 21 0 0 2
+M 70     LT m3p0    logU2 -9.95499    sig 5.67829    bkg 958609   Errbkg 48165.5    Z 0.00579957
+Events: 3802 790 122 21 0 0 2
+M 70     LT m3p5    logU2 -9.45499    sig 14.4749    bkg 958609   Errbkg 48165.5    Z 0.014784
+Events: 3065 790 122 21 0 0 2
+M 70     LT m4p0    logU2 -8.95499    sig 26.3752    bkg 958609   Errbkg 48165.5    Z 0.0269385
+Events: 1766 790 122 21 0 0 2
+M 70     LT m4p5    logU2 -8.45499    sig 16.4819    bkg 958609   Errbkg 48165.5    Z 0.0168339
+Events: 349 790 122 21 0 0 2
+M 70     LT m5p0    logU2 -7.95499    sig 0.896101    bkg 958609   Errbkg 48165.5    Z 0.00091528
+Events: 6 790 122 21 0 0 2
+M 80     LT m3p0    logU2 -10.4871    sig 0.329371    bkg 7.59728e+06   Errbkg 95412.2    Z 0.000114832
+Events: 2066 6800 653 51 0 1 0
+M 80     LT m3p5    logU2 -9.98714    sig 0.719922    bkg 7.59728e+06   Errbkg 95412.2    Z 0.000260383
+Events: 1428 6800 653 51 0 1 0
+M 80     LT m4p0    logU2 -9.48714    sig 0.808283    bkg 7.59728e+06   Errbkg 95412.2    Z 0.000291464
+Events: 507 6800 653 51 0 1 0
+M 80     LT m4p5    logU2 -8.98714    sig 0.151244    bkg 7.59728e+06   Errbkg 95412.2    Z 4.25368e-05
+Events: 30 6800 653 51 0 1 0
+M 85     LT m4p0    logU2 -9.92701    sig 0.0208843    bkg 7.66681e+06   Errbkg 95247    Z 3.38486e-05
+Events: 65 6713 934 36 0 0 0
+M 85     LT m4p5    logU2 -9.42701    sig 0.00203205    bkg 7.66681e+06   Errbkg 95247    Z 1.69112e-05
+Events: 2 6713 934 36 0 0 0
+dcut=8) 5 -7.33224 -6.83224 -6.99059
+=========================================
+dcut=8) 10 -8.4043 -7.9043 -8.30725
+=========================================
+dcut=8) 20 -8.94983 -8.44983 -8.77594
+=========================================
+dcut=8) 30 -8.85985 -8.35985 -8.70913
+=========================================
+dcut=8) 40 -9.02026 -8.52026 -8.869
+=========================================
+dcut=8) 50 -8.55175 -8.05175 -8.47846
+=========================================
+M 5     LT m2p0    logU2 -4.83224    sig 894.246    bkg 10.5336   Errbkg 35706    Z 79.1814
+Events: 1 0 0 0 0 0 11
+M 5     LT m2p5    logU2 -4.33224    sig 11311.3    bkg 10.5336   Errbkg 35706    Z 368.007
+Events: 4 0 0 0 0 0 11
+M 5     LT m3p0    logU2 -3.83224    sig 62597.2    bkg 10.5336   Errbkg 35706    Z 981.294
+Events: 7 0 0 0 0 0 11
+M 5     LT m3p5    logU2 -3.33224    sig 424175    bkg 10.5336   Errbkg 35706    Z 2854.34
+Events: 15 0 0 0 0 0 11
+M 10     LT m0p5    logU2 -7.9043    sig 0.753905    bkg 568.814   Errbkg 35706    Z 0.0316035
+Events: 1 0 0 0 0 0 594
+M 10     LT m1p0    logU2 -7.4043    sig 4.7681    bkg 568.814   Errbkg 35706    Z 0.199644
+Events: 2 0 0 0 0 0 594
+M 10     LT m1p5    logU2 -6.9043    sig 52.7733    bkg 568.814   Errbkg 35706    Z 2.17978
+Events: 7 0 0 0 0 0 594
+M 10     LT m2p0    logU2 -6.4043    sig 309.927    bkg 568.814   Errbkg 35706    Z 12.0224
+Events: 13 0 0 0 0 0 594
+M 10     LT m2p5    logU2 -5.9043    sig 2864.84    bkg 568.814   Errbkg 35706    Z 81.3421
+Events: 38 0 0 0 0 0 594
+M 10     LT m3p0    logU2 -5.4043    sig 25509.4    bkg 568.814   Errbkg 35706    Z 385.35
+Events: 107 0 0 0 0 0 594
+M 10     LT m3p5    logU2 -4.9043    sig 245773    bkg 568.814   Errbkg 35706    Z 1580.98
+Events: 326 0 0 0 0 0 594
+M 10     LT m4p0    logU2 -4.4043    sig 2.11704e+06    bkg 568.814   Errbkg 35706    Z 5530.72
+Events: 888 0 0 0 0 0 594
+M 10     LT m4p5    logU2 -3.9043    sig 1.5357e+07    bkg 568.814   Errbkg 35706    Z 16813.4
+Events: 2037 0 0 0 0 0 594
+M 10     LT m5p0    logU2 -3.4043    sig 8.63981e+07    bkg 568.814   Errbkg 35706    Z 43460.7
+Events: 3624 0 0 0 0 0 594
+M 20     LT m1p0    logU2 -8.94983    sig 0.126063    bkg 12756.2   Errbkg 35706.1    Z 0.00111616
+Events: 2 0 0 0 0 0 13321
+M 20     LT m1p5    logU2 -8.44983    sig 1.79392    bkg 12756.2   Errbkg 35706.1    Z 0.015883
+Events: 9 0 0 0 0 0 13321
+M 20     LT m2p0    logU2 -7.94983    sig 20.8004    bkg 12756.2   Errbkg 35706.1    Z 0.184116
+Events: 33 0 0 0 0 0 13321
+M 20     LT m2p5    logU2 -7.44983    sig 147.5    bkg 12756.2   Errbkg 35706.1    Z 1.30346
+Events: 74 0 0 0 0 0 13321
+M 20     LT m3p0    logU2 -6.94983    sig 1285.84    bkg 12756.2   Errbkg 35706.1    Z 11.2012
+Events: 204 0 0 0 0 0 13321
+M 20     LT m3p5    logU2 -6.44983    sig 11640.6    bkg 12756.2   Errbkg 35706.1    Z 91.4233
+Events: 584 0 0 0 0 0 13321
+M 20     LT m4p0    logU2 -5.94983    sig 103813    bkg 12756.2   Errbkg 35706.1    Z 555.143
+Events: 1647 0 0 0 0 0 13321
+M 20     LT m4p5    logU2 -5.44983    sig 735110    bkg 12756.2   Errbkg 35706.1    Z 2149.24
+Events: 3688 0 0 0 0 0 13321
+M 20     LT m5p0    logU2 -4.94983    sig 3.67158e+06    bkg 12756.2   Errbkg 35706.1    Z 5865.7
+Events: 5825 0 0 0 0 0 13321
+M 20     LT m5p5    logU2 -4.44983    sig 1.32132e+07    bkg 12756.2   Errbkg 35706.1    Z 12540.1
+Events: 6629 0 0 0 0 0 13321
+M 20     LT m6p0    logU2 -3.94983    sig 4.1689e+07    bkg 12756.2   Errbkg 35706.1    Z 24321.7
+Events: 6614 0 0 0 0 0 13321
+M 20     LT m6p5    logU2 -3.44983    sig 1.33089e+08    bkg 12756.2   Errbkg 35706.1    Z 46871.8
+Events: 6677 0 0 0 0 0 13321
+M 30     LT m0p5    logU2 -10.3598    sig 0.0021871    bkg 29899.3   Errbkg 35706.3    Z 1.26363e-05
+Events: 1 0 0 1 0 0 28307
+M 30     LT m1p5    logU2 -9.35985    sig 0.196839    bkg 29899.3   Errbkg 35706.3    Z 0.00113836
+Events: 9 0 0 1 0 0 28307
+M 30     LT m2p0    logU2 -8.85985    sig 2.14406    bkg 29899.3   Errbkg 35706.3    Z 0.0123995
+Events: 31 0 0 1 0 0 28307
+M 30     LT m2p5    logU2 -8.35985    sig 15.7471    bkg 29899.3   Errbkg 35706.3    Z 0.0910612
+Events: 72 0 0 1 0 0 28307
+M 30     LT m3p0    logU2 -7.85985    sig 165.3    bkg 29899.3   Errbkg 35706.3    Z 0.955088
+Events: 239 0 0 1 0 0 28307
+M 30     LT m3p5    logU2 -7.35985    sig 1550.66    bkg 29899.3   Errbkg 35706.3    Z 8.8919
+Events: 709 0 0 1 0 0 28307
+M 30     LT m4p0    logU2 -6.85985    sig 12352.6    bkg 29899.3   Errbkg 35706.3    Z 67.2117
+Events: 1786 0 0 1 0 0 28307
+M 30     LT m4p5    logU2 -6.35985    sig 84422.2    bkg 29899.3   Errbkg 35706.3    Z 371.224
+Events: 3860 0 0 1 0 0 28307
+M 30     LT m5p0    logU2 -5.85985    sig 412904    bkg 29899.3   Errbkg 35706.3    Z 1249.46
+Events: 5970 0 0 1 0 0 28307
+M 30     LT m5p5    logU2 -5.35985    sig 1.43408e+06    bkg 29899.3   Errbkg 35706.3    Z 2919.72
+Events: 6557 0 0 1 0 0 28307
+M 30     LT m6p0    logU2 -4.85985    sig 4.5551e+06    bkg 29899.3   Errbkg 35706.3    Z 6086.03
+Events: 6586 0 0 1 0 0 28307
+M 30     LT m6p5    logU2 -4.35985    sig 1.43671e+07    bkg 29899.3   Errbkg 35706.3    Z 12211.6
+Events: 6569 0 0 1 0 0 28307
+M 30     LT m7p0    logU2 -3.85985    sig 4.55924e+07    bkg 29899.3   Errbkg 35706.3    Z 24034.7
+Events: 6592 0 0 1 0 0 28307
+M 30     LT p0p0    logU2 -10.8598    sig 0.000691634    bkg 29899.3   Errbkg 35706.3    Z 4.14999e-06
+Events: 1 0 0 1 0 0 28307
+M 40     LT m1p0    logU2 -10.5203    sig 0.00387095    bkg 23301.5   Errbkg 35706.3    Z 2.53275e-05
+Events: 3 1 0 0 0 0 23271
+M 40     LT m1p5    logU2 -10.0203    sig 0.0693663    bkg 23301.5   Errbkg 35706.3    Z 0.000454416
+Events: 17 1 0 0 0 0 23271
+M 40     LT m2p0    logU2 -9.52026    sig 0.412902    bkg 23301.5   Errbkg 35706.3    Z 0.00270491
+Events: 32 1 0 0 0 0 23271
+M 40     LT m2p5    logU2 -9.02026    sig 3.3051    bkg 23301.5   Errbkg 35706.3    Z 0.0216512
+Events: 81 1 0 0 0 0 23271
+M 40     LT m3p0    logU2 -8.52026    sig 34.4515    bkg 23301.5   Errbkg 35706.3    Z 0.225636
+Events: 267 1 0 0 0 0 23271
+M 40     LT m3p5    logU2 -8.02026    sig 319.901    bkg 23301.5   Errbkg 35706.3    Z 2.09091
+Events: 784 1 0 0 0 0 23271
+M 40     LT m4p0    logU2 -7.52026    sig 2616.76    bkg 23301.5   Errbkg 35706.3    Z 16.8357
+Events: 2028 1 0 0 0 0 23271
+M 40     LT m4p5    logU2 -7.02026    sig 17382.4    bkg 23301.5   Errbkg 35706.3    Z 102.872
+Events: 4260 1 0 0 0 0 23271
+M 40     LT m5p0    logU2 -6.52026    sig 79380.3    bkg 23301.5   Errbkg 35706.3    Z 381.861
+Events: 6152 1 0 0 0 0 23271
+M 40     LT m5p5    logU2 -6.02026    sig 267387    bkg 23301.5   Errbkg 35706.3    Z 965.643
+Events: 6553 1 0 0 0 0 23271
+M 40     LT m6p0    logU2 -5.52026    sig 843610    bkg 23301.5   Errbkg 35706.3    Z 2140.8
+Events: 6538 1 0 0 0 0 23271
+M 40     LT m6p5    logU2 -5.02026    sig 2.67387e+06    bkg 23301.5   Errbkg 35706.3    Z 4503.68
+Events: 6553 1 0 0 0 0 23271
+M 40     LT m7p0    logU2 -4.52026    sig 8.47352e+06    bkg 23301.5   Errbkg 35706.3    Z 9126.73
+Events: 6567 1 0 0 0 0 23271
+M 40     LT p0p0    logU2 -11.5203    sig 0.000129032    bkg 23301.5   Errbkg 35706.3    Z 1.54477e-06
+Events: 1 1 0 0 0 0 23271
+M 50     LT m1p0    logU2 -11.0518    sig 0.00120123    bkg 31071.4   Errbkg 35737    Z 6.64067e-06
+Events: 4 3 2 1 0 0 24694
+M 50     LT m1p5    logU2 -10.5518    sig 0.00949522    bkg 31071.4   Errbkg 35737    Z 5.38931e-05
+Events: 10 3 2 1 0 0 24694
+M 50     LT m2p0    logU2 -10.0518    sig 0.105092    bkg 31071.4   Errbkg 35737    Z 0.000596203
+Events: 35 3 2 1 0 0 24694
+M 50     LT m2p5    logU2 -9.55175    sig 0.930532    bkg 31071.4   Errbkg 35737    Z 0.00527897
+Events: 98 3 2 1 0 0 24694
+M 50     LT m3p0    logU2 -9.05175    sig 9.39821    bkg 31071.4   Errbkg 35737    Z 0.0533142
+Events: 313 3 2 1 0 0 24694
+M 50     LT m3p5    logU2 -8.55175    sig 79.475    bkg 31071.4   Errbkg 35737    Z 0.450677
+Events: 837 3 2 1 0 0 24694
+M 50     LT m4p0    logU2 -8.05175    sig 666.886    bkg 31071.4   Errbkg 35737    Z 3.76989
+Events: 2221 3 2 1 0 0 24694
+M 50     LT m4p5    logU2 -7.55175    sig 4127.57    bkg 31071.4   Errbkg 35737    Z 22.9244
+Events: 4347 3 2 1 0 0 24694
+M 50     LT m5p0    logU2 -7.05175    sig 17391.2    bkg 31071.4   Errbkg 35737    Z 91.1114
+Events: 5792 3 2 1 0 0 24694
+M 50     LT m5p5    logU2 -6.55175    sig 56658    bkg 31071.4   Errbkg 35737    Z 262.307
+Events: 5967 3 2 1 0 0 24694
+M 50     LT m6p0    logU2 -6.05175    sig 178176    bkg 31071.4   Errbkg 35737    Z 664.692
+Events: 5934 3 2 1 0 0 24694
+M 50     LT m6p5    logU2 -5.55175    sig 564776    bkg 31071.4   Errbkg 35737    Z 1546.08
+Events: 5948 3 2 1 0 0 24694
+M 50     LT m7p0    logU2 -5.05175    sig 1.77002e+06    bkg 31071.4   Errbkg 35737    Z 3329.31
+Events: 5894 3 2 1 0 0 24694
+M 60     LT m1p5    logU2 -11.0146    sig 0.00298994    bkg 57973.8   Errbkg 36372.9    Z 1.19626e-05
+Events: 13 14 11 5 0 0 22012
+M 60     LT m2p0    logU2 -10.5146    sig 0.021092    bkg 57973.8   Errbkg 36372.9    Z 8.7655e-05
+Events: 29 14 11 5 0 0 22012
+M 60     LT m2p5    logU2 -10.0146    sig 0.236896    bkg 57973.8   Errbkg 36372.9    Z 0.000983876
+Events: 103 14 11 5 0 0 22012
+M 60     LT m3p0    logU2 -9.51464    sig 2.15284    bkg 57973.8   Errbkg 36372.9    Z 0.00894115
+Events: 296 14 11 5 0 0 22012
+M 60     LT m3p5    logU2 -9.01464    sig 20.2166    bkg 57973.8   Errbkg 36372.9    Z 0.0839591
+Events: 879 14 11 5 0 0 22012
+M 60     LT m4p0    logU2 -8.51464    sig 161.245    bkg 57973.8   Errbkg 36372.9    Z 0.669374
+Events: 2217 14 11 5 0 0 22012
+M 60     LT m4p5    logU2 -8.01464    sig 921.823    bkg 57973.8   Errbkg 36372.9    Z 3.81845
+Events: 4008 14 11 5 0 0 22012
+M 60     LT m5p0    logU2 -7.51464    sig 3537.64    bkg 57973.8   Errbkg 36372.9    Z 14.5468
+Events: 4864 14 11 5 0 0 22012
+M 60     LT m5p5    logU2 -7.01464    sig 11325    bkg 57973.8   Errbkg 36372.9    Z 45.6164
+Events: 4924 14 11 5 0 0 22012
+M 60     LT m6p0    logU2 -6.51464    sig 35689.1    bkg 57973.8   Errbkg 36372.9    Z 135.956
+Events: 4907 14 11 5 0 0 22012
+M 60     LT m6p5    logU2 -6.01464    sig 113135    bkg 57973.8   Errbkg 36372.9    Z 379.625
+Events: 4919 14 11 5 0 0 22012
+M 60     LT m7p0    logU2 -5.51464    sig 358347    bkg 57973.8   Errbkg 36372.9    Z 961.68
+Events: 4927 14 11 5 0 0 22012
+M 70     LT m2p0    logU2 -10.955    sig 0.00552596    bkg 102566   Errbkg 37099.1    Z 1.68727e-05
+Events: 37 52 21 6 0 0 17047
+M 70     LT m2p5    logU2 -10.455    sig 0.058088    bkg 102566   Errbkg 37099.1    Z 0.000181379
+Events: 123 52 21 6 0 0 17047
+M 70     LT m3p0    logU2 -9.95499    sig 0.580972    bkg 102566   Errbkg 37099.1    Z 0.00181406
+Events: 389 52 21 6 0 0 17047
+M 70     LT m3p5    logU2 -9.45499    sig 5.03905    bkg 102566   Errbkg 37099.1    Z 0.0157342
+Events: 1067 52 21 6 0 0 17047
+M 70     LT m4p0    logU2 -8.95499    sig 36.0382    bkg 102566   Errbkg 37099.1    Z 0.112522
+Events: 2413 52 21 6 0 0 17047
+M 70     LT m4p5    logU2 -8.45499    sig 179.176    bkg 102566   Errbkg 37099.1    Z 0.559307
+Events: 3794 52 21 6 0 0 17047
+M 70     LT m5p0    logU2 -7.95499    sig 626.524    bkg 102566   Errbkg 37099.1    Z 1.95431
+Events: 4195 52 21 6 0 0 17047
+M 70     LT m5p5    logU2 -7.45499    sig 1959.89    bkg 102566   Errbkg 37099.1    Z 6.10037
+Events: 4150 52 21 6 0 0 17047
+M 70     LT m6p0    logU2 -6.95499    sig 6224.91    bkg 102566   Errbkg 37099.1    Z 19.2453
+Events: 4168 52 21 6 0 0 17047
+M 70     LT m6p5    logU2 -6.45499    sig 19537.4    bkg 102566   Errbkg 37099.1    Z 59.2075
+Events: 4137 52 21 6 0 0 17047
+M 70     LT m7p0    logU2 -5.95499    sig 62622.5    bkg 102566   Errbkg 37099.1    Z 179.461
+Events: 4193 52 21 6 0 0 17047
+M 80     LT m3p0    logU2 -10.4871    sig 0.0699874    bkg 354496   Errbkg 40271.4    Z 0.000117267
+Events: 439 304 34 3 0 0 10478
+M 80     LT m3p5    logU2 -9.98714    sig 0.531875    bkg 354496   Errbkg 40271.4    Z 0.000893278
+Events: 1055 304 34 3 0 0 10478
+M 80     LT m4p0    logU2 -9.48714    sig 3.17415    bkg 354496   Errbkg 40271.4    Z 0.00533115
+Events: 1991 304 34 3 0 0 10478
+M 80     LT m4p5    logU2 -8.98714    sig 12.4726    bkg 354496   Errbkg 40271.4    Z 0.0209483
+Events: 2474 304 34 3 0 0 10478
+M 80     LT m5p0    logU2 -8.48714    sig 39.904    bkg 354496   Errbkg 40271.4    Z 0.0670197
+Events: 2503 304 34 3 0 0 10478
+M 80     LT m5p5    logU2 -7.98714    sig 126.138    bkg 354496   Errbkg 40271.4    Z 0.211843
+Events: 2502 304 34 3 0 0 10478
+M 80     LT m6p0    logU2 -7.48714    sig 396.489    bkg 354496   Errbkg 40271.4    Z 0.665802
+Events: 2487 304 34 3 0 0 10478
+M 80     LT m6p5    logU2 -6.98714    sig 1254.32    bkg 354496   Errbkg 40271.4    Z 2.10546
+Events: 2488 304 34 3 0 0 10478
+M 80     LT m7p0    logU2 -6.48714    sig 3985.62    bkg 354496   Errbkg 40271.4    Z 6.68158
+Events: 2500 304 34 3 0 0 10478
+M 85     LT m4p0    logU2 -9.92701    sig 0.26025    bkg 347157   Errbkg 40103.8    Z 0.000441622
+Events: 810 278 68 2 0 0 5290
+M 85     LT m4p5    logU2 -9.42701    sig 0.903247    bkg 347157   Errbkg 40103.8    Z 0.00153298
+Events: 889 278 68 2 0 0 5290
+M 85     LT m5p0    logU2 -8.92701    sig 2.80813    bkg 347157   Errbkg 40103.8    Z 0.00476599
+Events: 874 278 68 2 0 0 5290
+M 85     LT m5p5    logU2 -8.42701    sig 8.83942    bkg 347157   Errbkg 40103.8    Z 0.0150023
+Events: 870 278 68 2 0 0 5290
+M 85     LT m6p0    logU2 -7.92701    sig 27.8242    bkg 347157   Errbkg 40103.8    Z 0.0472231
+Events: 866 278 68 2 0 0 5290
+M 85     LT m6p5    logU2 -7.42701    sig 92.3567    bkg 347157   Errbkg 40103.8    Z 0.156742
+Events: 909 278 68 2 0 0 5290
+M 85     LT m7p0    logU2 -6.92701    sig 286.275    bkg 347157   Errbkg 40103.8    Z 0.485804
+Events: 891 278 68 2 0 0 5290
+dcut=8) 10 -7.4043 -6.9043 -6.9497
+=========================================
+dcut=8) 20 -7.44983 -6.94983 -7.41465
+=========================================
+dcut=8) 30 -7.85985 -7.35985 -7.79402
+=========================================
+dcut=8) 40 -8.52026 -8.02026 -8.04463
+=========================================
+dcut=8) 50 -8.55175 -8.05175 -8.31837
+=========================================
+dcut=8) 60 -8.51464 -8.01464 -8.30337
+=========================================
+dcut=8) 70 -7.95499 -7.45499 -7.94948
+=========================================
+dcut=8) 80 -7.48714 -6.98714 -7.02377
+=========================================

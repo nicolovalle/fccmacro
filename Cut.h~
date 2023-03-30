@@ -1,8 +1,37 @@
 #include "lumisettings.h"
-#include "Cut.h"
 
 Double_t Muon_mass = 0.105658;
 Double_t Z_mass = 91.1876;
+
+
+  Long64_t oNEntries;
+  Int_t oNReco;
+  Int_t oNMuon;
+  std::vector<Int_t>* oNJet = 0;
+  std::vector<Double_t>* oPxJet1 = 0;
+  std::vector<Double_t>* oPyJet1 = 0;
+  std::vector<Double_t>* oPzJet1 = 0;
+  std::vector<Double_t>* oEJet1 = 0;
+  std::vector<Double_t>* oPxJet2 = 0;
+  std::vector<Double_t>* oPyJet2 = 0;
+  std::vector<Double_t>* oPzJet2 = 0;
+  std::vector<Double_t>* oEJet2 = 0;
+  Double_t oPxMu;
+  Double_t oPyMu;
+  Double_t oPzMu;
+  Double_t oEMu;
+  Double_t oPxMiss;
+  Double_t oPyMiss;
+  Double_t oPzMiss;
+  Double_t oEMiss;
+  Double_t oPxVis;
+  Double_t oPyVis;
+  Double_t oPzVis;
+  Double_t oEVis;
+  Double_t oMuD0;
+  Double_t oMuZ0;
+  Double_t oMuD0sig;
+  Double_t oMuZ0sig;
 
 
 std::vector<int> possible_masses = {1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
@@ -24,9 +53,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   // ">" or "<" for the type of cut in impact parameter
   // "dsigma" or "dmm" to cut in number of sigma or in unit 10-5 m
   // "d2d" or "d3d" to cut on D0 or D0+Z0
-  // type of analysis:
-  ///// "anymass1L2M" : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
-  ///// "anymass1L2L": mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets 
+  // "jalg" or "massdep" for the type of analysis (not implemented!)
   
   // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses
 
@@ -153,30 +180,59 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
     for (int j=0; j<200; j++) nCutByCut[1][j] ++;
 
+    TLorentzVector lvj1(oPxJet1->at(jalg), oPyJet1->at(jalg), oPzJet1->at(jalg), oEJet1->at(jalg));
+    TLorentzVector lvj2(oPxJet2->at(jalg), oPyJet2->at(jalg), oPzJet2->at(jalg), oEJet2->at(jalg));
+    TLorentzVector lvmu(oPxMu, oPyMu, oPzMu, oEMu);
+    TLorentzVector lvmiss(oPxMiss, oPyMiss, oPzMiss, oEMiss);
+    TLorentzVector lvvis(oPxVis, oPyVis, oPzVis, oEVis);
 
-    // this builds the lorentz vectors
-    BUILD_DERIVATE(jalg);
+    Bool_t selection;
     
+    if (oNJet->at(jalg) == 2){
 
-    Bool_t selection = false;
+      Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
+      Double_t cosj1mu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      Double_t cosj2mu = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+    
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3. && oEJet2->at(jalg) >= 3.);
+      Bool_t sel41 = cosjj > -0.8;
+      Bool_t sel42 = cosjj < 0.98;
+      //Bool_t sel5_old = (TMath::Min(lvj1.M(), lvj1.M()) > 1.8 && TMath::Min(lvj1.M2(), lvj1.M2()) > 0);
+      Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < 0.8);
 
-    if (analysis_opt.Contains("anymass1L2M")){
+      Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
+      Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
+      Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-      if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
-      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
-      
+      selection = sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
+
+      if (sel1)  for (int j=0; j<200; j++) nCutByCut[2][j]++;
+      if (sel2)  for (int j=0; j<200; j++) nCutByCut[3][j]++;
+      if (sel3)  for (int j=0; j<200; j++) nCutByCut[4][j]++;
+      if (sel41) for (int j=0; j<200; j++) nCutByCut[5][j]++;
+      if (sel42) for (int j=0; j<200; j++) nCutByCut[6][j]++;
+      if (sel6)  for (int j=0; j<200; j++) nCutByCut[7][j]++;
+      if (s21)   for (int j=0; j<200; j++) nCutByCut[8][j]++;
+      if (s22)   for (int j=0; j<200; j++) nCutByCut[9][j]++;
+      if (s23)   for (int j=0; j<200; j++) nCutByCut[10][j]++;
     }
 
+    else if (oNJet->at(jalg) == 1){
 
-    if (analysis_opt.Contains("anymass1L2L")){
+      Double_t cosjmu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.50);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3.);
+      
+      Bool_t sel4 = (-0.5 < cosjmu && cosjmu < 0.96);
+      Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
 
-      if (oNJet->at(jalg) == 2) selection = SELECTION_LM_2JET(jalg);
-      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      selection = sel1 && sel2 && sel3 && sel4 && sel5;
       
     }
-    
-    if (!selection) continue;
-    
     
       
    

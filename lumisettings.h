@@ -491,7 +491,7 @@ void MapPoint(){
   g->GetYaxis()->SetRangeUser(-8,3);
   g->GetXaxis()->SetLimits(0,90);
   g->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  g->GetYaxis()->SetTitle("decay length");
+  g->GetYaxis()->SetTitle("Log (decay length / m)");
   g->Draw("A P");
 
 

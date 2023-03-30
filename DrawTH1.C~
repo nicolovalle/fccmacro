@@ -3,23 +3,18 @@
 
 void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t bmax=100, Bool_t drawstack = true){
 
-  Int_t mass = 30;
-  Int_t jalg = 2;
-  TString lt = "m1p0";
-  
-  TCanvas *c1 = new TCanvas("c1","c1",0,0,1200,800); 
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,600,400); 
 
-  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", 1.e5, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", 1.e5);
+  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", 1.e5);
+  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", 1.e5);
+  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",1.e5);
+  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",1.e5);
+  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",1.e5);
 
   //std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", -1, 30);
-  //std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", mass, "n/a", -1, 8, 0);
+  std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", -1, 50);
   //std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", -1, 70);
-  std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, 8, jalg);
 
   
 
@@ -49,9 +44,9 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
 
 
 
-  TH1F *h_signalM = new TH1F(Form("signal%d",mass),Form("signal%d",mass),nbin,bmin,bmax);
-  h_signalM->SetLineWidth(3);
-  h_signalM->SetLineColor(1);
+  TH1F *h_signal50 = new TH1F("signal50","signal50",nbin,bmin,bmax);
+  h_signal50->SetLineWidth(3);
+  h_signal50->SetLineColor(1);
   
   
   /*
@@ -86,8 +81,8 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
   cout<<"filled 6"<<endl;
 
   // for (int i=0; i<=Weight("signal","50","n/a",signal50.second);i++)
-    for (double ie : signalM.first) h_signalM->Fill(ie);
-    cout<<"filled 7: "<<signalM.first.size()<<" events"<<endl;
+    for (double ie : signal50.first) h_signal50->Fill(ie);
+  cout<<"filled 7"<<endl;
 
 
   h_munuqq->Scale(Weight("munuqq","n/a","n/a",munuqq.second));
@@ -96,7 +91,7 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
   h_zuds->Scale(Weight("Zuds","n/a","n/a",Zuds.second));
   h_zbb->Scale(Weight("Zbb","n/a","n/a",Zbb.second));
   h_zcc->Scale(Weight("Zcc","n/a","n/a",Zcc.second));
-  h_signalM->Scale(Weight("signal",Form("%d",mass),lt,signalM.second));
+  h_signal50->Scale(Weight("signal","50","n/a",signal50.second));
 
   
 
@@ -110,7 +105,7 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
 
   hs->Draw(drawstack ? "HIST" : "HIST nostack");
 
-  //h_signalM->Draw("HIST same");
+  h_signal50->Draw("HIST same");
 
   gPad->SetLogy();
 

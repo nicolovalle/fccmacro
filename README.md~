@@ -128,34 +128,12 @@ The events are discarded if the conditions are not fullfilled for *at least one 
 **loose** adds the following cut:
 + min [cos(ji,mu)] > -0.98q
 
-
-
 ## Analysis macros
 
 The root macros are in the `workdir/fccmacro` directory, local copy form github
 + https://github.com/nicolovalle/fccmacro
 
 There are different branch and the main one. The branch name should correspond the the `MyExternalAnalysis` macro version and the `results-V.../` files that can be processed with that version of the macros.
-
-
-### Cut list
-
-That's the list of cuts currently implemented.
-
-|                 | 1J LM  | 2J LM  | 2J MM   | extraloose |
-| --------------- | ------ | ------ | ------- | ---------- |
-| cos(pmiss)      | < 0.94 | 1JLM   | < 0.94  | < 0.94     |
-| cos(pmiss,mu)   | < 0.50 | 1JLM   | < 0.80  | < 0.80     |
-| min [Ej]        | >= 3   | 1JLM   | >= 3    | >= 3       |
-| cos(jj)         |        | > -0.8 | > -0.8  | > -0.8     |
-| cos(jj)         |        |        | < 0.98  | any value  |
-| max [cos(j,mu)] | < 0.96 | < 0.96 | < 0.8   | < 0.96     |
-| max [cos(j,mu)] | > -0.5 | > -0.5 |         | any value  |
-| min [cos(j,mu)] |        |        | > -0.98 | any value  |
-| min [Mj]        | > 0.2  | > 0.2  | > 0.2   | > 0.2      |
-| min [Mj2]       | > 0    | > 0    | > 0     | any value  |
-| M [vis+miss]    | > 80   | > 80   | > 80    | > 80       |
-
 
 :::spoiler To created a new branch
 + Synchronize local/upstream

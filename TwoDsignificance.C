@@ -43,7 +43,7 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "simple", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dsigma jalg"){
+std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "simple", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dsigma anymass1L2M"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
@@ -253,29 +253,43 @@ void CompareAnalyses(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",0,AnalysisOptions);
-  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dmm");
+  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",0,"< d3d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
     y0[i] = XY[1][i];
   }
   auto g0 = new TGraph(XY[0].size(), x0, y0);
   g0->SetLineColor(colcounter);
-  g0->SetTitle("D0 < 1mm");
+  g0->SetTitle("2 jet, HM analysis");
   g0->SetLineWidth(2);
   colcounter++;
   
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm");
+  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d3d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
   }
   auto g1 = new TGraph(XY[0].size(), x1, y1);
   g1->SetLineColor(colcounter);
-  g1->SetTitle("D0 > 1mm");
+  g1->SetTitle("1 or 2 jet, LM or HM analysis");
   g1->SetLineWidth(2);
+  colcounter++;
+
+
+  Double_t x2[50], y2[50];
+  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
+  XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d3d dsigma anymass1L2L");
+  for (int i=0; i<XY[0].size(); i++){
+    x2[i] = XY[0][i];
+    y2[i] = XY[1][i];
+  }
+  auto g2 = new TGraph(XY[0].size(), x2, y2);
+  g2->SetLineColor(colcounter);
+  g2->SetTitle("1 or 2 jet, LM analysis");
+  g2->SetLineWidth(2);
   colcounter++;
 
 
@@ -295,6 +309,7 @@ void CompareAnalyses(){
   
   g0->Draw("same");
   g1->Draw("same");
+  g2->Draw("same");
  
 
   
@@ -321,7 +336,7 @@ void ScanD0Cut(){
   std::vector<std::vector<double>> XY;
   int colcounter=1;
 
-  TString AnalysisOptions = "< d3d dsigma jalg";
+  TString AnalysisOptions = "< d3d dsigma anymass1L2M";
 
   dcut = 4;
   double_t x4[50], y4[50];
