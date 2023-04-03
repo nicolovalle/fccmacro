@@ -33,12 +33,12 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   // To be read like this: CutFlowOK[M] where M(int) is the Mass in GeV. CutFlowOK[M] is a vector:
   
   //// Standard ouptut:
-  //// 0: Nnocut(opt,lifetime)  <--- written in lumisettings.h, not read from the file!
+  //// 0: Nnocut(opt,mass,lifetime)  <--- written in lumisettings.h, not read from the file!
   //// 1: nOneMuon  2: selection  3: sliding(mass)
   //// 4...24:  sliding(mass) & d0cut = index-4
     
   //// When CutByCutFlow is set:
-  //// 0: Nnocut(opt,lifetime) <--- written in lumisettings.h, not read from the file!
+  //// 0: Nnocut(opt,mass,lifetime) <--- written in lumisettings.h, not read from the file!
   //// 1: entries of the tree,   2: one muon selection (should be equal to 1)
   //// 3: 1& cos(pmiss)<0.94
   //// 4: 1& cos(pmiss,mu)<0.8
@@ -223,7 +223,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
   if (!CutByCutFlow){
     for (int im : possible_masses){
-      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       toret[im].push_back(1.*nOneMuon);
       toret[im].push_back(1.*nSelection);
       toret[im].push_back(1.*nSliding[im]);
@@ -233,7 +233,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   }
   if (CutByCutFlow){
     for (int im : possible_masses){
-      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       for (int cbc = 0; cbc<12; cbc++)
 	toret[im].push_back(nCutByCut[cbc][im]);
     }

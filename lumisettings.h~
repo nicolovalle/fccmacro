@@ -26,8 +26,10 @@ std::vector<TString> id = {"signal","Zbb","Zcc","Zuds","Zmumu","Ztautau","munuqq
 
 
 
-Double_t Nnocut(TString opt, TString lifetime="n/a"){
+Double_t Nnocut(TString opt, TString HNMass="any", TString lifetime="n/a"){
 
+  if (lifetime == "m0p5" && HNMass == "40") return 5000.;
+  
   if (lifetime != "n/a") return 10000.;
 
   if (opt == "Zbb")     return NZbb;
@@ -38,9 +40,13 @@ Double_t Nnocut(TString opt, TString lifetime="n/a"){
   else if (opt == "munuqq")  return Nmunuqq;
   else return Nsignal;
   
-
-  
+ 
 }
+Double_t Nnocut(TString opt, int HNMass, TString lifetime="n/a"){
+  return Nnocut(opt,Form("%d",HNMass),lifetime);
+}
+
+
 
 TString AnalysisResults(TString opt, TString HNMass = "50", TString lifetime="n/a" ){
 
@@ -58,6 +64,10 @@ TString AnalysisResults(TString opt, TString HNMass = "50", TString lifetime="n/
 
   return toret;
 }
+TString AnalysisResults(TString opt, int HNMass = 50, TString lifetime="n/a" ){
+  return AnalysisResults(opt,Form("%d",HNMass),lifetime);
+}
+
 
 
 Double_t xsec(TString opt, TString HNMass = "50", TString lifetime="n/a"){
@@ -249,11 +259,17 @@ Double_t xsec(TString opt, TString HNMass = "50", TString lifetime="n/a"){
     
   }
 }
+Double_t xsec(TString opt, int HNMass = 50, TString lifetime="n/a"){
+  return xsec(opt,Form("%d",HNMass),lifetime);
+}
 
 Double_t Weight(TString opt, TString HNMass="specify only for signal", TString lifetime="n/a", Double_t custom_weight = 1.){
 
-  return xsec(opt,HNMass,lifetime)*LUMI/(Nnocut(opt,lifetime) * custom_weight);
+  return xsec(opt,HNMass,lifetime)*LUMI/(Nnocut(opt,HNMass,lifetime) * custom_weight);
  
+}
+Double_t Weight(TString opt, int HNMass=-1, TString lifetime="n/a", Double_t custom_weight = 1.){
+  return Weight(opt, Form("%d",HNMass), lifetime, custom_weight);
 }
 
 Double_t Coupling(TString HNMass, TString lifetime){
@@ -434,6 +450,9 @@ Double_t Coupling(TString HNMass, TString lifetime){
   return -1;
   
 }
+Double_t Coupling(int HNMass, TString lifetime){
+  return Coupling(Form("%d",HNMass), lifetime);
+}
 
 
 void DrawCol()
@@ -491,7 +510,7 @@ void MapPoint(){
   g->GetYaxis()->SetRangeUser(-8,3);
   g->GetXaxis()->SetLimits(0,90);
   g->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  g->GetYaxis()->SetTitle("Log(decay length / m)");
+  g->GetYaxis()->SetTitle("Log (decay length / m)");
   g->Draw("A P");
 
 

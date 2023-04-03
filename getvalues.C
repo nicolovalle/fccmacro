@@ -7,7 +7,8 @@ Double_t Z_mass = 91.1876;
 
 
 
-std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString dir="../MyExternalAnalysis/results/"){
+std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/"){
+  
   // !! With the last option = true, the getvalues[0] is the scale factor!!
   // available obsID: mtot, d0[selection], d0sliding[selection]
   // If sliding is not needed, you can use any mass.
@@ -95,7 +96,23 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
       continue;
     }
 
-    Bool_t selection = (oNJet->at(jalg) ==1 ) ? SELECTION_LM_1JET(jalg) : SELECTION_MM_2JET(jalg);
+    Bool_t selection = false;
+
+    if (analysis_opt.Contains("anymass1L2M")){
+
+      if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
+      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      
+    }
+
+    if (analysis_opt.Contains("anymass1L2L")){
+
+      if (oNJet->at(jalg) == 2) selection = SELECTION_LM_2JET(jalg);
+      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      
+    }
+    
+   
 
     
 
@@ -116,10 +133,35 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
       Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
       Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
 
-      if (slid1 && slid2){
+      if (obsID == "d0sliding" && slid1 && slid2) toret.push_back(TMath::Abs(oMuD0sig));
+      
 
-	if (obsID == "d0sliding") toret.push_back(TMath::Abs(oMuD0sig));
+      if (obsID == "mass_after_dcut"){
+
+	Bool_t cut_condition = false;
+
+	if (analysis_opt.Contains("d3d") and analysis_opt.Contains("dsigma"))
+	  cut_condition =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*dd0cut);
+
+	else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
+	  cut_condition =  (TMath::Abs(oMuD0sig) < 1.*dd0cut);
+
+	else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
+	  cut_condition = (TMath::Abs(oMuD0) < 1.*dd0cut/100.);
+
+	else cout<<"CutFlowOK.C:: ERROR - OPTIONS NOT SUPPORTED"<<endl;
+
+	if (analysis_opt.Contains(">")) cut_condition = !cut_condition;
+
+	if (cut_condition) toret.push_back(lvvis.M());
+	
+
+	
       }
+
+
+
+      
       
     }
 

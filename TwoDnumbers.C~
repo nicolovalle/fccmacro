@@ -11,7 +11,7 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "simple", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dsigma anymass1L2M"){
+std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = false, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
@@ -23,30 +23,18 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
   std::vector<TString> mps = {"m","p"};
 
-  //std::vector<TString> lifetime = {"m1p0", "m1p5", "m2p0", "m2p5", "m3p0", "m3p5", "m4p0", "m4p5", "m5p0", "m5p5", "m6p0", "m6p5", "m7p0"};
-
-  TH2F* H = new TH2F("H","H",19,0-2.5,90+2.5,64,-12,-4);
-  TH2F* HBLACK = new TH2F("HBLACK","HBLACK",19,0-2.5,90+2.5,64,-12,-4);
+  
+  TH2F* H = new TH2F("Hfilled","Hfilled",19,0-2.5,90+2.5,64,-12,-4);
+  TH2F* Hblank = new TH2F("Hblank","Hblank",19,0-2.5,90+2.5,64,-12,-4);
 
   H->GetXaxis()->SetTitle("M(HN) (GeV)");
   H->GetYaxis()->SetTitle("Log(U^{2})");
 
-  //X,Y,SIGNIFICANCE:
-  std::vector<double> TDPlot_M;
-  std::vector<double> TDPlot_U2;
-  std::vector<double> TDPlot_Z;
+  
 
-
+  std::map<int, std::vector<double>> MapSample;
+  if (sample != "signal") MapSample =  CutFlowOK(sample,-1,"n/a",AnalysisResPath,RunOnN,false,jalg,analysis_opt);
  
-  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-
-  ofstream LOG;
-  LOG.open("LOG_TwoDsignificance.txt", std::ios_base::app);
 
   for (int m : masses){
     for (TString mp : mps){
@@ -59,146 +47,51 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 
 	  TString FileNameToCheck = Form("%s%s", AnalysisResPath.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
       
+
 	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
      
+
 	  Int_t myid = dcut_id(dd0cut);
 
+	  Double_t bin_content = -1.;
 
-	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
-	  
+	  if (sample == "signal") MapSample = CutFlowOK("signal",m,lt,AnalysisResPath,RunOnN,false,jalg,analysis_opt);
 
-	   Double_t U = Coupling(Form("%d",m),lt);
-	  
-	  if (signal == 0){
-	    cout<<"From "<<FileNameToCheck<<" the signal m="<<m<<" lt="<<lt<<" has 0 events"<<endl;
-	    HBLACK->Fill(1.*m, 2.*TMath::Log10(U));
-	    continue;
-	  }
+	  bin_content = 1.*MapSample[m][myid];
 
-	
-     
-	  
-	  Double_t Zmumu = bkgMapZmumu[m][myid];
-	  Double_t Ztautau = bkgMapZtautau[m][myid];
-	  Double_t Zbb = bkgMapZbb[m][myid];
-	  Double_t Zcc = bkgMapZcc[m][myid];
-	  Double_t Zuds = bkgMapZuds[m][myid];
-	  Double_t munuqq = bkgMapmunuqq[m][myid];
-	  
+	  //MapSample[m][0] is Nnocut * SF;
+	  if (Scaled) bin_content *= xsec(sample, Form("%d",m), lt) * LUMI / MapSample[m][0]; 
 
-	  Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
+	  Double_t U = Coupling(Form("%d",m),lt);
+	  Double_t LogU2 = 2.*TMath::Log10(U);
+
+	  cout<<"TwoDnumbers.C:: Bin_content "<<sample<<" ("<<m<<","<<LogU2<<") = "<<bin_content<<endl;
 
 	 
-      
-	  Double_t Y = 2.*TMath::Log10(U);
-	  Double_t X = 1.*m;
-
-	  Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
-	  Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
-
-	  Double_t Z;
-	  if (formula == "simple")
-	    Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
-	  else if (formula == "atlas"){
-	    
-	      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
-	  }
-
-	  LOG<<"M "<<m<<"     LT "<<lt<<"    logU2 "<<Y<<"    sig "<<totsig<<"    bkg "<<totbkg<<"   Errbkg "<<SigmaBkg<<"    Z "<<Z<<endl;
-	  //LOG<<"-------------------------------------------------"<<endl;
-	  LOG<<"Events: "<<signal<<" "<<Zbb<<" "<<Zcc<<" "<<Zuds<<" "<<Zmumu<<" "<<Ztautau<<" "<<munuqq<<endl;
-	  //LOG<<"-------------------------------------------------"<<endl;
-      
-      
-
-	  if ( (Z<10000000. && Z>0) || (Draw==false)) {
-	    TDPlot_M.push_back(X);
-	    TDPlot_U2.push_back(Y);
-	    TDPlot_Z.push_back(Z);
-	    H->Fill(X,Y,Z);
-	  }
-
+	  
+	  if (bin_content == 0) Hblank->Fill(1.*m, LogU2, 1e8);
+	  else H->Fill(1.*m, LogU2, bin_content);
+	  
+	 
 	}
       }
     }
   }
 
-      
-      
-
-  // DRAWING THE LINE BY LINEAR INTERPOLATION
-
-  std::vector<double> cx;
-  std::vector<double> cy;
-
-  
-  for (int i : masses){
-
-    std::vector<double> ycoordinates;
-
-    for (int j=0; j < TDPlot_M.size(); j++){
-      if (int(TDPlot_M[j]) == i) ycoordinates.push_back(TDPlot_U2[j]);
-    }
-
-    std::sort(ycoordinates.begin(), ycoordinates.end());
-    
-
-    double spre = 0;
-    double spost = 0;
-    double upre = -99;
-    double upost = -99;
-  
-    for (double iY : ycoordinates){
-
-      spre = spost;
-      upre = upost;
-
-      for (int j=0; j < TDPlot_M.size(); j++){
-	if (int(TDPlot_M[j]) == i && TDPlot_U2[j] == iY) spost = TDPlot_Z[j];
-      }
-      upost = iY;
-
-      if (spre < 2 && spost >= 2 && upre > -99 && upost > -99){
-
-	cx.push_back(i);
-
-	double interpol = upre + (2.-spre)*((upost-upre)/(spost-spre));
-
-	cy.push_back(interpol);
-
-	LOG<<"dcut="<<dd0cut<<") "<<i<<" "<<upre<<" "<<upost<<" "<<interpol<<endl;
-	LOG<<"========================================="<<endl;
-
-      }     
-    }
-  }
-
-  std::vector<std::vector<double>> toret;
-  toret.push_back(cx);
-  toret.push_back(cy);
-
-  LOG.close();
-
-  // Drawing part
-
   if (Draw){
 
     auto c = new TCanvas();
 
-    const Int_t npoint = cx.size();
-    double vcx[npoint], vcy[npoint];
-    for (int i = 0; i<npoint; i++) {vcx[i] = cx[i]; vcy[i] = cy[i];}
-     
-    auto gg = new TGraph(npoint,vcx,vcy);
     
-    H->GetZaxis()->SetRangeUser(1e-5,1000);
+    
+    H->GetZaxis()->SetRangeUser(1e-1,1e5);
     H->Draw("colz");
-    H->SetMarkerSize(1.6);
-    H->SetTitle("Significance");
+    //H->SetMarkerSize(1.6);
+    //H->SetTitle("Significance");
+    Hblank->SetLineColor(1);
+    Hblank->Draw("same BOX");
 
-    HBLACK->Draw("same BOX");
-
-    gg->Draw("same");
+    
 
     gStyle->SetOptStat(0);
     gPad->SetLogz();
@@ -208,206 +101,144 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   }
 
   
-  return toret;
+
+  return std::pair<TH2F*, TH2F*>{H, Hblank};
+
 }
 
 
-void CompareAnalyses(){
-
-  auto c = new TCanvas("c","c",1000,600);
-
-  std::vector<std::vector<double>> XY;
-
-  Int_t dcut = 8;
-  TString AnalysisOptions = "> d3d dsigma jalg";
-
-  int colcounter = 1;
-  
-  Double_t x0[50], y0[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",0,AnalysisOptions);
-  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d2d dmm anymass1L2M");
-  for (int i=0; i<XY[0].size(); i++){
-    x0[i] = XY[0][i];
-    y0[i] = XY[1][i];
-  }
-  auto g0 = new TGraph(XY[0].size(), x0, y0);
-  g0->SetLineColor(colcounter);
-  g0->SetTitle("D0#mu < 1mm");
-  g0->SetLineWidth(2);
-  colcounter++;
-  
-
-  Double_t x1[50], y1[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
-  for (int i=0; i<XY[0].size(); i++){
-    x1[i] = XY[0][i];
-    y1[i] = XY[1][i];
-  }
-  auto g1 = new TGraph(XY[0].size(), x1, y1);
-  g1->SetLineColor(colcounter);
-  g1->SetTitle("D0#mu > 1mm");
-  g1->SetLineWidth(2);
-  colcounter++;
+void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1, Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M"){
 
 
-  Double_t x2[50], y2[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(0,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
-  for (int i=0; i<XY[0].size(); i++){
-    x2[i] = XY[0][i];
-    y2[i] = XY[1][i];
-  }
-  auto g2 = new TGraph(XY[0].size(), x2, y2);
-  g2->SetLineColor(colcounter);
-  g2->SetTitle("no D0#mu cut");
-  g2->SetLineWidth(2);
-  colcounter++;
+  TCanvas *c = new TCanvas("c","c",2500,2000);
 
+  c->Divide(3,3);
 
-  auto gax = (TGraph*)g0->Clone("ciao");
-  gax->SetMarkerColor(0);
-  gax->SetLineColor(0);
-  gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-12,-6);
-  gax->GetYaxis()->SetTitle("Log (U^{2})");
-  gax->GetXaxis()->SetLimits(0,90);
-  gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  
-  gax->Draw("A C");
+  TH2F* Hsig, *Hsig_;
+  TH2F* HZbb, *HZbb_;
+  TH2F* HZcc, *HZcc_;
+  TH2F* HZuds, *HZuds_;
+  TH2F* HZmumu, *HZmumu_;
+  TH2F* HZtautau, *HZtautau_;
+  TH2F* Hmunuqq, *Hmunuqq_;
+
+  std::pair<TH2F*, TH2F*> Pair;
 
 
   
+  c->cd(1);
+  TString sample = "signal";
   
-  g0->Draw("same");
-  g1->Draw("same");
-  g2->Draw("same");
- 
-
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  Hsig = (TH2F*)Pair.first->Clone("Hsig");
+  Hsig_ = (TH2F*)Pair.second->Clone("Hsig_");
+  Hsig->SetTitle(sample);
+  Hsig->GetZaxis()->SetRangeUser(1e-1,1e5);
+  Hsig->Draw("colz");
+  Hsig_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
   
 
-  c->BuildLegend();
 
-  c->SetGridy();
+
+  c->cd(2);
+  sample = "Zbb";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  HZbb = (TH2F*)Pair.first->Clone("HZbb");
+  HZbb_ = (TH2F*)Pair.second->Clone("HZbb_");
+  HZbb->SetTitle(sample);
+  HZbb->GetZaxis()->SetRangeUser(1e-1,1e5);
+  HZbb->Draw("colz");
+  HZbb_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+
+  
+  c->cd(3);
+  sample = "Zcc";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  HZcc = (TH2F*)Pair.first->Clone("HZcc");
+  HZcc_ = (TH2F*)Pair.second->Clone("HZcc_");
+  HZcc->SetTitle(sample);
+  HZcc->GetZaxis()->SetRangeUser(1e-1,1e5);
+  HZcc->Draw("colz");
+  HZcc_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+
+
+  c->cd(4);
+  sample = "Zuds";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  HZuds = (TH2F*)Pair.first->Clone("HZuds");
+  HZuds_ = (TH2F*)Pair.second->Clone("HZuds_");
+  HZuds->SetTitle(sample);
+  HZuds->GetZaxis()->SetRangeUser(1e-1,1e5);
+  HZuds->Draw("colz");
+  HZuds_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+
+
+  c->cd(5);
+  sample = "Ztautau";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  HZtautau = (TH2F*)Pair.first->Clone("HZtautau");
+  HZtautau_ = (TH2F*)Pair.second->Clone("HZtautau_");
+  HZtautau->SetTitle(sample);
+  HZtautau->GetZaxis()->SetRangeUser(1e-1,1e5);
+  HZtautau->Draw("colz");
+  HZtautau_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+
+
+
+  c->cd(6);
+  sample = "Zmumu";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  HZmumu = (TH2F*)Pair.first->Clone("HZmumu");
+  HZmumu_ = (TH2F*)Pair.second->Clone("HZmumu_");
+  HZmumu->SetTitle(sample);
+  HZmumu->GetZaxis()->SetRangeUser(1e-1,1e5);
+  HZmumu->Draw("colz");
+  HZmumu_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+  
+  
+
+  c->cd(7);
+  sample = "munuqq";
+  
+  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  Hmunuqq = (TH2F*)Pair.first->Clone("Hmunuqq");
+  Hmunuqq_ = (TH2F*)Pair.second->Clone("Hmunuqq_");
+  Hmunuqq->SetTitle(sample);
+  Hmunuqq->GetZaxis()->SetRangeUser(1,1e5);
+  Hmunuqq->Draw("colz");
+  Hmunuqq_->Draw("same BOX");
+  gStyle->SetOptStat(0);
+  gPad->SetLogz();
+  gStyle->SetPalette(kColorPrintableOnGrey);
+  
+  
+
+
+
   c->SaveAs("temp.png");
 
 
-  
 }
-  
-
-
-void ScanD0Cut(){
-
-  auto c = new TCanvas("c","c",1000,600);
-
-  Int_t dcut;
-
-  Int_t jalg = 2;
-
-  std::vector<std::vector<double>> XY;
-  int colcounter=1;
-
-  TString AnalysisOptions = "< d3d dsigma anymass1L2M";
-
-  dcut = 4;
-  double_t x4[50], y4[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x4[i] = XY[0][i];
-    y4[i] = XY[1][i];
-  }
-  auto g4 = new TGraph(XY[0].size(), x4, y4);
-  g4->SetLineColor(colcounter);
-  g4->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g4->SetLineWidth(2);
-  colcounter++;
-
- 
-  dcut = 8;
-  double_t x8[50], y8[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x8[i] = XY[0][i];
-    y8[i] = XY[1][i];
-  }
-  auto g8 = new TGraph(XY[0].size(), x8, y8);
-  g8->SetLineColor(colcounter);
-  g8->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g8->SetLineWidth(2);
-  colcounter++;
-
- 
-  dcut = 30;
-  double_t x12[50], y12[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x12[i] = XY[0][i];
-    y12[i] = XY[1][i];
-  }
-  auto g12 = new TGraph(XY[0].size(), x12, y12);
-  g12->SetLineColor(colcounter);
-  g12->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g12->SetLineWidth(2);
-  colcounter++;
-
-
-  dcut = 100;
-  double_t x16[50], y16[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x16[i] = XY[0][i];
-    y16[i] = XY[1][i];
-  }
-  auto g16 = new TGraph(XY[0].size(), x16, y16);
-  g16->SetLineColor(colcounter);
-  g16->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g16->SetLineWidth(2);
-  colcounter++;
-
-  
-  dcut = 200;
-  double_t x20[50], y20[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x20[i] = XY[0][i];
-    y20[i] = XY[1][i];
-  }
-  auto g20 = new TGraph(XY[0].size(), x20, y20);
-  g20->SetLineColor(colcounter+1);
-  g20->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g20->SetLineWidth(2);
-  colcounter++;
-
-
-  
-
-  auto gax = (TGraph*)g4->Clone("ciao");
-  gax->SetMarkerColor(0);
-  gax->SetLineColor(0);
-  gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-15,-6);
-  gax->GetYaxis()->SetTitle("Log (U^{2})");
-  gax->GetXaxis()->SetLimits(0,90);
-  gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  
-  gax->Draw("A C");
-
-
-  
-  
-  g4->Draw("same");
-  g8->Draw("same");
-  g12->Draw("same");
-  g16->Draw("same");
-  g20->Draw("same");
-
-
-  
-  
-  c->BuildLegend();
-
-  c->SetGridy();
-  c->SaveAs("temp.png");
-}
-
