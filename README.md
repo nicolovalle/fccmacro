@@ -35,6 +35,8 @@ DelphesPythia8_EDM4HEP FCC-config/FCCee/Delphes/card_IDEA.tcl edm4hep_output_con
 
 ## From EDMH4HEP to n-tuples
 
+#### Batch mode
+
 The first analysis is done with the `fccanalysis` software. Tha analysis is a python script, to be launched with:
 ```
 fccanalysis run analysis_tesv3.py
@@ -48,6 +50,18 @@ processList = {
 }
 
 ```
+To run on batch, set:
+```
+...
+```
+
+#### Local mode
+
+Set the output directory, comment the batch mode or set it to `False`. To run on local EDM4HEP files, the command is
+```
+fccanalysis run analysis_testv3.py --files-list edm4hepfile.root
+```
+The output name will be `output.root`
 
 ## My external analysis
 
@@ -94,10 +108,12 @@ else if (lifetime != "n/a") toret = Form("AnalysisResults-signal_10k_%s_%s.root"
 
 ## Filtered trees
 
-A skimming task is available to filter the `AnalysisResults.root` with a first event selection. It reduces the Zbb size by a factor >1000. The root macro `SkimmingTask.C` is in `MyExternalAnalysis/`. 
+A skimming task is available to filter the `AnalysisResults.root` with a first event selection. It reduces the Zbb size by a factor >1000. The root macro `SkimmingTask.C` is in `MyExternalAnalysis/`.
+
 ```cpp
 void SkimmingTask(TString fin, TString outdir="./results/skimmed/", TString suffix="", TString opt="extraloose")
 ```
+
 A) if fin is a .txt file, output file is `<outdir>/AnalysisResults<suffix>.root`
 B) if fin is `AnalysisResult<any>.root`, outputfile is `<outdir>/AnalysisResults<any><suffix>.root`
 C) if fin is a .root file not beginning with "AnalysisResults", option A. is used.

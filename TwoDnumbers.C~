@@ -1,38 +1,6 @@
 #include "CutFlowOK.C"
 
 
-
-
-
-Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
-  // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
-
-  Double_t n = s+b;
-
-  if (b<=1.) return AtlasZ(s,1.01,sig);
-
-  if (sig<1e-6)
-
-    return TMath::Sqrt(2 *( n *TMath::Log(n/b) - (n-b) ));
-
-   
-
-  
-
-  
-  Double_t FirstLog = n*(b+sig*sig) / (b*b + n*sig*sig);
-  FirstLog = TMath::Log(FirstLog);
-
-  Double_t SecondLog = sig*sig*(n-b) / (b* (b+sig*sig));
-  SecondLog = TMath::Log( 1. + SecondLog);
-
-  Double_t Rad = n*FirstLog - (b*b / (sig*sig)) * SecondLog;
-  Rad = TMath::Sqrt(2.*Rad);
-
-  return Rad;
-  
-}
-
 Double_t GetUpp(Double_t n){
 
   if (n==0 || n==1) return 1.14;
