@@ -9,6 +9,8 @@ Double_t GetUpp(Double_t n){
 
   
 
+std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
+
 
 std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = false, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
   // formulas: atals simple
@@ -19,7 +21,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
   // V[1][n] = n-th y coordinate of the curve
 
 
-  std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
+  
   std::vector<TString> mps = {"m","p"};
 
   
@@ -109,7 +111,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1, Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M"){
 
 
-  TCanvas *c = new TCanvas("c","c",2500,2000);
+  TCanvas *c = new TCanvas("c","c",2500,2200);
 
   c->Divide(3,3);
 
@@ -121,7 +123,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   TH2F* HZtautau, *HZtautau_;
   TH2F* Hmunuqq, *Hmunuqq_;
 
-  TH1F *hZbb, *hZcc, *hZuds, *hZmumu, *hZtautau, *hmunuqq;
+  // TH1F *hZbb, *hZcc, *hZuds, *hZmumu, *hZtautau, *hmunuqq;
 
   std::pair<TH2F*, TH2F*> Pair;
 
@@ -155,11 +157,23 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   HZbb_ = (TH2F*)Pair.second->Clone("HZbb_");
   HZbb->SetTitle(sample);
   HZbb->GetZaxis()->SetRangeUser(1e-1,1e5);
-  HZbb->Draw("colz");
-  HZbb_->Draw("same BOX");
+  //HZbb->Draw("colz");
+  //HZbb_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hZbb = new TH1F("hZbb","hZbb",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hZbb->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<HZbb->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZbb->GetBinContent( HZbb->GetXaxis()->FindBin(masses.at(i)) , j));
+    hZbb->SetBinContent(i+1,content);
+  }
+  hZbb->Draw("hist text");
+  hZbb->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
+  
 
   
   c->cd(3);
@@ -170,11 +184,22 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   HZcc_ = (TH2F*)Pair.second->Clone("HZcc_");
   HZcc->SetTitle(sample);
   HZcc->GetZaxis()->SetRangeUser(1e-1,1e5);
-  HZcc->Draw("colz");
-  HZcc_->Draw("same BOX");
+  //HZcc->Draw("colz");
+  //HZcc_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hZcc = new TH1F("hZcc","hZcc",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hZcc->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<HZcc->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZcc->GetBinContent( HZcc->GetXaxis()->FindBin(masses.at(i)) , j));
+    hZcc->SetBinContent(i+1,content);
+  }
+  hZcc->Draw("hist text");
+  hZcc->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
 
 
   c->cd(4);
@@ -185,11 +210,22 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   HZuds_ = (TH2F*)Pair.second->Clone("HZuds_");
   HZuds->SetTitle(sample);
   HZuds->GetZaxis()->SetRangeUser(1e-1,1e5);
-  HZuds->Draw("colz");
-  HZuds_->Draw("same BOX");
+  //HZuds->Draw("colz");
+  //HZuds_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hZuds = new TH1F("hZuds","hZuds",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hZuds->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<HZuds->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZuds->GetBinContent( HZuds->GetXaxis()->FindBin(masses.at(i)) , j));
+    hZuds->SetBinContent(i+1,content);
+  }
+  hZuds->Draw("hist text");
+  hZuds->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
 
 
   c->cd(5);
@@ -200,11 +236,22 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   HZtautau_ = (TH2F*)Pair.second->Clone("HZtautau_");
   HZtautau->SetTitle(sample);
   HZtautau->GetZaxis()->SetRangeUser(1e-1,1e5);
-  HZtautau->Draw("colz");
-  HZtautau_->Draw("same BOX");
+  //HZtautau->Draw("colz");
+  //HZtautau_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hZtautau = new TH1F("hZtautau","hZtautau",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hZtautau->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<HZtautau->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZtautau->GetBinContent( HZtautau->GetXaxis()->FindBin(masses.at(i)) , j));
+    hZtautau->SetBinContent(i+1,content);
+  }
+  hZtautau->Draw("hist text");
+  hZtautau->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
 
 
 
@@ -216,11 +263,22 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   HZmumu_ = (TH2F*)Pair.second->Clone("HZmumu_");
   HZmumu->SetTitle(sample);
   HZmumu->GetZaxis()->SetRangeUser(1e-1,1e5);
-  HZmumu->Draw("colz");
-  HZmumu_->Draw("same BOX");
+  //HZmumu->Draw("colz");
+  //HZmumu_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hZmumu = new TH1F("hZmumu","hZmumu",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hZmumu->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<HZmumu->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZmumu->GetBinContent( HZmumu->GetXaxis()->FindBin(masses.at(i)) , j));
+    hZmumu->SetBinContent(i+1,content);
+  }
+  hZmumu->Draw("hist text");
+  hZmumu->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
   
   
 
@@ -232,11 +290,22 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   Hmunuqq_ = (TH2F*)Pair.second->Clone("Hmunuqq_");
   Hmunuqq->SetTitle(sample);
   Hmunuqq->GetZaxis()->SetRangeUser(1,1e5);
-  Hmunuqq->Draw("colz");
-  Hmunuqq_->Draw("same BOX");
+  //Hmunuqq->Draw("colz");
+  //Hmunuqq_->Draw("same BOX");
+  //gStyle->SetOptStat(0);
+  //gPad->SetLogz();
+  //gStyle->SetPalette(kColorPrintableOnGrey);
+  TH1F* hmunuqq = new TH1F("hmunuqq","hmunuqq",masses.size(),0,masses.size());
+  for (int i=0; i<masses.size(); i++) {
+    hmunuqq->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+    double content = 0.;
+    for (int j = 1; j<Hmunuqq->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, Hmunuqq->GetBinContent( Hmunuqq->GetXaxis()->FindBin(masses.at(i)) , j));
+    hmunuqq->SetBinContent(i+1,content);
+  }
+  hmunuqq->Draw("hist text");
+  hmunuqq->SetLineColor(1);
   gStyle->SetOptStat(0);
-  gPad->SetLogz();
-  gStyle->SetPalette(kColorPrintableOnGrey);
+  gPad->SetLogy();
   
   
 

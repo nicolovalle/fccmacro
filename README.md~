@@ -156,6 +156,7 @@ In addition, the function `MapPoint()` can be used to display the grid of availa
 #### Cut.h
 
 Here the main TChain `TREE` is defined and linked to `eventsTree`. The branch variables are declared and the addresses are set. To use it in a macro looping over the events tree, one has to:
++ **IMPORTANT** Reset the chain at the beginning: `TREE->Reset();`. If not done, files are constantly added when the same function (e.g. CutFlowOK) is called recursively by other functions.
 + Add root files to the chain: `TREE->Add(<filename>);`
 + Set the branches addresses before the loop: `TREESetBranch();`
 + Call `BUILD_DERIVATE(int jalg)` at the beginning of each interation of the loop. This initialize some derivate variables, also delcared in `Cut.h`.

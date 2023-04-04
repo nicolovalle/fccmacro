@@ -1,6 +1,6 @@
 // BRANCHES of the eventsTree
 
-TTree *TREE;
+TChain *TREE = new TChain("eventsTree");
 
 Long64_t oNEntries;
 Int_t oNReco;
@@ -30,6 +30,20 @@ Double_t oMuD0;
 Double_t oMuZ0;
 Double_t oMuD0sig;
 Double_t oMuZ0sig;
+Double_t oCosPmiss;
+Double_t oCosPmissMu;
+Double_t oCosjj;
+Double_t oCosj1Mu;
+Double_t oCosj2Mu;
+Double_t oMjjMu;
+Double_t oMVis;
+Double_t oMjjMuPmiss;
+Double_t oNtracks;
+Double_t oVtx_x;
+Double_t oVtx_y;
+Double_t oVtx_z;
+Double_t oVtx_chi2;
+Double_t oVtx_ntrk;
 
 
 void TREESetBranch(){
@@ -61,6 +75,20 @@ void TREESetBranch(){
   TREE->SetBranchAddress("MuZ0",&oMuZ0);
   TREE->SetBranchAddress("MuD0sig",&oMuD0sig);
   TREE->SetBranchAddress("MuZ0sig",&oMuZ0sig);
+  TREE->SetBranchAddress("CosPmiss",&oCosPmiss);
+  TREE->SetBranchAddress("CosPmissMu",&oCosPmissMu);
+  TREE->SetBranchAddress("Cosjj",&oCosjj);
+  TREE->SetBranchAddress("Cosj1Mu",&oCosj1Mu);
+  TREE->SetBranchAddress("Cosj2Mu",&oCosj2Mu);
+  TREE->SetBranchAddress("MjjMu",&oMjjMu);
+  TREE->SetBranchAddress("MVis",&oMVis);
+  TREE->SetBranchAddress("MjjMuPmiss",&oMjjMuPmiss);
+  TREE->SetBranchAddress("Ntracks",&oNtracks);
+  TREE->SetBranchAddress("Vtx_x",&oVtx_x);
+  TREE->SetBranchAddress("Vtx_y",&oVtx_y);
+  TREE->SetBranchAddress("Vtx_z",&oVtx_z);
+  TREE->SetBranchAddress("Vtx_chi2",&oVtx_chi2);
+  TREE->SetBranchAddress("Vtx_ntrk",&oVtx_ntrk);
 }
 
 // Variable filled at each Fill by BUILD_DERIVATE
@@ -135,6 +163,36 @@ Bool_t SELECTION_LM_2JET(int jalg){
   Bool_t sel2 = (cosjj > -0.8);
 
   return sel1 && sel2;
+}
+
+
+
+// SOME TEMPORARY CUT VARIATION
+
+Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmaxcosjmu){
+
+
+  Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
+  Double_t cosj1mu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+  Double_t cosj2mu = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+    
+  Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+  Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
+  Bool_t sel3 = (oEJet1->at(jalg) >= 3. && oEJet2->at(jalg) >= 3.);
+  Bool_t sel41 = cosjj > CUTcosjj
+  Bool_t sel42 = cosjj < 0.98;
+  //Bool_t sel5_old = (TMath::Min(lvj1.M(), lvj1.M()) > 1.8 && TMath::Min(lvj1.M2(), lvj1.M2()) > 0);
+  Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < CUTmaxcosjmu);
+
+  Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
+  Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > CUTmincosjmu);
+  Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
+
+  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
+ 
+
+
+  
 }
   
 

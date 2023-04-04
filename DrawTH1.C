@@ -3,9 +3,9 @@
 
 void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t bmax=100, Bool_t drawstack = true){
 
-  Int_t mass = 30;
+  Int_t mass = 80;
   Int_t jalg = 2;
-  TString lt = "m1p0";
+  TString lt = "n/a";
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1200,800); 
 
@@ -110,11 +110,13 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
 
   hs->Draw(drawstack ? "HIST" : "HIST nostack");
 
-  //h_signalM->Draw("HIST same");
+  h_signalM->Draw("HIST same");
 
   gPad->SetLogy();
 
   c1->BuildLegend();
+
+  c1->SaveAs("temp.png");
   
   
 }

@@ -52,6 +52,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
  
     
 
+  TREE->Reset();
   
   TString fname=Form("%s%s",dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
 
@@ -136,6 +137,16 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
     if (analysis_opt.Contains("anymass1L2L")){
 
       if (oNJet->at(jalg) == 2) selection = SELECTION_LM_2JET(jalg);
+      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      
+    }
+
+    if (analysis_opt.Contains("cutvariation")){
+      double CUTcosjj = std::stof(analysis_opt(0,5));
+      double CUTmincosjmu = std::stof(analysis_opt(5,5));
+      double CUTmaxcosjmu = std::stof(analysis_opt(10,5));
+
+      if (oNJet->at(jalg) == 2) selection = SEL_MM_2J(jalg,CUTcosjj,CUTmincosjmu,CUTmaxcosjmu);
       if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
       
     }

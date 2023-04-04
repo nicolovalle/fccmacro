@@ -115,7 +115,7 @@ else if (lifetime != "n/a") toret = Form("AnalysisResults-signal_10k_%s_%s.root"
 A skimming task is available to filter the `AnalysisResults.root` with a first event selection. It reduces the Zbb size by a factor >1000. The root macro `SkimmingTask.C` is in `MyExternalAnalysis/`.
 
 ```cpp
-void SkimmingTask(TString fin, TString outdir="./results/skimmed/", TString suffix="", TString opt="extraloose")
+void SkimmingTask(TString fin, TString outdir="./results/skimmed/", TString suffix="", TString opt="loose")
 ```
 
 A) if fin is a .txt file, output file is `<outdir>/AnalysisResults<suffix>.root`
@@ -131,9 +131,10 @@ The output of the macro is a `AnalysisResults.root` file with the tree `eventsTr
 
 
 The options currently implemented are:
-+ `extraloose`
++ `loose`
++ `forcutvar`
 
-The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods. See the table below for the cuts implemented with the **extraloose** option. 
+The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods. See the table below for the cuts implemented with each option. 
 
 
 
@@ -216,19 +217,19 @@ Analysis options available (separated by space):
 
 That's the list of cuts currently implemented.
 
-|                 | 1J LM  | 2J LM  | 2J MM   | extraloose |
-| --------------- | ------ | ------ | ------- | ---------- |
-| cos(pmiss)      | < 0.94 | 1JLM   | < 0.94  | < 0.94     |
-| cos(pmiss,mu)   | < 0.50 | 1JLM   | < 0.80  | < 0.80     |
-| min [Ej]        | >= 3   | 1JLM   | >= 3    | >= 3       |
-| cos(jj)         |        | > -0.8 | > -0.8  | > -0.8     |
-| cos(jj)         |        |        | < 0.98  | any value  |
-| max [cos(j,mu)] | < 0.96 | < 0.96 | < 0.8   | < 0.96     |
-| max [cos(j,mu)] | > -0.5 | > -0.5 |         | any value  |
-| min [cos(j,mu)] |        |        | > -0.98 | any value  |
-| min [Mj]        | > 0.2  | > 0.2  | > 0.2   | > 0.2      |
-| min [Mj2]       | > 0    | > 0    | > 0     | any value  |
-| M [vis+miss]    | > 80   | > 80   | > 80    | > 80       |
+|                 | 1J LM  | 2J LM  | 2J MM   | loose      | forcutvar |
+| --------------- | ------ | ------ | ------- | ---------- | --------- |
+| cos(pmiss)      | < 0.94 | 1JLM   | < 0.94  | < 0.94     | < 0.94    |
+| cos(pmiss,mu)   | < 0.50 | 1JLM   | < 0.80  | < 0.80     | < 0.80    |
+| min [Ej]        | >= 3   | 1JLM   | >= 3    | >= 3       | >= 3      |
+| cos(jj)         |        | > -0.8 | > -0.8  | > -0.8     | > -0.96   |
+| cos(jj)         |        |        | < 0.98  | any value  | any value |
+| max [cos(j,mu)] | < 0.96 | < 0.96 | < 0.8   | < 0.96     | < 0.98    |
+| max [cos(j,mu)] | > -0.5 | > -0.5 |         | any value  | any value |
+| min [cos(j,mu)] |        |        | > -0.98 | any value  | any value |
+| min [Mj]        | > 0.2  | > 0.2  | > 0.2   | > 0.2      | > 0.2     |
+| min [Mj2]       | > 0    | > 0    | > 0     | any value  | any value |
+| M [vis+miss]    | > 80   | > 80   | > 80    | > 80       | > 80      |
 
 
 

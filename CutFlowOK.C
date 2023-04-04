@@ -140,6 +140,18 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
       if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
       
     }
+
+    if (analysis_opt.Contains("cutvariation")){
+      double CUTcosjj = std::stof(analysis_opt(0,5));
+      double CUTmincosjmu = std::stof(analysis_opt(5,5));
+      double CUTmaxcosjmu = std::stof(analysis_opt(10,5));
+
+      //cout<<"HEREEEEEEEE "<<CUTcosjj<<" "<<CUTmincosjmu<<" "<<CUTmaxcosjmu<<endl;
+      
+      if (oNJet->at(jalg) == 2) selection = SEL_MM_2J(jalg,CUTcosjj,CUTmincosjmu,CUTmaxcosjmu);
+      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      
+    }
     
     if (!selection) continue;
     

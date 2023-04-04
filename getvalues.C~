@@ -25,40 +25,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
   std::vector<Double_t> toret;
   toret.clear();
   
-  TFile *File = new TFile(fname);
-  TTree *T = (TTree*)File->Get("eventsTree");
 
- 
-  T->SetBranchAddress("NEntries_tchain",&oNEntries);
-  T->SetBranchAddress("NReco",&oNReco);
-  T->SetBranchAddress("NMuon",&oNMuon);
-  T->SetBranchAddress("NJet",&oNJet);
-  T->SetBranchAddress("PxJet1",&oPxJet1);
-  T->SetBranchAddress("PyJet1",&oPyJet1);
-  T->SetBranchAddress("PzJet1",&oPzJet1);
-  T->SetBranchAddress("EJet1",&oEJet1);
-  T->SetBranchAddress("PxJet2",&oPxJet2);
-  T->SetBranchAddress("PyJet2",&oPyJet2);
-  T->SetBranchAddress("PzJet2",&oPzJet2);
-  T->SetBranchAddress("EJet2",&oEJet2);
-  T->SetBranchAddress("PxMu",&oPxMu);
-  T->SetBranchAddress("PyMu",&oPyMu);
-  T->SetBranchAddress("PzMu",&oPzMu);
-  T->SetBranchAddress("EMu",&oEMu);
-  T->SetBranchAddress("PxMiss",&oPxMiss);
-  T->SetBranchAddress("PyMiss",&oPyMiss);
-  T->SetBranchAddress("PzMiss",&oPzMiss);
-  T->SetBranchAddress("EMiss",&oEMiss);
-  T->SetBranchAddress("PxVis",&oPxVis);
-  T->SetBranchAddress("PyVis",&oPyVis);
-  T->SetBranchAddress("PzVis",&oPzVis);
-  T->SetBranchAddress("EVis",&oEVis);
-  T->SetBranchAddress("MuD0",&oMuD0);
-  T->SetBranchAddress("MuZ0",&oMuZ0);
-  T->SetBranchAddress("MuD0sig",&oMuD0sig);
-  T->SetBranchAddress("MuZ0sig",&oMuZ0sig);
-
-  Long64_t EntriesTree = T->GetEntries();
+  TREE->Add(fname);
+  TREESetBranch();
+  
+  Long64_t EntriesTree = TREE->GetEntries();
 
   
 
@@ -78,7 +49,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
 
     if (i%1000000 == 0) cout<<i<<" / "<<NN<<endl;
 
-    T->GetEntry(i);
+    TREE->GetEntry(i);
 
     nPreselection = oNEntries * SF;
 
@@ -140,13 +111,13 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
 	Bool_t cut_condition = false;
 
 	if (analysis_opt.Contains("d3d") and analysis_opt.Contains("dsigma"))
-	  cut_condition =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*dd0cut);
+	  cut_condition =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*d0cut);
 
 	else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
-	  cut_condition =  (TMath::Abs(oMuD0sig) < 1.*dd0cut);
+	  cut_condition =  (TMath::Abs(oMuD0sig) < 1.*d0cut);
 
 	else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
-	  cut_condition = (TMath::Abs(oMuD0) < 1.*dd0cut/100.);
+	  cut_condition = (TMath::Abs(oMuD0) < 1.*d0cut/100.);
 
 	else cout<<"CutFlowOK.C:: ERROR - OPTIONS NOT SUPPORTED"<<endl;
 

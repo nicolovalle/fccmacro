@@ -1,6 +1,5 @@
 #include "CutFlowOK.C"
 
-
 Double_t GetUpp(Double_t n){
 
   if (n==0 || n==1) return 1.14;
@@ -122,7 +121,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   TH2F* HZtautau, *HZtautau_;
   TH2F* Hmunuqq, *Hmunuqq_;
 
+  TH1F *hZbb, *hZcc, *hZuds, *hZmumu, *hZtautau, *hmunuqq;
+
   std::pair<TH2F*, TH2F*> Pair;
+
+  std::vector<double> Values;
 
 
   
@@ -142,10 +145,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   
 
 
+  
 
   c->cd(2);
   sample = "Zbb";
-  
+
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
   HZbb = (TH2F*)Pair.first->Clone("HZbb");
   HZbb_ = (TH2F*)Pair.second->Clone("HZbb_");
