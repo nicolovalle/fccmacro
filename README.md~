@@ -48,11 +48,14 @@ processList = {
         'p8_ee_Zcc_ecm91':{'chunks':100,'fraction':1},
         ...
 }
+```
 
-```
 To run on batch, set:
-```
-...
+```python
+outputDir = "/eos/user/n/nvalle/FCC/workdir/...."
+outputDirEos = "/eos/user/n/nvalle/FCC/workdir/..."
+eosType = "eosuser"
+batchQueue = "longlunch"
 ```
 
 #### Local mode
@@ -130,7 +133,7 @@ The options currently implemented are:
 + `extraloose`
 + `loose`
 
-The events are discarded if the conditions are not fullfilled for *at least one of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods.
+The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods.
 
 **extraloose** implements the following cuts:
 + |cos(pmiss)| < 0.94

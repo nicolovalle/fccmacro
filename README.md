@@ -157,6 +157,69 @@ The root macros are in the `workdir/fccmacro` directory, local copy form github
 There are different branch and the main one. The branch name should correspond the the `MyExternalAnalysis` macro version and the `results-V.../` files that can be processed with that version of the macros.
 
 
+#### lumisettings.h
+
+In this file the Luminosity, cross sections, weights, coupling, file names are written or computed by dedicated methods receiving as input the sample type, mass, lifetime,...
+
+In addition, the function `MapPoint()` can be used to display the grid of available signal data points.
+
+#### Cut.h
+
+Here the branch variables of the `eventsTree` tree are declared. Two classes of methods are implemented, to be called in any `for` loop running on the events tree.
++ `BUILD_DERIVATIVE(int jalg)`. To initialize some derivative variables, also delcared at the beginning of the file
++ `SELECTION_*(...)`. A collection of boolean functions returning `true` if the event passes a list of cuts.
+
+`Cut.h` is the code stiring the cut selection used in the `CutFlowOK.C` and `getvalues.C` macros. The plotting macros and other analyses use `CutFlowOK.C` and `getvalues.C` to get the cut flows or the observable spectra.
+
+#### CutFlowOK.C
+
+```cpp
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M")
+```
+
+==The implementation with `CutByCutFlow = true` is not supported==
+To be read like this: `CutFlowOK[M]` where `M`(int) is the mass in GeV. CutFlowOK[M] is a vector:
++ 0: Nnocut(opt,mass,lifetime). This is written in `lumisettings.h`, not read from the root file.
++ 1: nOneMuon  2: selection  3: sliding(mass). ==TO BE CHECKED!==
++ `CutFlowOK[M][dcut_it(dcut)]`, where `dcut` is an integer:
+  + In units of sigmas for analyses with option `dsigma` (see below for analyses options)
+  + In units of mm/100 for analysese with option `dmm`
+
+```cpp
+oid makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/"
+, Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top="")
+```
+
+==The implementation with `iopt = 2` was intended to print cut by cut efficiency but it is not supported==
+
+
+
+#### getvalues.C
+
+```cpp
+std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/")
+```
+See below for analyses options. See the code for possible observables IDs.
++ `getvalues.first` is non binned array of values for the observable
++ `getvalues.second` is the Scale Factor, different from 1 in case `RunOnN` is positive and smaller than the number of entries of the processed tree.
+
+
+### Analyses options
+
+This is string inteprepret by many of the macros reading the events tree. According to this string, different selections can be chosed. The event selection must be always done using the methods implemented in `Cut.h`
+
+```cpp
+TString analysis_opt = "< d2d dsigma anymass1L2M"
+```
+Analysis options available (separated by space):
++ `>` or `<` for the type of cut in impact parameter
++ `dsigma` or `dmm` to cut in number of sigma or in unit 10-5 m
++ `d2d` or `d3d` to cut on D0 or D0+Z0
++ Type of analysis:
+  + `anymass1L2M` : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
+  + `anymass1L2L` : mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets 
+
+
 ### Cut list
 
 That's the list of cuts currently implemented.
@@ -176,7 +239,12 @@ That's the list of cuts currently implemented.
 | M [vis+miss]    | > 80   | > 80   | > 80    | > 80       |
 
 
-:::spoiler To created a new branch
+
+
+
+
+:::
+To created a new branch
 + Synchronize local/upstream
 + `git checkout -b <new_branch>`
 + `git push origin <new_branch>`
