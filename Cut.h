@@ -1,5 +1,7 @@
 // BRANCHES of the eventsTree
 
+TChain *TREE = new TChain("eventsTree");
+
 Long64_t oNEntries;
 Int_t oNReco;
 Int_t oNMuon;
@@ -29,6 +31,37 @@ Double_t oMuZ0;
 Double_t oMuD0sig;
 Double_t oMuZ0sig;
 
+
+void TREESetBranch(){
+  TREE->SetBranchAddress("NEntries_tchain",&oNEntries);
+  TREE->SetBranchAddress("NReco",&oNReco);
+  TREE->SetBranchAddress("NMuon",&oNMuon);
+  TREE->SetBranchAddress("NJet",&oNJet);
+  TREE->SetBranchAddress("PxJet1",&oPxJet1);
+  TREE->SetBranchAddress("PyJet1",&oPyJet1);
+  TREE->SetBranchAddress("PzJet1",&oPzJet1);
+  TREE->SetBranchAddress("EJet1",&oEJet1);
+  TREE->SetBranchAddress("PxJet2",&oPxJet2);
+  TREE->SetBranchAddress("PyJet2",&oPyJet2);
+  TREE->SetBranchAddress("PzJet2",&oPzJet2);
+  TREE->SetBranchAddress("EJet2",&oEJet2);
+  TREE->SetBranchAddress("PxMu",&oPxMu);
+  TREE->SetBranchAddress("PyMu",&oPyMu);
+  TREE->SetBranchAddress("PzMu",&oPzMu);
+  TREE->SetBranchAddress("EMu",&oEMu);
+  TREE->SetBranchAddress("PxMiss",&oPxMiss);
+  TREE->SetBranchAddress("PyMiss",&oPyMiss);
+  TREE->SetBranchAddress("PzMiss",&oPzMiss);
+  TREE->SetBranchAddress("EMiss",&oEMiss);
+  TREE->SetBranchAddress("PxVis",&oPxVis);
+  TREE->SetBranchAddress("PyVis",&oPyVis);
+  TREE->SetBranchAddress("PzVis",&oPzVis);
+  TREE->SetBranchAddress("EVis",&oEVis);
+  TREE->SetBranchAddress("MuD0",&oMuD0);
+  TREE->SetBranchAddress("MuZ0",&oMuZ0);
+  TREE->SetBranchAddress("MuD0sig",&oMuD0sig);
+  TREE->SetBranchAddress("MuZ0sig",&oMuZ0sig);
+}
 
 // Variable filled at each Fill by BUILD_DERIVATE
 

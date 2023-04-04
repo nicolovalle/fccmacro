@@ -18,7 +18,6 @@ int dcut_id(int dcut){
 
 std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
 
-  // CUT BY CUT FLOW NOT IMPLEMENTED YET FOR LESS THAN 2 JETS
 
   // analysis options available:
   // ">" or "<" for the type of cut in impact parameter
@@ -33,12 +32,12 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   // To be read like this: CutFlowOK[M] where M(int) is the Mass in GeV. CutFlowOK[M] is a vector:
   
   //// Standard ouptut:
-  //// 0: Nnocut(opt,lifetime)  <--- written in lumisettings.h, not read from the file!
-  //// 1: nOneMuon  2: selection  3: sliding(mass)
+  //// 0: Nnocut(opt,mass,lifetime)  <--- written in lumisettings.h, not read from the file!
+  //// 1: (Tree entries && nMuon==1)  2: selection  3: sliding(mass)
   //// 4...24:  sliding(mass) & d0cut = index-4
     
-  //// When CutByCutFlow is set:
-  //// 0: Nnocut(opt,lifetime) <--- written in lumisettings.h, not read from the file!
+  //// When CutByCutFlow is set: <-- NOT SUPPORTED
+  //// 0: Nnocut(opt,mass,lifetime) <--- written in lumisettings.h, not read from the file!
   //// 1: entries of the tree,   2: one muon selection (should be equal to 1)
   //// 3: 1& cos(pmiss)<0.94
   //// 4: 1& cos(pmiss,mu)<0.8
@@ -53,12 +52,11 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
  
     
 
-  TChain *T = new TChain("eventsTree");
-  //TString fname = "../MyExternalAnalysis/results/AnalysisResultsfilelist_Zbb_highstat_pt7.txt.root";
+  
   TString fname=Form("%s%s",dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
 
   if (fname.Contains(".root")){
-    T->Add(fname);
+    TREE->Add(fname);
     cout<<"CutFlowOK:: Running on a single file: "<<fname<<endl;
   }
 
@@ -68,7 +66,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
     while(!infile.eof()){
       infile >> rootfile;
       if (rootfile=="") continue;
-      T->Add(rootfile);
+      TREE->Add(rootfile);
       cout<<"CutFlowOK:: "<<rootfile<<" added to the chain."<<endl;
     }     
   }
@@ -82,43 +80,10 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   for (int im : possible_masses)
     toret[im] = std::vector<double>{};
   
+  TREESetBranch();
   
-  //TFile *File = new TFile(fname);
-  //TTree *T = (TTree*)File->Get("eventsTree");
 
-  
- 
-
-  T->SetBranchAddress("NEntries_tchain",&oNEntries);
-  T->SetBranchAddress("NReco",&oNReco);
-  T->SetBranchAddress("NMuon",&oNMuon);
-  T->SetBranchAddress("NJet",&oNJet);
-  T->SetBranchAddress("PxJet1",&oPxJet1);
-  T->SetBranchAddress("PyJet1",&oPyJet1);
-  T->SetBranchAddress("PzJet1",&oPzJet1);
-  T->SetBranchAddress("EJet1",&oEJet1);
-  T->SetBranchAddress("PxJet2",&oPxJet2);
-  T->SetBranchAddress("PyJet2",&oPyJet2);
-  T->SetBranchAddress("PzJet2",&oPzJet2);
-  T->SetBranchAddress("EJet2",&oEJet2);
-  T->SetBranchAddress("PxMu",&oPxMu);
-  T->SetBranchAddress("PyMu",&oPyMu);
-  T->SetBranchAddress("PzMu",&oPzMu);
-  T->SetBranchAddress("EMu",&oEMu);
-  T->SetBranchAddress("PxMiss",&oPxMiss);
-  T->SetBranchAddress("PyMiss",&oPyMiss);
-  T->SetBranchAddress("PzMiss",&oPzMiss);
-  T->SetBranchAddress("EMiss",&oEMiss);
-  T->SetBranchAddress("PxVis",&oPxVis);
-  T->SetBranchAddress("PyVis",&oPyVis);
-  T->SetBranchAddress("PzVis",&oPzVis);
-  T->SetBranchAddress("EVis",&oEVis);
-  T->SetBranchAddress("MuD0",&oMuD0);
-  T->SetBranchAddress("MuZ0",&oMuZ0);
-  T->SetBranchAddress("MuD0sig",&oMuD0sig);
-  T->SetBranchAddress("MuZ0sig",&oMuZ0sig);
-
-  Long64_t EntriesTree = T->GetEntries();
+  Long64_t EntriesTree = TREE->GetEntries();
 
   Double_t nPreselection = 0, nOneMuon = 0, nSelection = 0;
   Int_t nSliding[200], nBcut[500][200]; //first index: Dcut (in sigma). Second index analysis mass (in gev)
@@ -143,7 +108,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
     if (i%1000000 == 0) cout<<i<<" / "<<NN<<endl;
 
     
-    T->GetEntry(i);
+    TREE->GetEntry(i);
 
     nPreselection = oNEntries * SF;
 
@@ -223,7 +188,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
   if (!CutByCutFlow){
     for (int im : possible_masses){
-      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       toret[im].push_back(1.*nOneMuon);
       toret[im].push_back(1.*nSelection);
       toret[im].push_back(1.*nSliding[im]);
@@ -233,7 +198,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   }
   if (CutByCutFlow){
     for (int im : possible_masses){
-      toret[im].push_back(1.*Nnocut(opt,lifetime)*SF);
+      toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       for (int cbc = 0; cbc<12; cbc++)
 	toret[im].push_back(nCutByCut[cbc][im]);
     }

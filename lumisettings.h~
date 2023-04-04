@@ -268,9 +268,7 @@ Double_t Weight(TString opt, TString HNMass="specify only for signal", TString l
   return xsec(opt,HNMass,lifetime)*LUMI/(Nnocut(opt,HNMass,lifetime) * custom_weight);
  
 }
-Double_t Weight(TString opt, int HNMass=-1, TString lifetime="n/a", Double_t custom_weight = 1.){
-  return Weight(opt, Form("%d",HNMass), lifetime, custom_weight);
-}
+
 
 Double_t Coupling(TString HNMass, TString lifetime){
 

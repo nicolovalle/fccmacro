@@ -55,6 +55,7 @@ To run on batch, set:
 outputDir = "/eos/user/n/nvalle/FCC/workdir/...."
 outputDirEos = "/eos/user/n/nvalle/FCC/workdir/..."
 eosType = "eosuser"
+runBatch = True
 batchQueue = "longlunch"
 ```
 
@@ -75,7 +76,7 @@ To run the macro one shall use `runMyExternalAnalysis.C`. It requires a manual l
 ```
 which created an additional root macros containing the loading of `libfastjet` end the execution of `runMyExternalAnalysis.C`. Such macro is removed at the end. *All the file lists are in `MyExternalAnalysis/`* and must be kept updated with the proper outputs of the `fccanalysis`. For the Zbb and Zcc samples of spring2021 (~1B events), the files are split into 8 files and the list of the list names is written in `LIST_of_Z*.txt`. The parallelization can be done with the following script
 ```
-paralle -j 8 ./script_for_bkg_parallel.sh < LIST_of_Z...
+parallel -j 8 ./script_for_bkg_parallel.sh < LIST_of_Z...
 ```
 It produces in the local directory 8 output files and 8 LOG files (no output on the screen) having as suffix the .txt file list names. They must be merged through `hadd` (see naming conventions below).
 
@@ -131,21 +132,10 @@ The output of the macro is a `AnalysisResults.root` file with the tree `eventsTr
 
 The options currently implemented are:
 + `extraloose`
-+ `loose`
 
-The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods.
+The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods. See the table below for the cuts implemented with the **extraloose** option. 
 
-**extraloose** implements the following cuts:
-+ |cos(pmiss)| < 0.94
-+ cos(pmiss,mu) < 0.8
-+ min(E_j) >= 3
-+ cos(j1,j2) > -0.8
-+ max [cos(ji,mu)] < 0.96
-+ min [M(ji)] > 0.2
-+ M(pmiss+pvis) > 80 
 
-**loose** adds the following cut:
-+ min [cos(ji,mu)] > -0.98q
 
 
 
@@ -165,9 +155,12 @@ In addition, the function `MapPoint()` can be used to display the grid of availa
 
 #### Cut.h
 
-Here the branch variables of the `eventsTree` tree are declared. Two classes of methods are implemented, to be called in any `for` loop running on the events tree.
-+ `BUILD_DERIVATIVE(int jalg)`. To initialize some derivative variables, also delcared at the beginning of the file
-+ `SELECTION_*(...)`. A collection of boolean functions returning `true` if the event passes a list of cuts.
+Here the main TChain `TREE` is defined and linked to `eventsTree`. The branch variables are declared and the addresses are set. To use it in a macro looping over the events tree, one has to:
++ **IMPORTANT** Reset the chain at the beginning: `TREE->Reset();`. If not done, files are constantly added when the same function (e.g. CutFlowOK) is called recursively by other functions.
++ Add root files to the chain: `TREE->Add(<filename>);`
++ Set the branches addresses before the loop: `TREESetBranch();`
++ Call `BUILD_DERIVATE(int jalg)` at the beginning of each interation of the loop. This initialize some derivate variables, also delcared in `Cut.h`.
++ Call `SELECTION_*(...)` in the loop, to apply cuts (a collection of boolean functions returning `true` if the event passes selections).
 
 `Cut.h` is the code stiring the cut selection used in the `CutFlowOK.C` and `getvalues.C` macros. The plotting macros and other analyses use `CutFlowOK.C` and `getvalues.C` to get the cut flows or the observable spectra.
 
@@ -177,20 +170,19 @@ Here the branch variables of the `eventsTree` tree are declared. Two classes of 
 std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M")
 ```
 
-==The implementation with `CutByCutFlow = true` is not supported==
+*The implementation with `CutByCutFlow = true` is not supported*
 To be read like this: `CutFlowOK[M]` where `M`(int) is the mass in GeV. CutFlowOK[M] is a vector:
-+ 0: Nnocut(opt,mass,lifetime). This is written in `lumisettings.h`, not read from the root file.
-+ 1: nOneMuon  2: selection  3: sliding(mass). ==TO BE CHECKED!==
-+ `CutFlowOK[M][dcut_it(dcut)]`, where `dcut` is an integer:
++ `0`: Nnocut(opt,mass,lifetime). This is written in `lumisettings.h`, not read from the root file.
++ `1`: (tree entries && nOneMuon==1)  `2`: selection  `3`: sliding[M]. 
++ `CutFlowOK[M][dcut_id(dcut)]`, where `dcut` is an integer:
   + In units of sigmas for analyses with option `dsigma` (see below for analyses options)
   + In units of mm/100 for analysese with option `dmm`
 
 ```cpp
-oid makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/"
-, Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top="")
+void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top="")
 ```
 
-==The implementation with `iopt = 2` was intended to print cut by cut efficiency but it is not supported==
+*The implementation with `iopt = 2` was intended to print cut by cut efficiency but it is not supported*
 
 
 
@@ -201,7 +193,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
 ```
 See below for analyses options. See the code for possible observables IDs.
 + `getvalues.first` is non binned array of values for the observable
-+ `getvalues.second` is the Scale Factor, different from 1 in case `RunOnN` is positive and smaller than the number of entries of the processed tree.
++ `getvalues.second` is the Scale Factor, smaller than 1 in case `RunOnN` is positive and smaller than the number of entries of the processed tree.
 
 
 ### Analyses options
