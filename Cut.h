@@ -190,9 +190,26 @@ Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmax
 
   return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
  
+ 
+}
 
+
+std::vector<float> GetFloatArray(TString opt){
+  int i1 = opt.Index("[");
+  int i2 = opt.Index("]");
+  if (i1<0 || i2<0 || (i2-i1-1)%5 != 0) {cout<<"Cut.h:: ERROR - BAD [] OPTION DECODING"<<endl; return std::vector<float>{};}
+
+  TString s = opt(i1+1, i2-i1-1);
 
   
+  std::vector<float> toret;
+  for (int i=0; i<(i2-i1-1)/5; i++){
+    toret.push_back(std::stof(s(5*i,5)));
+  }
+
+  return toret;
+  
+		  
 }
   
 

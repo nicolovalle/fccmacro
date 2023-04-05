@@ -69,12 +69,12 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 
 
  
-  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
+  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
+  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
+  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
+  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
+  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
 
  
     
@@ -93,7 +93,7 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 	  Int_t myid = dcut_id(dd0cut);
 
 
-	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
+	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt,true)[m][myid];
 	  
 
 	  Double_t U = Coupling(Form("%d",m),lt);
@@ -195,26 +195,38 @@ void CutScan(){
   std::vector<TString> titv;
   TGraph* gr;
 
+  std::vector<double> cjj_scan = {-0.8, -0.88, -0.96, -0.75, -0.70};
+  std::vector<double> mjm_scan = {-0.98, -0.85, -1.00};
+  std::vector<double> Mjm_scan = {0.8, 0.5, 0.96};
 
-  for (double cjj = -0.8; cjj > -0.96; cjj -= 0.02){
+  for (double cjj : cjj_scan){
+    for (double mjm : mjm_scan){
+      for (double Mjm : Mjm_scan){
 
-    TString opp = Form("%1.2f-0.98+0.80 < d2d dsigma cutvariation",cjj);
-    title = opp;
+	TString opp = Form("[%1.2f%1.2f+%1.2f]",cjj,mjm,Mjm);
+	title = opp;
 
-    cout<<"RUNNING CUT VARIATION: "<<opp<<endl;
-    VV = OneDsignificance(80, 8,"atlas", 0., false, "../MyExternalAnalysis/results/skimmed/", 2, opp);
+	cout<<"RUNNING CUT VARIATION: "<<opp<<endl;
+	VV = OneDsignificance(80, 8,"atlas", 0., false, "../MyExternalAnalysis/results/skimmed/", 2, " < d2d dsigma cutvariation "+opp);
   
-    npoint = VV[0].size();
-    for (int i=0;i<npoint;i++) {x[icut][i] = VV[0][i]; y[icut][i]=VV[1][i];}
-    gr = new TGraph(npoint,x[icut],y[icut]);
-    grv.push_back((TGraph*)gr->Clone(title));
-    titv.push_back(title);
-    icut++;
+	npoint = VV[0].size();
+	for (int i=0;i<npoint;i++) {x[icut][i] = VV[0][i]; y[icut][i]=VV[1][i];}
+	gr = new TGraph(npoint,x[icut],y[icut]);
+	grv.push_back((TGraph*)gr->Clone(title));
+	titv.push_back(title);
+	icut++;
+	
+      }
+    }
   }
 
 
-  grv.at(0)->GetXaxis()->SetLimits(-12,-3);
-  grv.at(0)->GetYaxis()->SetRangeUser(1.e-5,1e2);
+  Double_t xlimit[2]={-12,-3};
+  Double_t ylimit[2]={1e-3,1e2};
+  
+  grv.at(0)->GetXaxis()->SetLimits(xlimit[0],xlimit[1]);
+  grv.at(0)->GetYaxis()->SetRangeUser(ylimit[0],ylimit[1]);
+  grv.at(0)->SetLineWidth(2);
   grv.at(0)->SetLineColor(1);
   grv.at(0)->SetTitle(titv.at(0));
   grv.at(0)->Draw("A C");
@@ -227,10 +239,16 @@ void CutScan(){
     grv.at(i)->Draw("same C");
   }
 
-  cout<<"--------------- "<<y[0][3]<<endl;
-  cout<<"--------------- "<<y[icut-1][3]<<endl;
-  
 
+  Double_t line[2][50];
+  for (int i=0; i<50; i++){line[0][i]=xlimit[0]+1.*i*(xlimit[1]-xlimit[0])/50.; line[1][i]=2.; }
+  auto grl = new TGraph(50,line[0],line[1]);
+
+  grl->SetLineColor(1);
+  grl->SetLineStyle(9);
+  grl->Draw("same C");
+
+  
   gPad->SetLogy();
   c->BuildLegend();
   c->SaveAs("temp.png");

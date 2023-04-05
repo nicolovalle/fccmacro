@@ -179,7 +179,7 @@ Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmax
   Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
   Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
   Bool_t sel3 = (oEJet1->at(jalg) >= 3. && oEJet2->at(jalg) >= 3.);
-  Bool_t sel41 = cosjj > CUTcosjj
+  Bool_t sel41 = cosjj > CUTcosjj;
   Bool_t sel42 = cosjj < 0.98;
   //Bool_t sel5_old = (TMath::Min(lvj1.M(), lvj1.M()) > 1.8 && TMath::Min(lvj1.M2(), lvj1.M2()) > 0);
   Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < CUTmaxcosjmu);
@@ -190,9 +190,25 @@ Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmax
 
   return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
  
+ 
+}
 
 
+std::vector<float> GetFloatArray(TString opt){
+  int i1 = opt.Index("[");
+  int i2 = opt.Index("]");
+  if (i1<0 || i2<0) return std::vector<float>{};
+
+  TString s = opt(i1+1, i2-i1-1);
+
+  std::vector<float> toret;
+  toret.push_back(std::stof(s(0,5)));
+  toret.push_back(std::stof(s(5,5)));
+  toret.push_back(std::stof(s(10,5)));
+
+  return toret;
   
+		  
 }
   
 

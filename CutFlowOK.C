@@ -16,7 +16,7 @@ int dcut_id(int dcut){
   else return -1;
 }
 
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M", Bool_t FixedMass = false){
 
 
   // analysis options available:
@@ -27,7 +27,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   ///// "anymass1L2M" : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
   ///// "anymass1L2L": mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets 
   
-  // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses
+  // mass is used only to open the corresponding file. The output will contain the cut for all the possible_masses unless "FixedMass = true"
 
   // To be read like this: CutFlowOK[M] where M(int) is the Mass in GeV. CutFlowOK[M] is a vector:
   
@@ -49,8 +49,11 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   //// 10: 1& cos(jmu) > -0.98
   //// 11: 1& Mtot > 80
   //// 12: selection
+
+
+  std::vector<int> here_possible_masses = possible_masses;
+  if (FixedMass) here_possible_masses = std::vector<int>{mass};
  
-    
 
   TREE->Reset();
   
@@ -78,7 +81,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   std::map<int,std::vector<double>> toret;
   toret.clear();
 
-  for (int im : possible_masses)
+  for (int im : here_possible_masses)
     toret[im] = std::vector<double>{};
   
   TREESetBranch();
@@ -142,11 +145,22 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
     }
 
     if (analysis_opt.Contains("cutvariation")){
+
+
+      /*
+      
       double CUTcosjj = std::stof(analysis_opt(0,5));
       double CUTmincosjmu = std::stof(analysis_opt(5,5));
       double CUTmaxcosjmu = std::stof(analysis_opt(10,5));
 
-      //cout<<"HEREEEEEEEE "<<CUTcosjj<<" "<<CUTmincosjmu<<" "<<CUTmaxcosjmu<<endl;
+      */
+
+      std::vector<float> vcuts = GetFloatArray(analysis_opt);
+      double CUTcosjj = vcuts.at(0);
+      double CUTmincosjmu = vcuts.at(1);
+      double CUTmaxcosjmu = vcuts.at(2);
+
+      // cout<<"CUT HEREEEEEEEE "<<CUTcosjj<<" "<<CUTmincosjmu<<" "<<CUTmaxcosjmu<<endl;
       
       if (oNJet->at(jalg) == 2) selection = SEL_MM_2J(jalg,CUTcosjj,CUTmincosjmu,CUTmaxcosjmu);
       if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
@@ -165,7 +179,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
       nSelection ++;
 
       
-      for (int im : possible_masses){
+      for (int im : here_possible_masses){
 
 	Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
 	Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
@@ -200,7 +214,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
   }
 
   if (!CutByCutFlow){
-    for (int im : possible_masses){
+    for (int im : here_possible_masses){
       toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       toret[im].push_back(1.*nOneMuon);
       toret[im].push_back(1.*nSelection);
@@ -210,7 +224,7 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
     }
   }
   if (CutByCutFlow){
-    for (int im : possible_masses){
+    for (int im : here_possible_masses){
       toret[im].push_back(1.*Nnocut(opt,im,lifetime)*SF);
       for (int cbc = 0; cbc<12; cbc++)
 	toret[im].push_back(nCutByCut[cbc][im]);
