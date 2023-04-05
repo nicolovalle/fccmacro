@@ -169,11 +169,12 @@ Finally, the function `std::vector<float> GetFloatArray(TStrning analysis_opt)` 
 #### CutFlowOK.C
 
 ```cpp
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M")
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M", Bool_t FixedMass = false)
 ```
 
 *The implementation with `CutByCutFlow = true` is not supported*
-To be read like this: `CutFlowOK[M]` where `M`(int) is the mass in GeV. CutFlowOK[M] is a vector:
+
+To be read like this: `CutFlowOK[M]` where `M`(int) is the mass in GeV. In case `FixedMass == true`, only M=`mass` is computed. CutFlowOK[M] is a vector:
 + `0`: Nnocut(opt,mass,lifetime). This is written in `lumisettings.h`, not read from the root file.
 + `1`: (tree entries && nOneMuon==1)  `2`: selection  `3`: sliding[M]. 
 + `CutFlowOK[M][dcut_id(dcut)]`, where `dcut` is an integer:

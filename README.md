@@ -163,7 +163,8 @@ Here the main TChain `TREE` is defined and linked to `eventsTree`. The branch va
 + Call `BUILD_DERIVATE(int jalg)` at the beginning of each interation of the loop. This initialize some derivate variables, also delcared in `Cut.h`.
 + Call `SELECTION_*(...)` in the loop, to apply cuts (a collection of boolean functions returning `true` if the event passes selections).
 
-Finally, the function `std::vector<float> GetFloatArray(TStrning analysis_opt)` is used to intepret the substring of "analysis_opt" in between `[`,`]` (see below).
+The function `std::vector<float> GetFloatArray(TStrning analysis_opt)` is used to intepret the substring of "analysis_opt" in between `[`,`]` (see "Analyses options" section).
+
 `Cut.h` is the code stiring the cut selection used in the `CutFlowOK.C` and `getvalues.C` macros. The plotting macros and other analyses use `CutFlowOK.C` and `getvalues.C` to get the cut flows or the observable spectra.
 
 #### CutFlowOK.C
@@ -213,8 +214,8 @@ Analysis options available (separated by space):
 + Type of analysis:
   + `anymass1L2M` : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
   + `anymass1L2L` : mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets
-  + `cutvariation` : this shall be used together with options between brackets `[...]` which are then decoded by `Cut.h::GetFloatArray`
-    + For the moment, the option between brackets must be formatted like this: `[ABCDEfghiJKLM...]`, i.e. as a list of 5-characters numbers.
+  + `cutvariation` : it calls a selection function requiring some parameters (cut values) as argument. They are specified in between brackets.
+    + The array of cut values must be formatted like this (comma separated) (`std::stof` is used to read): `[0.123, 987.6 , -0.001]`
 
 
 ### Cut list

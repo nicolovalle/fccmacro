@@ -203,7 +203,7 @@ void CutScan(){
     for (double mjm : mjm_scan){
       for (double Mjm : Mjm_scan){
 
-	TString opp = Form("[%1.2f%1.2f+%1.2f]",cjj,mjm,Mjm);
+	TString opp = Form("[%1.2f,%1.2f,%1.2f]",cjj,mjm,Mjm);
 	title = opp;
 
 	cout<<"RUNNING CUT VARIATION: "<<opp<<endl;

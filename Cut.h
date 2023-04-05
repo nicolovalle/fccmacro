@@ -194,17 +194,38 @@ Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmax
 }
 
 
+std::vector<TString> ExplodeString(TString s, TString token){
+
+  std::vector<TString> toret;
+  int index=0;
+  TString s2 = s;
+
+  while (s2.Index(token)>0){
+    index = s2.Index(token);
+    TString is = s2(0,index);
+    toret.push_back(is);
+    s2 = (TString)(s2(index+1,s2.Length()));
+  }
+  TString is = s2;
+  toret.push_back(s2);
+
+  return toret;
+  
+  
+}
+
 std::vector<float> GetFloatArray(TString opt){
   int i1 = opt.Index("[");
   int i2 = opt.Index("]");
-  if (i1<0 || i2<0 || (i2-i1-1)%5 != 0) {cout<<"Cut.h:: ERROR - BAD [] OPTION DECODING"<<endl; return std::vector<float>{};}
+  if (i1<0 || i2<0 ) {cout<<"Cut.h:: ERROR - BAD [] OPTION DECODING"<<endl; return std::vector<float>{};}
 
   TString s = opt(i1+1, i2-i1-1);
 
+  std::vector<TString> V = ExplodeString(s,",");
   
   std::vector<float> toret;
-  for (int i=0; i<(i2-i1-1)/5; i++){
-    toret.push_back(std::stof(s(5*i,5)));
+  for (TString iopt : V){
+    toret.push_back(std::stof(iopt.Data()));
   }
 
   return toret;

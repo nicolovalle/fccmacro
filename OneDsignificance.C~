@@ -203,11 +203,11 @@ void CutScan(){
     for (double mjm : mjm_scan){
       for (double Mjm : Mjm_scan){
 
-	TString opp = Form("%1.2f%1.2f+%1.2f",cjj,mjm,Mjm);
+	TString opp = Form("[%1.2f%1.2f+%1.2f]",cjj,mjm,Mjm);
 	title = opp;
 
 	cout<<"RUNNING CUT VARIATION: "<<opp<<endl;
-	VV = OneDsignificance(80, 8,"atlas", 0., false, "../MyExternalAnalysis/results/skimmed/", 2, opp+" < d2d dsigma cutvariation");
+	VV = OneDsignificance(80, 8,"atlas", 0., false, "../MyExternalAnalysis/results/skimmed/", 2, " < d2d dsigma cutvariation "+opp);
   
 	npoint = VV[0].size();
 	for (int i=0;i<npoint;i++) {x[icut][i] = VV[0][i]; y[icut][i]=VV[1][i];}
