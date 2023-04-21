@@ -5,9 +5,25 @@
 Double_t Muon_mass = 0.105658;
 Double_t Z_mass = 91.1876;
 
+enum OBS_ID {
+  od0,      // oMuD0sig after 1 muon selection
+  od0sel,   // oMuD0sig after event selection driven by analysis_opt and jalg
+  od0sliding,
+  omass1mm,
+  omtot,
+  ocosjj,
+  oMAXcosjmu,
+  oMINcosjmu,
+  omass_after_dcut,
+  oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
+  oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
+  oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
+  oVtxXYZsliding   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
+};
 
 
-std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/"){
+
+std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/"){
   
   // getvalue.second is the scale factor
   // If sliding is not needed, you can use any mass.
@@ -16,8 +32,9 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
 
   TString Dir = dir;
 
-  if (obsID == "d0" || obsID == "d0sliding" || obsID == "mass1mm")
-    Dir = Dir+"/skimmed/";
+  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
+      obsID == oVtxXYsliding || obsID == oVtxXYZsliding)
+    Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
 
@@ -57,23 +74,39 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
     
     BUILD_DERIVATE(jalg);
 
-    if (obsID == "mtot") {
+    if (obsID == od0){
+      toret.push_back(TMath::Abs(oMuD0sig));
+      continue;
+    }
+
+    if (obsID == omtot) {
       toret.push_back((lvvis + lvmiss).M());
       continue;
     }
 
-    if (obsID == "cosjj"){
+    if (obsID == ocosjj){
       toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
       continue;
     }
 
-    if (obsID == "MAXcosjmu"){
+    if (obsID == oMAXcosjmu){
       toret.push_back(TMath::Max(oCosj1Mu, oCosj2Mu));
       continue;
     }
 
-    if (obsID == "MINcosjmu"){
+    if (obsID == oMINcosjmu){
       toret.push_back(TMath::Min(oCosj1Mu, oCosj2Mu));
+      continue;
+    }
+
+    if (obsID == oVtxXY){
+      toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y));
+      continue;
+    }
+
+    if (obsID == oVtxXYZ){
+      toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y + oVtx_z*oVtx_z));
+      continue;
     }
 
     Bool_t selection = false;
@@ -100,23 +133,30 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
    
     if (selection){
 
-      if (obsID == "mass1mm"){
+      if (obsID == omass1mm){
 
 	if (oMuD0 > 1.) toret.push_back(lvvis.M());
+	continue;
       }
 
       
-      if (obsID == "d0") toret.push_back(TMath::Abs(oMuD0sig));
+      if (obsID == od0sel) toret.push_back(TMath::Abs(oMuD0sig));
 
       Double_t im = mass;
       Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
       Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
       Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
 
-      if (obsID == "d0sliding" && slid1 && slid2) toret.push_back(TMath::Abs(oMuD0sig));
+      if (slid1 && slid2){
+	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));
+	if (obsID == oVtxXYsliding) toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y));
+	if (obsID == oVtxXYZsliding) toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y + oVtx_z*oVtx_z));
+	continue;
+      }
+								      
       
 
-      if (obsID == "mass_after_dcut"){
+      if (obsID == omass_after_dcut){
 
 	Bool_t cut_condition = false;
 

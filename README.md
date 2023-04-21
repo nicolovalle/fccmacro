@@ -193,9 +193,12 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString Analy
 #### getvalues.C
 
 ```cpp
-std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/")
+std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/")
 ```
-See below for analyses options. See the code for possible observables IDs.
+See the code for possible observables IDs: all the possibilities must be listed in the `OBS_ID` `enum` defined at the beginning of the macro.
+
+See below for the analysis options.
+
 + `getvalues.first` is non binned array of values for the observable
 + `getvalues.second` is the Scale Factor, smaller than 1 in case `RunOnN` is positive and smaller than the number of entries of the processed tree.
 

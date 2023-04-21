@@ -12,6 +12,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
   // getvalue.second is the scale factor
   // If sliding is not needed, you can use any mass.
 
+  TREE->Reset();
 
   TString Dir = dir;
 
@@ -64,6 +65,15 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(TString obsID, TString opt=
     if (obsID == "cosjj"){
       toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
       continue;
+    }
+
+    if (obsID == "MAXcosjmu"){
+      toret.push_back(TMath::Max(oCosj1Mu, oCosj2Mu));
+      continue;
+    }
+
+    if (obsID == "MINcosjmu"){
+      toret.push_back(TMath::Min(oCosj1Mu, oCosj2Mu));
     }
 
     Bool_t selection = false;

@@ -1,20 +1,21 @@
 
 #include "getvalues.C"
 
-void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t bmax=100, Bool_t drawstack = true){
+void DrawTH1(OBS_ID obsID=od0sliding, Int_t nbin=80, Double_t bmin=0, Double_t bmax=10, Bool_t drawstack = false){
 
-  Int_t mass = 30;
+  Int_t mass = 70;
   Int_t jalg = 2;
-  TString lt = "m1p0";
+  TString lt = "m4p5";
+  Long64_t drawN = (Long64_t) 1.e5;
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1200,800); 
 
-  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", 1.e5, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", 1.e5, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, 8, jalg);
 
   //std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", -1, 30);
   //std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", mass, "n/a", -1, 8, 0);
@@ -23,33 +24,33 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
 
   
 
-  TH1F *h_munuqq = new TH1F("munuqq","munuqq",nbin,bmin,bmax);
+  TH1F *h_munuqq = new TH1F("munuqq",Form("munuqq (%zu)",munuqq.first.size()),nbin,bmin,bmax);
   if (drawstack) h_munuqq->SetFillColor(kRed);
   h_munuqq->SetLineColor(kRed);
  
-  TH1F *h_zmumu = new TH1F("zmumu","zmumu",nbin,bmin,bmax);
+  TH1F *h_zmumu = new TH1F("zmumu",Form("zmumu (%zu)",Zmumu.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zmumu->SetFillColor(kBlue);
   h_zmumu->SetLineColor(kBlue);
  
-  TH1F *h_ztautau = new TH1F("ztautau","ztautau",nbin,bmin,bmax);
+  TH1F *h_ztautau = new TH1F("ztautau",Form("ztautau (%zu)",Ztautau.first.size()),nbin,bmin,bmax);
   if (drawstack) h_ztautau->SetFillColor(32);
   h_ztautau->SetLineColor(32);
   
-  TH1F *h_zuds = new TH1F("zuds","zuds",nbin,bmin,bmax);
+  TH1F *h_zuds = new TH1F("zuds",Form("zuds (%zu)",Zuds.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zuds->SetFillColor(kOrange);
   h_zuds->SetLineColor(kOrange);
   
-  TH1F *h_zbb = new TH1F("zbb","zbb",nbin,bmin,bmax);
+  TH1F *h_zbb = new TH1F("zbb",Form("zbb (%zu)",Zbb.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zbb->SetFillColor(kGreen);
   h_zbb->SetLineColor(kGreen);
  
-  TH1F *h_zcc = new TH1F("zcc","zcc",nbin,bmin,bmax);
+  TH1F *h_zcc = new TH1F("zcc",Form("zcc (%zu)",Zcc.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zcc->SetFillColor(kViolet);
   h_zcc->SetLineColor(kViolet);
 
 
 
-  TH1F *h_signalM = new TH1F(Form("signal%d",mass),Form("signal%d",mass),nbin,bmin,bmax);
+  TH1F *h_signalM = new TH1F(Form("signal%d",mass),Form("signal %d (%zu)",mass,signalM.first.size()),nbin,bmin,bmax);
   h_signalM->SetLineWidth(3);
   h_signalM->SetLineColor(1);
   
@@ -110,11 +111,13 @@ void DrawTH1(TString obsID="d0sliding", Int_t nbin=50, Double_t bmin=0, Double_t
 
   hs->Draw(drawstack ? "HIST" : "HIST nostack");
 
-  //h_signalM->Draw("HIST same");
+  h_signalM->Draw("HIST same");
 
   gPad->SetLogy();
 
   c1->BuildLegend();
+
+  c1->SaveAs("temp.png");
   
   
 }

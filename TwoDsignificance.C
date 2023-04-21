@@ -160,6 +160,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 
   // DRAWING THE LINE BY LINEAR INTERPOLATION
 
+  for (int j=0; j < TDPlot_M.size(); j++) TDPlot_U2[j] = TMath::Power(10, TDPlot_U2[j]);
+
   std::vector<double> cx;
   std::vector<double> cy;
 
@@ -175,10 +177,11 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     std::sort(ycoordinates.begin(), ycoordinates.end());
     
 
+    double outvalue = -99;
     double spre = 0;
     double spost = 0;
-    double upre = -99;
-    double upost = -99;
+    double upre =  outvalue;
+    double upost = outvalue;
   
     for (double iY : ycoordinates){
 
@@ -190,13 +193,13 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
       }
       upost = iY;
 
-      if (spre < 2 && spost >= 2 && upre > -99 && upost > -99){
+      if (spre < 2 && spost >= 2 && upre > outvalue && upost > outvalue){
 
 	cx.push_back(i);
 
 	double interpol = upre + (2.-spre)*((upost-upre)/(spost-spre));
 
-	cy.push_back(interpol);
+	cy.push_back(TMath::Log10(interpol));
 
 	LOG<<"dcut="<<dd0cut<<") "<<i<<" "<<upre<<" "<<upost<<" "<<interpol<<endl;
 	LOG<<"========================================="<<endl;
@@ -210,6 +213,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   toret.push_back(cy);
 
   LOG.close();
+
+  for (int j=0; j<cx.size(); j++) cout<<"Interpolation result: ---- M "<<cx[j]<<" -> "<<cy[j]<<endl;
 
   // Drawing part
 
@@ -257,51 +262,99 @@ void CompareAnalyses(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",0,AnalysisOptions);
-  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"< d2d dmm anymass1L2M");
+  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
     y0[i] = XY[1][i];
   }
   auto g0 = new TGraph(XY[0].size(), x0, y0);
   g0->SetLineColor(colcounter);
-  g0->SetTitle("D0#mu < 1mm");
+  g0->SetTitle("D0#mu > 1mm, no beam spread");
   g0->SetLineWidth(2);
-  colcounter++;
+  //colcounter++;
   
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(100,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
+  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
   }
   auto g1 = new TGraph(XY[0].size(), x1, y1);
   g1->SetLineColor(colcounter);
-  g1->SetTitle("D0#mu > 1mm");
+  g1->SetLineStyle(7);
+  g1->SetTitle("D0#mu > 1mm, sig+irreduc beam spread");
   g1->SetLineWidth(2);
   colcounter++;
 
 
   Double_t x2[50], y2[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(0,"simple",0.,false,"../MyExternalAnalysis/results/skimmed_extraloose/",2,"> d2d dmm anymass1L2M");
+  XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x2[i] = XY[0][i];
     y2[i] = XY[1][i];
   }
   auto g2 = new TGraph(XY[0].size(), x2, y2);
   g2->SetLineColor(colcounter);
-  g2->SetTitle("no D0#mu cut");
+  g2->SetTitle("D0#mu < 8#sigma, no beam spread");
   g2->SetLineWidth(2);
+  //colcounter++;
+
+
+  Double_t x3[50], y3[50];
+  XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"< d2d dsigma anymass1L2M");
+  for (int i=0; i<XY[0].size(); i++){
+    x3[i] = XY[0][i];
+    y3[i] = XY[1][i];
+  }
+  auto g3 = new TGraph(XY[0].size(), x3, y3);
+  g3->SetLineColor(colcounter);
+  g3->SetLineStyle(7);
+  g3->SetTitle("D0#mu < 8#sigma, sig+irreduc beam spread");
+  g3->SetLineWidth(2);
   colcounter++;
+  
+
+
+  Double_t x4[50], y4[50];
+  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
+  XY = TwoDsignificance(16,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
+  for (int i=0; i<XY[0].size(); i++){
+    x4[i] = XY[0][i];
+    y4[i] = XY[1][i];
+  }
+  auto g4 = new TGraph(XY[0].size(), x4, y4);
+  g4->SetLineColor(colcounter);
+  g4->SetTitle("D0#mu <16#sigma, no beam spread");
+  g4->SetLineWidth(2);
+  //colcounter++;
+
+
+  Double_t x5[50], y5[50];
+  XY = TwoDsignificance(16,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"< d2d dsigma anymass1L2M");
+  for (int i=0; i<XY[0].size(); i++){
+    x5[i] = XY[0][i];
+    y5[i] = XY[1][i];
+  }
+  auto g5 = new TGraph(XY[0].size(), x3, y3);
+  g5->SetLineColor(colcounter);
+  g5->SetLineStyle(7);
+  g5->SetTitle("D0#mu < 16#sigma, sig+irreduc beam spread");
+  g5->SetLineWidth(2);
+  colcounter++;
+
+
+
+  
 
 
   auto gax = (TGraph*)g0->Clone("ciao");
   gax->SetMarkerColor(0);
   gax->SetLineColor(0);
   gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-12,-6);
+  gax->GetYaxis()->SetRangeUser(-12,-5);
   gax->GetYaxis()->SetTitle("Log (U^{2})");
   gax->GetXaxis()->SetLimits(0,90);
   gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
@@ -314,6 +367,9 @@ void CompareAnalyses(){
   g0->Draw("same");
   g1->Draw("same");
   g2->Draw("same");
+  g3->Draw("same");
+  g4->Draw("same");
+  g5->Draw("same");
  
 
   
@@ -418,7 +474,7 @@ void ScanD0Cut(){
   gax->SetMarkerColor(0);
   gax->SetLineColor(0);
   gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-15,-6);
+  gax->GetYaxis()->SetRangeUser(-14,-4);
   gax->GetYaxis()->SetTitle("Log (U^{2})");
   gax->GetXaxis()->SetLimits(0,90);
   gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
