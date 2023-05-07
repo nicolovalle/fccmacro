@@ -17,8 +17,6 @@ enum OBS_ID {
   oMAXcosjmu,
   oMINcosjmu,
   oMINEjet,
-  omass_selection, // Visible mass after event selection (no sliding cuts)
-  oemiss_selection, // Emiss after event selection (no sliding cuts)
   omass_after_dcut,
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
@@ -38,7 +36,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
   TString Dir = dir;
 
   if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
-      obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection)
+      obsID == oVtxXYsliding || obsID == oVtxXYZsliding)
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
@@ -81,7 +79,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
     //cout<<"Njet: "<<oNJet->at(0)<<" "<<oNJet->at(1)<<" "<<oNJet->at(2)<<endl;
 
-    //if (oNJet->at(jalg) != 1) continue;
+    if (oNJet->at(jalg) != 1) continue;
     if (obsID == od0){
       toret.push_back(TMath::Abs(oMuD0sig));
       continue;
@@ -151,11 +149,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
    
 
     
+
+    
    
     if (selection){
-      
-      
-      
+
       if (obsID == omass1mm){
 
 	if (oMuD0 > 1.) toret.push_back(lvvis.M());
@@ -163,21 +161,12 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
       }
 
       
-      if (obsID == od0sel) {
-	toret.push_back(TMath::Abs(oMuD0sig));
-	continue;
-      }
+      if (obsID == od0sel) toret.push_back(TMath::Abs(oMuD0sig));
 
       Double_t im = mass;
       Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
       Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
       Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
-
-
-      if (obsID == omass_selection){
-	toret.push_back(lvvis.M());
-	continue;
-      }
 
       if (slid1 && slid2){
 	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));

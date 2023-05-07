@@ -1,7 +1,59 @@
 
 #include "getvalues.C"
 
-void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = false){
+void macro_DvsVTX(){
+
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,600,600); 
+
+  Int_t sigmass = 70;
+  TString siglt = "m5p0";
+
+  OBS_ID obs = oVtxXY; Double_t lowbin = 1e-2;  Double_t upbin = 10; 
+
+  //OBS_ID obs = od0; Double_t lowbin = 1e-1;  Double_t upbin = 100;
+
+  
+  
+
+  std::pair<std::vector<Double_t>, Double_t> Dsignal = getvalues(obs, "signal", sigmass, siglt, -1);
+  std::pair<std::vector<Double_t>, Double_t> DZbb = getvalues(obs, "Zbb", 80, "n/a", 1.e5);
+  std::pair<std::vector<Double_t>, Double_t> DZcc = getvalues(obs, "Zcc", 80, "n/a", 7.e4); // proper ratio according to weights.
+
+  TH1F *h_Dsignal = new TH1F("h_Dsignal",Form("Signal %d GeV / Z #rightarrow bb,cc",sigmass),1000,lowbin,upbin);
+  TH1F *h_Dbkg = new TH1F("h_Dbkg","Z #rightarrow bb/cc",1000,lowbin,upbin);
+
+
+  for (double ie : Dsignal.first) h_Dsignal->Fill(ie);
+  for (double ie : DZbb.first) h_Dbkg->Fill(ie);
+  for (double ie : DZcc.first) h_Dbkg->Fill(ie);
+
+
+  h_Dsignal->Scale(Weight("signal",Form("%d",sigmass),siglt));
+  h_Dbkg->Scale(Weight("Zbb","n/a","n/a",DZbb.second));
+
+  TH1F *C_Dsignal = (TH1F*)h_Dsignal->GetCumulative();
+  TH1F *C_Dbkg = (TH1F*)h_Dbkg->GetCumulative();
+
+  C_Dsignal->SetLineColor(2); C_Dsignal->SetLineWidth(2);
+  C_Dbkg->SetLineColor(4); C_Dbkg->SetLineWidth(2);
+
+  C_Dsignal->Divide(C_Dbkg);
+  
+  C_Dsignal->Draw();
+  //C_Dbkg->Draw("same");
+
+  C_Dsignal->GetYaxis()->SetRangeUser(1e-9,1e-7);
+
+  gPad->SetLogy();
+  gPad->SetLogx();
+  gStyle->SetOptStat(0);
+
+  //auto leg = c1->BuildLegend();
+  //leg->SetMargin(0.25);
+  //leg->SetBorderSize(0);
+  
+  
+  /*
 
   Int_t mass = 40;
   Int_t jalg = 2;
@@ -188,7 +240,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   c1->SaveAs("temp.pdf");
   c1->SaveAs("temp.png");
   
-  
+  */
 }
 
   

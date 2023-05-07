@@ -1,0 +1,327 @@
+
+#include "CutFlowOK.C"
+
+/*
+Double_t Muon_mass = 0.105658;
+Double_t Z_mass = 91.1876;
+
+
+std::vector<int> possible_masses = {1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
+
+std::vector<int> possible_dcut = {0,1,2,3,4,5,6,7,8,10,12,16,20,25,30,35,40,45,50,75,100,125,150,175,200,225,250,275,300,350,400,500}; // sigma units
+
+int dcut_id(int dcut){
+  // used to return the correct index in CutFlowOK[M] vector
+  std::vector<int>::iterator itr = std::find(possible_dcut.begin(), possible_dcut.end(), dcut);
+  if (itr != possible_dcut.cend()) return std::distance(possible_dcut.begin(), itr) + 4;
+  else return -1;
+}
+*/
+
+TString RoundWithUnits(double n){
+  TString toret;
+  if (n < 1) toret = Form("%g",n);
+  if (n < 10) toret = Form("%.2f",n);
+  if (n < 1000) toret = Form("%.1f",n);
+  else if (n < 1e6) toret = Form("%.1fk",n/1000.);
+  else if (n < 1e9) toret = Form("%.1fM",n/1.e6);
+  else if (n < 1e12) toret = Form("%.1fB",n/1.e9);
+  else toret = Form("%g",n);
+  return toret;
+}
+
+TString BkgLatex(TString opt){
+  TString toret = opt;
+  if (opt == "Zbb") toret = "$Z\\to bb$";
+  if (opt == "Zcc") toret = "$Z\\to cc$";
+  if (opt == "Zuds") toret = "$Z\\to u/d/s$";
+  if (opt == "Zmumu") toret = "$Z\\to \\mu\\mu$";
+  if (opt == "Ztautau") toret = "$Z\\to \\tau\\tau$";
+  if (opt == "munuqq") toret = "$\\mu\\nu qq$";
+
+  return toret;
+}
+
+TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/skimmed/", Long64_t RunOnN = -1, TString analysis_opt="withdcut anymass1L2M"){
+
+  // analysis options:
+  //  only1L ,  only2M  ,  combined_selection anymass1L2M,  withdcut anymass1L2M,
+
+
+  
+  Int_t jalg = 2;
+
+  Int_t Counters[100];
+  for (int i=0;i<100;i++) Counters[i] = 0;
+
+ 
+
+  TREE->Reset();
+  
+  TString fname=Form("%s%s",dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
+
+  if (fname.Contains(".root")){
+    TREE->Add(fname);
+    cout<<"CutFlowOK:: Running on a single file: "<<fname<<endl;
+  }
+
+  else{
+    TString rootfile;
+    std::ifstream infile(fname);
+    while(!infile.eof()){
+      infile >> rootfile;
+      if (rootfile=="") continue;
+      TREE->Add(rootfile);
+      cout<<"CutFlowOK:: "<<rootfile<<" added to the chain."<<endl;
+    }     
+  }
+
+  
+  
+  
+  TREESetBranch();
+  
+
+  Long64_t EntriesTree = TREE->GetEntries();
+
+  
+
+  Long64_t NN = EntriesTree;
+  Double_t SF = 1.;
+  if (RunOnN >= 0 && RunOnN < EntriesTree) {NN = RunOnN; SF = 1.*NN/EntriesTree;}
+  cout<<"CutFlowTable.C:: Running on "<<NN<<" entries out of "<<EntriesTree<<endl;
+  //cout<<"CutFlowTable.C:: oNEntries = "<<oNEntries<<endl;
+  cout<<"CutFlowTable.C:: Scale factor is "<<SF<<endl;
+
+  
+
+  Double_t Ngen = Nnocut(opt,Form("%d",mass),lifetime) * SF;
+  Int_t NOneMuon = NN;
+  Int_t NTwoJets = 0;
+  Int_t NOneJet = 0;
+  
+ 
+
+  for (Long64_t i = 0; i < NN; i++){
+
+    
+
+    if (i%1000000 == 0) cout<<i<<" / "<<NN<<endl;
+
+    TREE->GetEntry(i);
+
+    if (i==0)
+      cout<<"CutFlowTable.C:: oNEntries = "<<oNEntries<<endl;
+
+    if (oNMuon != 1  || oNJet->at(jalg) < 1 || oEMiss < 0) {Ngen -= SF; NOneMuon--; continue;}
+
+    
+
+    // this builds the lorentz vectors
+    BUILD_DERIVATE(jalg);
+
+
+
+   
+    
+    if (analysis_opt.Contains("combined_selection")){
+
+      //                            0
+      // Header:  sample, Ngen , event_selected , weight
+      //   
+
+      Bool_t selection = false;
+
+      if (analysis_opt.Contains("anymass1L2M")){
+
+	if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
+	if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+      
+      }
+
+      if (selection)
+	Counters[0]++;
+     }
+
+    if (analysis_opt.Contains("only2M")){
+
+      if (oNJet->at(jalg) != 2) continue;
+
+      NTwoJets++;
+      
+      //                       0             1           2        3         4            5            6          7
+      // Header: two_jets, cos(pmiss), cos(pmiss,mu),  Ej+Mj,  cos(jj),  cos(j,mu)<,  cos(j,mu)>,   Mtot,    COMBINED
+      // All divided by the number of events with OneMuon && TwoJets (but the first, which is NTwoJets/NOneMuon)
+
+      Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
+      Double_t cosj1mu = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      Double_t cosj2mu = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+    
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.80);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3. && oEJet2->at(jalg) >= 3.);
+      Bool_t sel41 = cosjj > -0.8;
+      Bool_t sel42 = cosjj < 0.98;
+      Bool_t sel6 = (TMath::Max( cosj1mu, cosj2mu ) < 0.8);
+
+      Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
+      Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
+      Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
+
+
+      if (sel1)  Counters[0]++;
+      if (sel2)  Counters[1]++;
+      if (sel3 && s21) Counters[2]++;
+      if (sel41 && sel42)  Counters[3]++;
+      if (sel6) Counters[4]++;
+      if (s22) Counters[5]++;
+      if (s23) Counters[6]++;
+
+      if (sel1 && sel2 && sel3 && s21 && sel41 && sel42 && sel6 && s22 && s23) Counters[7]++;
+    }
+
+
+    if (analysis_opt.Contains("only1L")){
+
+      if (oNJet->at(jalg) != 1) continue;
+
+      NOneJet++;
+      
+      //                       0             1           2        3         4            5            6          
+      // Header: one_jets, cos(pmiss), cos(pmiss,mu),  Ej+Mj, cos(j,mu)<,  cos(j,mu)>,   Mtot,    COMBINED
+      // All divided by the number of events with OneMuon && OneJets (but the first, which is NOneJets/NOneMuon)
+
+      Double_t cosjmu1 = TMath::Cos(lvj1.Angle(lvmu.Vect()));
+      Double_t cosjmu2 = TMath::Cos(lvj2.Angle(lvmu.Vect()));
+      Double_t cosjmu = TMath::Max(cosjmu1, cosjmu2);
+      
+      Bool_t sel1 = (TMath::Abs(lvmiss.CosTheta()) < 0.94);
+      Bool_t sel2 = (TMath::Cos(lvmiss.Angle(lvmu.Vect())) < 0.50);
+      Bool_t sel3 = (oEJet1->at(jalg) >= 3.);
+   
+      Bool_t sel4low = (-0.5 < cosjmu);
+      Bool_t sel4up = (cosjmu < 0.96);
+      Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
+
+  
+
+
+      if (sel1)  Counters[0]++;
+      if (sel2)  Counters[1]++;
+      if (sel3 ) Counters[2]++;
+      if (sel4up)  Counters[3]++;
+      if (sel4low) Counters[4]++;
+      if (sel5) Counters[5]++;
+     
+
+      if (sel1 && sel2 && sel3 && lvj1.M()>0.2 && sel4up && sel4low && sel5) Counters[6]++;
+    }
+
+
+   
+
+
+
+
+    
+  } // loop over events
+
+
+  if (analysis_opt.Contains("only2M")){
+    TString toret = Form("%s $%d \\egev$ & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f \\\\",
+			 opt.Data(), mass,
+			 100.*NTwoJets/NOneMuon,
+			 100.*Counters[0]/NTwoJets,
+			 100.*Counters[1]/NTwoJets,
+			 100.*Counters[2]/NTwoJets,
+			 100.*Counters[3]/NTwoJets,
+			 100.*Counters[4]/NTwoJets,
+			 100.*Counters[5]/NTwoJets,
+			 100.*Counters[6]/NTwoJets,
+			 100.*Counters[7]/NTwoJets);
+
+    return toret;
+  }
+
+
+  if (analysis_opt.Contains("only1L")){
+    TString toret = Form("%s $%d \\egev$ & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &    %3.0f  &   %3.0f  &   %3.0f  &   %3.0f \\\\",
+			 opt.Data(), mass,
+			 100.*NOneJet/NOneMuon,
+			 100.*Counters[0]/NOneJet,
+			 100.*Counters[1]/NOneJet,
+			 100.*Counters[2]/NOneJet,
+			 100.*Counters[3]/NOneJet,
+			 100.*Counters[4]/NOneJet,
+			 100.*Counters[5]/NOneJet,
+			 100.*Counters[6]/NOneJet);
+
+    return toret;
+  }
+
+
+
+  if (analysis_opt.Contains("combined_selection")){
+    TString toret = Form("%s $%d \\egev$ & %s & %s & %.1f \\\\",
+			 opt.Data(), mass,
+			 RoundWithUnits(SF*Nnocut(opt,Form("%d",mass),lifetime)).Data(),
+			 RoundWithUnits(Counters[0]).Data(),
+			 Weight(opt,Form("%d",mass),lifetime,SF));
+    return toret;
+			 
+  }
+
+
+
+  if (analysis_opt.Contains("withdcut") && analysis_opt.Contains("anymass1L2M")){
+
+      //                                                            
+      // Header:  Sample & Ngen, weight  &  Sliding,weighted  &  D<8sig,weighted   & D<20sig,weighted  & D<1mm,weighted  & D>1mm,weighted
+
+    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M", false);
+    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M", false);
+
+
+    TString toret;
+    
+    for (int m : std::vector<int>{5,10,20,30,40,50,60,70,80,85}){
+      if (opt == "signal" && m != mass) continue;
+
+      double weight = Weight(opt,Form("%d",m), lifetime);
+      cout<<"----------------------------------------------"<<endl;
+      cout<<"MASS = "<<m<<endl;
+      TString temp = Form("%s & %s & %s & %s & %s & %s & %s \\\\ \n & %.1f  & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} \\\\",
+			  BkgLatex(opt).Data(),
+			  RoundWithUnits(MAPsigma[m][0]).Data(), 
+			  RoundWithUnits(MAPsigma[m][3]).Data(),  
+			  RoundWithUnits(MAPsigma[m][dcut_id(8)]).Data(), 
+			  RoundWithUnits(MAPsigma[m][dcut_id(20)]).Data(), 
+			  RoundWithUnits(MAPsigma[m][3] - MAPmm[m][dcut_id(100)]).Data(), 
+			  RoundWithUnits(MAPmm[m][dcut_id(100)]).Data(), 
+			  weight,
+			  RoundWithUnits(weight*MAPsigma[m][3]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][dcut_id(8)]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][dcut_id(20)]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][3] - weight*MAPmm[m][dcut_id(100)]).Data(),
+			  RoundWithUnits(weight*MAPmm[m][dcut_id(100)]).Data());
+
+      if ( m == mass) toret = temp;
+
+      cout<<temp<<endl;
+			  
+    }
+
+
+    
+    }
+
+
+
+  return (TString)("");
+
+
+ 
+			 
+}
+
+    

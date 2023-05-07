@@ -136,6 +136,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 	      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
 	  }
 
+	  Z = totsig-1;
+
 	  LOG<<"M "<<m<<"     LT "<<lt<<"    logU2 "<<Y<<"    sig "<<totsig<<"    bkg "<<totbkg<<"   Errbkg "<<SigmaBkg<<"    Z "<<Z<<endl;
 	  //LOG<<"-------------------------------------------------"<<endl;
 	  LOG<<"Events: "<<signal<<" "<<Zbb<<" "<<Zcc<<" "<<Zuds<<" "<<Zmumu<<" "<<Ztautau<<" "<<munuqq<<endl;

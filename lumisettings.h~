@@ -2,7 +2,8 @@ Double_t LUMI = 1.5e8;
 //Double_t LUMI = 3.3e3;
 
 Double_t
-Nsignal =  1.e5, //0 
+  Nsignal =  1.e5, //0
+  NsignalLT = 1.e4,
   NZbb =    9.8e8, // 1.e7, //1
   NZcc =     9.9e8, // 1.e7, //2
   NZuds =    1.e9, // 1.e8, //5
@@ -22,23 +23,25 @@ std::map<TString, Double_t> xs_vs_m = {
 };
 
   
-std::vector<TString> id = {"signal","Zbb","Zcc","Zuds","Zmumu","Ztautau","munuqq"};
+//std::vector<TString> id = {"signal","Zbb","Zcc","Zuds","Zmumu","Ztautau","munuqq"};
 
 
 
 Double_t Nnocut(TString opt, TString HNMass="any", TString lifetime="n/a"){
 
-  if (lifetime == "m0p5" && HNMass == "40") return 5000.;
+  if (opt == "signal" && lifetime == "m0p5" && HNMass == "40") return 5000.;
   
-  if (lifetime != "n/a") return 10000.;
-
   if (opt == "Zbb")     return NZbb;
   else if (opt == "Zcc")     return NZcc;
   else if (opt == "Zmumu")   return NZmumu;
   else if (opt == "Ztautau") return NZtautau;
   else if (opt == "Zuds")    return NZuds;
   else if (opt == "munuqq")  return Nmunuqq;
-  else return Nsignal;
+  
+  if (opt == "signal" && lifetime != "n/a") return NsignalLT;
+  else if (opt=="signal") return Nsignal;
+
+  return -1;
   
  
 }
@@ -78,7 +81,7 @@ Double_t xsec(TString opt, TString HNMass = "50", TString lifetime="n/a"){
   else if (opt == "Ztautau")  return 1476.58;
   else if (opt == "Zuds")     return 18616.5;
   else if (opt == "munuqq")   return 0.003192;
-  else if (lifetime == "n/a") return xs_vs_m[HNMass];
+  else if (opt == "signal" && lifetime == "n/a") return xs_vs_m[HNMass];
 
   else{
 

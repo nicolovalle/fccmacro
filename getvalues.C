@@ -12,8 +12,13 @@ enum OBS_ID {
   omass1mm,
   omtot,
   ocosjj,
+  ocospmiss,
+  ocospmissmu,
   oMAXcosjmu,
   oMINcosjmu,
+  oMINEjet,
+  omass_selection, // Visible mass after event selection (no sliding cuts)
+  oemiss_selection, // Emiss after event selection (no sliding cuts)
   omass_after_dcut,
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
@@ -33,7 +38,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
   TString Dir = dir;
 
   if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
-      obsID == oVtxXYsliding || obsID == oVtxXYZsliding)
+      obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection)
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
@@ -74,6 +79,9 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
     
     BUILD_DERIVATE(jalg);
 
+    //cout<<"Njet: "<<oNJet->at(0)<<" "<<oNJet->at(1)<<" "<<oNJet->at(2)<<endl;
+
+    //if (oNJet->at(jalg) != 1) continue;
     if (obsID == od0){
       toret.push_back(TMath::Abs(oMuD0sig));
       continue;
@@ -81,6 +89,16 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
     if (obsID == omtot) {
       toret.push_back((lvvis + lvmiss).M());
+      continue;
+    }
+
+    if (obsID == ocospmiss){
+      toret.push_back(TMath::Cos(lvmiss.Theta()));
+      continue;
+    }
+
+    if (obsID == ocospmissmu){
+      toret.push_back(TMath::Cos(lvmiss.Angle(lvmu.Vect())));
       continue;
     }
 
@@ -96,6 +114,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
     if (obsID == oMINcosjmu){
       toret.push_back(TMath::Min(oCosj1Mu, oCosj2Mu));
+      continue;
+    }
+
+    if (obsID == oMINEjet){
+      toret.push_back(TMath::Min(oEJet1->at(jalg),oEJet2->at(jalg)));
       continue;
     }
 
@@ -128,24 +151,37 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
    
 
     
-
-    
    
     if (selection){
-
+      
+      
+      
       if (obsID == omass1mm){
-
 	if (oMuD0 > 1.) toret.push_back(lvvis.M());
 	continue;
       }
 
       
-      if (obsID == od0sel) toret.push_back(TMath::Abs(oMuD0sig));
+      if (obsID == od0sel) {
+	toret.push_back(TMath::Abs(oMuD0sig));
+	continue;
+      }
 
       Double_t im = mass;
       Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
       Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
       Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
+
+
+      if (obsID == omass_selection){
+	toret.push_back(lvvis.M());
+	continue;
+      }
+
+      if (obsID == oemiss_selection){
+	toret.push_back(oEMiss);
+	continue;
+      }
 
       if (slid1 && slid2){
 	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));
@@ -193,6 +229,8 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
   }
 
   
-  cout<<fname<<" READ "<<endl;
+  cout<<"getvalues.C:: "<<fname<<" READ "<<endl;
+  
+  cout<<"getvalues.C:: returning array with "<<toret.size()<<" elements"<<endl<<endl;
   return std::pair<std::vector<Double_t>, Double_t>{toret, SF};
 }

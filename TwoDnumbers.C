@@ -12,7 +12,7 @@ Double_t GetUpp(Double_t n){
 std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
 
 
-std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = false, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
+std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
@@ -25,7 +25,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
   std::vector<TString> mps = {"m","p"};
 
   
-  TH2F* H = new TH2F("Hfilled","Hfilled",19,0-2.5,90+2.5,64,-12,-4);
+  TH2F* H = new TH2F("Hfilled","Signal. D_{0,#mu} > 1 mm",19,0-2.5,90+2.5,64,-12,-4);
   TH2F* Hblank = new TH2F("Hblank","Hblank",19,0-2.5,90+2.5,64,-12,-4);
 
   H->GetXaxis()->SetTitle("M(HN) (GeV)");
@@ -37,6 +37,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
   if (sample != "signal") MapSample =  CutFlowOK(sample,-1,"n/a",AnalysisResPath,RunOnN,false,jalg,analysis_opt);
  
 
+  Int_t file_counter = 0;
   for (int m : masses){
     for (TString mp : mps){
       for (int unit = 0; unit < 9; unit++){
@@ -50,6 +51,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
       
 
 	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
+	  file_counter++;
      
 
 	  Int_t myid = dcut_id(dd0cut);
@@ -58,7 +60,9 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 
 	  if (sample == "signal") MapSample = CutFlowOK("signal",m,lt,AnalysisResPath,RunOnN,false,jalg,analysis_opt);
 
-	  bin_content = 1.*MapSample[m][myid];
+	  bin_content = 1.*MapSample[m][myid] / 1.e4;
+
+	  
 
 	  //MapSample[m][0] is Nnocut * SF;
 	  if (Scaled) bin_content *= xsec(sample, Form("%d",m), lt) * LUMI / MapSample[m][0]; 
@@ -79,13 +83,16 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
     }
   }
 
+  if (file_counter==0) cout<<"TwoDnumbers.C:: NO FILES FOUND!"<<endl;
+
   if (Draw){
 
     auto c = new TCanvas();
 
-    
-    
-    H->GetZaxis()->SetRangeUser(1e-1,1e5);
+    //H->GetZaxis()->SetRangeUser(1e-6,1); //efficiency
+    //H->GetZaxis()->SetRangeUser(1e-4,1e5); //weights
+    //H->GetZaxis()->SetRangeUser(1e-10,1e-1); // xsec
+    //H->GetZaxis()->SetRangeUser(1e-1,1e5); // number of events
     H->Draw("colz");
     //H->SetMarkerSize(1.6);
     //H->SetTitle("Significance");
@@ -95,10 +102,12 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
     
 
     gStyle->SetOptStat(0);
-    gPad->SetLogz();
-    gStyle->SetPalette(kBlackBody);
+    //gPad->SetLogz();
+    //gStyle->SetPalette(kBlackBody);
+    gStyle->SetPalette(kBlueRedYellow);
 
     c->SaveAs("temp.png");
+    c->SaveAs("temp.pdf");
   }
 
   
