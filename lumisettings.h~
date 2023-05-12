@@ -467,8 +467,9 @@ void DrawCol()
    TMarker *m;
    for (i=1; i<n; i++) {
       g->GetPoint(i,x,y);
-      m = new TMarker(x,y,20);
-      m->SetMarkerColor((i%60)+12);;
+      m = new TMarker(x,y,(i%17)+51);
+      m->SetMarkerSize(1.5);
+      // m->SetMarkerStyle((i%17)+51);;
       m->Paint();
    }
 }
@@ -489,8 +490,8 @@ void MapPoint(){
 
 	  if (Coupling(Form("%d",m), lt) > 0){
 	    x[npoint] = 1.*m;
-	    y[npoint] = ( mp == "m" ? -1. : 1.)*(unit+0.1*decimal);
-	    //y[npoint] = 2.*TMath::Log10(Coupling(Form("%d",m), lt));
+	    //y[npoint] = ( mp == "m" ? -1. : 1.)*(unit+0.1*decimal);
+	    y[npoint] = 2.*TMath::Log10(Coupling(Form("%d",m), lt));
 	    npoint++;
 	  }
 	  
@@ -508,10 +509,15 @@ void MapPoint(){
   TExec *ex = new TExec("ex","DrawCol();");
 
    g->GetListOfFunctions()->Add(ex);
-  g->GetYaxis()->SetRangeUser(-8,3);
+  g->GetYaxis()->SetRangeUser(-12,-2);
+   //g->GetYaxis()->SetRangeUser(-8,3);
   g->GetXaxis()->SetLimits(0,90);
   g->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  g->GetYaxis()->SetTitle("Log (decay length / m)");
+  g->GetYaxis()->SetTitle("Log (U^{2})");
+  //g->GetYaxis()->SetTitle("Log (decay length / m)");
+  g->SetMarkerColor(0);
+  g->SetMarkerSize(0);
+  g->SetTitle("");
   g->Draw("A P");
 
 

@@ -1,8 +1,9 @@
 #include "CutFlowOK.C"
 
 
+std::map<int,double> SmoothedLL ={{5 , 831.16352}, {10 , 2574.8944}, { 20 , 2986.9197}, { 30 , 3721.1144}, { 40 , 1468.0616}, { 50 , 2259.2084}, { 60 , 7043.7216}, { 70 , 28927.867}, { 80 , 192722.72}, { 85 , 167167.23 }};
 
-
+std::map<int,double> SmoothedLL_noRoll = {{ 5 , 447.50697},{ 10 , 1350.2468},{ 20 , 1506.8090},{ 30 , 1753.5736},{ 40 , 670.10691},{ 50 , 1148.5794},{ 60 , 3377.6229},{ 70 , 12411.982},{ 80 , 81230.329},{ 85 , 81761.084 }};
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
@@ -14,10 +15,6 @@ Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   if (sig<1e-6)
 
     return TMath::Sqrt(2 *( n *TMath::Log(n/b) - (n-b) ));
-
-   
-
-  
 
   
   Double_t FirstLog = n*(b+sig*sig) / (b*b + n*sig*sig);
@@ -44,7 +41,7 @@ Double_t GetUpp(Double_t n){
 
 
 std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "simple", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dsigma anymass1L2M"){
-  // formulas: atals simple
+  // formulas: atals simple signal myZ
 
   // opt: same as CutFlowOK.C
   
@@ -57,8 +54,10 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 
   //std::vector<TString> lifetime = {"m1p0", "m1p5", "m2p0", "m2p5", "m3p0", "m3p5", "m4p0", "m4p5", "m5p0", "m5p5", "m6p0", "m6p5", "m7p0"};
 
-  TH2F* H = new TH2F("H","H",19,0-2.5,90+2.5,64,-12,-4);
-  TH2F* HBLACK = new TH2F("HBLACK","HBLACK",19,0-2.5,90+2.5,64,-12,-4);
+  TH2F* H = new TH2F("H","H",91,0-2.5,90+2.5,64,-12,-4);
+  //TH2F* HBLACK = new TH2F("HBLACK","HBLACK",91,0-2.5,90+2.5,128,-12,-4);
+
+  
 
   H->GetXaxis()->SetTitle("M(HN) (GeV)");
   H->GetYaxis()->SetTitle("Log(U^{2})");
@@ -67,6 +66,11 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   std::vector<double> TDPlot_M;
   std::vector<double> TDPlot_U2;
   std::vector<double> TDPlot_Z;
+  double TargetZ; // interpolating value, chosen accordingly to "formula"
+
+  TDPlot_M.clear();
+  TDPlot_U2.clear();
+  TDPlot_Z.clear();
 
 
  
@@ -80,82 +84,111 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   ofstream LOG;
   LOG.open("LOG_TwoDsignificance.txt", std::ios_base::app);
 
-  for (int m : masses){
-    for (TString mp : mps){
-      for (int unit = 0; unit < 9; unit++){
-	for (int decimal = 0; decimal < 6; decimal += 5){
+  GetAvailableDatapoints(AnalysisResPath);
 
 
-	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
+  for (int ip = 0; ip<AvailableDatapoints.size(); ip++){
+
+    int m = AvailableDatapoints.at(ip).first;
+
+    
+
+    TString lt = AvailableDatapoints.at(ip).second;
+
+
+    Int_t myid = dcut_id(dd0cut);
+    Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
+
+    Double_t U = Coupling(Form("%d",m),lt);
+
+    Double_t Zmumu = bkgMapZmumu[m][myid];
+    Double_t Ztautau = bkgMapZtautau[m][myid];
+    Double_t Zbb = bkgMapZbb[m][myid];
+    Double_t Zcc = bkgMapZcc[m][myid];
+    Double_t Zuds = bkgMapZuds[m][myid];
+    Double_t munuqq = bkgMapmunuqq[m][myid];
+
+    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
+
+    Double_t Y = 2.*TMath::Log10(U);
+    if (TMath::IsNaN(Y)) continue;
+    Double_t X = 1.*m;
+    
+    Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
+    Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
+    totbkg = SmoothedLL[m];
+
+    Double_t Z;
 	  
+    if (formula == "simple"){
+      Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
+      TargetZ = 2.;
+    }
+    
+    else if (formula == "atlas"){
+      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
+      TargetZ = 2.;
+    }
+    
+    else if (formula == "signal"){
+      Z = totsig;
+      TargetZ = 3.;
+    }
+    
+    else if (formula == "myZ"){
+      Z = 1.-ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
+      TargetZ = 0.95;
+    }
+    
+    else{
+      cout<<"TwoDsignificance.C:: ERROR - FORMULA NOT RECOGNIZED"<<endl;
+    }
 
-	  TString FileNameToCheck = Form("%s%s", AnalysisResPath.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
-      
-	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
-     
-	  Int_t myid = dcut_id(dd0cut);
+    TDPlot_M.push_back(X);
+    TDPlot_U2.push_back(Y);
+    TDPlot_Z.push_back(Z);
+
+  }
 
 
-	  Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
-	  
+  const int npoints = TDPlot_Z.size();
 
-	   Double_t U = Coupling(Form("%d",m),lt);
-	  
-	  if (signal == 0){
-	    cout<<"From "<<FileNameToCheck<<" the signal m="<<m<<" lt="<<lt<<" has 0 events"<<endl;
-	    HBLACK->Fill(1.*m, 2.*TMath::Log10(U));
-	    continue;
-	  }
+  Double_t aX[npoints], aY[npoints], aZ[npoints];
 
-	
-     
-	  
-	  Double_t Zmumu = bkgMapZmumu[m][myid];
-	  Double_t Ztautau = bkgMapZtautau[m][myid];
-	  Double_t Zbb = bkgMapZbb[m][myid];
-	  Double_t Zcc = bkgMapZcc[m][myid];
-	  Double_t Zuds = bkgMapZuds[m][myid];
-	  Double_t munuqq = bkgMapmunuqq[m][myid];
-	  
+  for (int i=0; i<npoints; i++){
+    aX[i] = TDPlot_M.at(i);
+    aY[i] = TDPlot_U2.at(i);
+    aZ[i] = TDPlot_Z.at(i);
+    cout<<aX[i]<<"\t"<<aY[i]<<"\t"<<aZ[i]<<endl;
+  }
+  
+  TGraph2D *Gr = new TGraph2D(npoints, aX, aY, aZ);
 
-	  Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
-
-	 
-      
-	  Double_t Y = 2.*TMath::Log10(U);
-	  Double_t X = 1.*m;
-
-	  Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
-	  Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
-
-	  Double_t Z;
-	  if (formula == "simple")
-	    Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
-	  else if (formula == "atlas"){
-	    
-	      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
-	  }
-
-	  Z = totsig-1;
-
-	  LOG<<"M "<<m<<"     LT "<<lt<<"    logU2 "<<Y<<"    sig "<<totsig<<"    bkg "<<totbkg<<"   Errbkg "<<SigmaBkg<<"    Z "<<Z<<endl;
-	  //LOG<<"-------------------------------------------------"<<endl;
-	  LOG<<"Events: "<<signal<<" "<<Zbb<<" "<<Zcc<<" "<<Zuds<<" "<<Zmumu<<" "<<Ztautau<<" "<<munuqq<<endl;
-	  //LOG<<"-------------------------------------------------"<<endl;
-      
-      
-
-	  if ( (Z<10000000. && Z>0) || (Draw==false)) {
-	    TDPlot_M.push_back(X);
-	    TDPlot_U2.push_back(Y);
-	    TDPlot_Z.push_back(Z);
-	    H->Fill(X,Y,Z);
-	  }
-
-	}
-      }
+  Gr->Draw("colz");
+  /*
+  cout<<"TwoDsignificance.C:: interpolating..."<<endl;
+  for (int i=1; i<H->GetNbinsX(); i++){
+    cout<<i<<"/"<<H->GetNbinsX()<<endl;
+    for (int j=1; j<H->GetNbinsY(); j++){
+      cout<<".."<<j<<"/"<<H->GetNbinsY()<<endl;
+      double ix = H->GetXaxis()->GetBinCenter(i);
+      double iy = H->GetYaxis()->GetBinCenter(j);
+      double iz = Gr->Interpolate(ix,iy);
+      H->Fill(i,j,iz);
     }
   }
+  */
+
+
+  
+
+	  
+   
+
+    
+  
+
+  
 
       
       
@@ -195,11 +228,11 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
       }
       upost = iY;
 
-      if (spre < 2 && spost >= 2 && upre > outvalue && upost > outvalue){
+      if (spre < TargetZ && spost >= TargetZ && upre > outvalue && upost > outvalue){
 
 	cx.push_back(i);
 
-	double interpol = upre + (2.-spre)*((upost-upre)/(spost-spre));
+	double interpol = upre + (TargetZ-spre)*((upost-upre)/(spost-spre));
 
 	cy.push_back(TMath::Log10(interpol));
 
@@ -229,13 +262,16 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     for (int i = 0; i<npoint; i++) {vcx[i] = cx[i]; vcy[i] = cy[i];}
      
     auto gg = new TGraph(npoint,vcx,vcy);
-    
-    H->GetZaxis()->SetRangeUser(1e-5,1000);
+
+    if (TargetZ == 2.)
+      H->GetZaxis()->SetRangeUser(1e-5,1000);
+    else if (TargetZ  == 0.05)
+      H->GetZaxis()->SetRangeUser(0,1);
     H->Draw("colz");
     H->SetMarkerSize(1.6);
     H->SetTitle("Significance");
 
-    HBLACK->Draw("same BOX");
+    //HBLACK->Draw("same BOX");
 
     gg->Draw("same");
 

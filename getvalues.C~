@@ -157,7 +157,6 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
       
       
       if (obsID == omass1mm){
-
 	if (oMuD0 > 1.) toret.push_back(lvvis.M());
 	continue;
       }
@@ -176,6 +175,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
       if (obsID == omass_selection){
 	toret.push_back(lvvis.M());
+	continue;
+      }
+
+      if (obsID == oemiss_selection){
+	toret.push_back(oEMiss);
 	continue;
       }
 

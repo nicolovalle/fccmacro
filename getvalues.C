@@ -19,12 +19,14 @@ enum OBS_ID {
   oMINEjet,
   omass_selection, // Visible mass after event selection (no sliding cuts)
   oemiss_selection, // Emiss after event selection (no sliding cuts)
-  omass_after_dcut,
+  omass_after_dcut, // Visible mass after Dcut but no sliding cuts
+  oemiss_after_dcut, // Emiss after Dcut but no sliding cuts
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
   oVtxXYZsliding   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
 };
+
 
 
 
@@ -38,7 +40,8 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
   TString Dir = dir;
 
   if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
-      obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection)
+      obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
+      obsID == omass_after_dcut || obsID == oemiss_after_dcut)
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
@@ -167,12 +170,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 	continue;
       }
 
-      Double_t im = mass;
-      Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
-      Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-      Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
-
-
+     
       if (obsID == omass_selection){
 	toret.push_back(lvvis.M());
 	continue;
@@ -183,16 +181,21 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 	continue;
       }
 
+      Double_t im = mass;
+      Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
+      Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
+      Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
+
+
       if (slid1 && slid2){
 	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));
 	if (obsID == oVtxXYsliding) toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y));
 	if (obsID == oVtxXYZsliding) toret.push_back(TMath::Sqrt(oVtx_x*oVtx_x + oVtx_y*oVtx_y + oVtx_z*oVtx_z));
-	continue;
       }
 								      
       
 
-      if (obsID == omass_after_dcut){
+      if (obsID == omass_after_dcut || obsID == oemiss_after_dcut){
 
 	Bool_t cut_condition = false;
 
@@ -209,7 +212,8 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
 	if (analysis_opt.Contains(">")) cut_condition = !cut_condition;
 
-	if (cut_condition) toret.push_back(lvvis.M());
+	if (cut_condition && obsID == omass_after_dcut) toret.push_back(lvvis.M());
+	else if (cut_condition && obsID == oemiss_after_dcut) toret.push_back(oEMiss);
 	
 
 	

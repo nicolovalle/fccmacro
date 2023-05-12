@@ -244,18 +244,18 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
 
 
-
+/*
 
 //TString maketablestring
 
 TString maketableline1(TString A1, int A2, int B1, TString C1, double D1, double E1, double F1, double G1, double H1,  double I1,  double J1, double K1,  double L1,  double M1,  double N1, double O1,  TString bkgcolor="#ffffff" , TString color="#990000" ){
 
-/*
-     A             B           C             D           E        F          G          H            I               J               K             L            M                N              O
-| type        |   Mana  |  lifetime   |  log(U2)    |  xsec   |  Ngen   |  weight  |   Nsel    |   Nsliding   |   Ndcut = 4    |  Ndcut = 8 |  Ndcut = 20  | Ndcut  = 50 | Ndcut  = 100 | Ndcut  = 200 |    
-| M if signal |         |             |             |         |  wghted |          |  wghted   | wghted       | wghted         | wghted     | wghted       | wghted      | wghted       | wghted       |   
+
+//     A             B           C             D           E        F          G          H            I               J               K             L            M                N              O
+//| type        |   Mana  |  lifetime   |  log(U2)    |  xsec   |  Ngen   |  weight  |   Nsel    |   Nsliding   |   Ndcut = 4    |  Ndcut = 8 |  Ndcut = 20  | Ndcut  = 50 | Ndcut  = 100 | Ndcut  = 200 |    
+//| M if signal |         |             |             |         |  wghted |          |  wghted   | wghted       | wghted         | wghted     | wghted       | wghted      | wghted       | wghted       |   
    
-*/
+
   
 
   TString A = Form("<td> %s <br> M=%d GeV</td>", A1.Data(), A2);
@@ -284,11 +284,11 @@ TString maketableline1(TString A1, int A2, int B1, TString C1, double D1, double
 
 TString maketableline2(TString a1, Int_t a2, TString b, double c, std::vector<double> v, TString bkgcolor="#ffffff"){
 
-  /*
+  
 
-    A          B          C       D       E       F             G                  H              I        J1     J2    K               L                    M                   N
-  | type  | lifetife | log(U2) | Ngen | ExtAna | OneMuon | cos(pmiss)<0.94 | cos(pmiss,mu)<0.8 | ejet>3 |cosjj | cosjj | cos(j,mu)<0.8 | Mj > 0.2 & M2j > 0 | cos(jmu) > -0.98 | Mtot > 80 | 
-   */
+//    A          B          C       D       E       F             G                  H              I        J1     J2    K               L                    M                   N
+// | type  | lifetife | log(U2) | Ngen | ExtAna | OneMuon | cos(pmiss)<0.94 | cos(pmiss,mu)<0.8 | ejet>3 |cosjj | cosjj | cos(j,mu)<0.8 | Mj > 0.2 & M2j > 0 | cos(jmu) > -0.98 | Mtot > 80 | 
+//
 
   TString A = Form("<td> %s <br> M=%d GeV</td>", a1.Data(),a2);
   if (a2<0) A = Form("<td> %s </td>", a1.Data());
@@ -441,3 +441,4 @@ void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString Analy
 
 
 
+*/

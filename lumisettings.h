@@ -456,6 +456,33 @@ Double_t Coupling(int HNMass, TString lifetime){
 }
 
 
+std::vector<std::pair<int, TString>> AvailableDatapoints;
+
+void GetAvailableDatapoints(TString path="../MyExternalAnalysis/results/skimmed/"){
+  AvailableDatapoints.clear();
+
+  std::vector<int> masses;
+  masses.clear();
+
+  for (int i=0;i<95;i++) masses.push_back(i);
+
+  for (int m : masses){
+    for (TString mp : std::vector<TString>{"m","p"}){
+      for (int unit = 0; unit < 9; unit++){
+	for (int decimal = 0; decimal < 10; decimal += 5){
+	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
+	  TString FileNameToCheck = Form("%s%s", path.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
+
+	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
+
+	  std::pair<int, TString> p{m, lt};
+	  AvailableDatapoints.push_back(p);
+	}
+      }
+    }
+  }     
+}
+
 void DrawCol()
 {
    Int_t i,n;

@@ -131,7 +131,9 @@ Bool_t SELECTION_MM_2JET(int jalg){
   Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
   Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23;
+  Bool_t r1 = (oNReco > 3);
+
+  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && r1;
  
 }
 
@@ -150,7 +152,9 @@ Bool_t SELECTION_LM_1JET(int jalg){
   Bool_t sel4 = (-0.5 < cosjmu && cosjmu < 0.96);
   Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
 
-  return sel1 && sel2 && sel3 && sel4 && sel5;
+  Bool_t r1 = (oNReco > 3);
+
+  return sel1 && sel2 && sel3 && sel4 && sel5 && r1;
 
 }
 
@@ -194,17 +198,38 @@ Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmax
 }
 
 
+std::vector<TString> ExplodeString(TString s, TString token){
+
+  std::vector<TString> toret;
+  int index=0;
+  TString s2 = s;
+
+  while (s2.Index(token)>0){
+    index = s2.Index(token);
+    TString is = s2(0,index);
+    toret.push_back(is);
+    s2 = (TString)(s2(index+1,s2.Length()));
+  }
+  TString is = s2;
+  toret.push_back(s2);
+
+  return toret;
+  
+  
+}
+
 std::vector<float> GetFloatArray(TString opt){
   int i1 = opt.Index("[");
   int i2 = opt.Index("]");
-  if (i1<0 || i2<0 || (i2-i1-1)%5 != 0) {cout<<"Cut.h:: ERROR - BAD [] OPTION DECODING"<<endl; return std::vector<float>{};}
+  if (i1<0 || i2<0 ) {cout<<"Cut.h:: ERROR - BAD [] OPTION DECODING"<<endl; return std::vector<float>{};}
 
   TString s = opt(i1+1, i2-i1-1);
 
+  std::vector<TString> V = ExplodeString(s,",");
   
   std::vector<float> toret;
-  for (int i=0; i<(i2-i1-1)/5; i++){
-    toret.push_back(std::stof(s(5*i,5)));
+  for (TString iopt : V){
+    toret.push_back(std::stof(iopt.Data()));
   }
 
   return toret;
