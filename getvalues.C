@@ -21,6 +21,8 @@ enum OBS_ID {
   oemiss_selection, // Emiss after event selection (no sliding cuts)
   omass_after_dcut, // Visible mass after Dcut but no sliding cuts
   oemiss_after_dcut, // Emiss after Dcut but no sliding cuts
+  omass_encoded_dcut, // Visibile mass after evt selection: negative if the event passes the Dcut (no sliding)
+  oemiss_encoded_dcut, // Emiss after evt selection: negative if the event passes the Dcut (no sliding)
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
@@ -41,7 +43,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
   if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
       obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
-      obsID == omass_after_dcut || obsID == oemiss_after_dcut)
+      obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut )
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
@@ -195,7 +197,8 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 								      
       
 
-      if (obsID == omass_after_dcut || obsID == oemiss_after_dcut){
+      if (obsID == omass_after_dcut || obsID == oemiss_after_dcut ||
+	  obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut){
 
 	Bool_t cut_condition = false;
 
@@ -214,6 +217,8 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
 	if (cut_condition && obsID == omass_after_dcut) toret.push_back(lvvis.M());
 	else if (cut_condition && obsID == oemiss_after_dcut) toret.push_back(oEMiss);
+	else if (obsID == omass_encoded_dcut) toret.push_back(lvvis.M()*(cut_condition ? -1. : 1.));
+	else if (obsID == oemiss_encoded_dcut) toret.push_back(oEMiss*(cut_condition ? -1. : 1.));
 	
 
 	

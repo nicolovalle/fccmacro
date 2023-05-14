@@ -60,7 +60,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 
 	  if (sample == "signal") MapSample = CutFlowOK("signal",m,lt,AnalysisResPath,RunOnN,false,jalg,analysis_opt);
 
-	  bin_content = 1.*MapSample[m][myid] / 1.e4;
+	  bin_content = 1.*MapSample[m][myid];
 
 	  
 

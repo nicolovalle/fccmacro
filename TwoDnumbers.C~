@@ -321,6 +321,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
 
 
   c->SaveAs("temp.png");
+  c->SaveAs("temp.pdf");
 
 
 }

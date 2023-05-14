@@ -1,7 +1,9 @@
 #include "CutFlowOK.C"
 
 
+std::map<int,double> SmoothedLL ={{5 , 831.16352}, {10 , 2574.8944}, { 20 , 2986.9197}, { 30 , 3721.1144}, { 40 , 1468.0616}, { 50 , 2259.2084}, { 60 , 7043.7216}, { 70 , 28927.867}, { 80 , 192722.72}, { 85 , 167167.23 }};
 
+std::map<int,double> SmoothedLL_noRoll = {{ 5 , 447.50697},{ 10 , 1350.2468},{ 20 , 1506.8090},{ 30 , 1753.5736},{ 40 , 670.10691},{ 50 , 1148.5794},{ 60 , 3377.6229},{ 70 , 12411.982},{ 80 , 81230.329},{ 85 , 81761.084 }};
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
@@ -114,6 +116,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
     Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
+    totbkg = SmoothedLL[m];
 
     Double_t Z;
 	  

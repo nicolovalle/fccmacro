@@ -1,7 +1,7 @@
 
 #include "getvalues.C"
 
-std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TString analysis_opt="> d2d dmm anymass1L2M"){
+std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d dmm anymass1L2M"){
 
   Int_t mass = 40;
   Int_t jalg = 2;
@@ -12,13 +12,9 @@ std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TStr
   TString xlabel = "M_{vis} (GeV/c^{2})";
   TString ylabel = "E_{miss} (GeV)";
 
-  OBS_ID obs1 = omass_selection;
-  OBS_ID obs2 = oemiss_selection;
+  OBS_ID obs1 = omass_encoded_dcut;
+  OBS_ID obs2 = oemiss_encoded_dcut;
 
-  if (!BeforeCuts){
-    obs1 = omass_after_dcut;
-    obs2 = oemiss_after_dcut;
-  }
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700); 
 
@@ -40,30 +36,95 @@ std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TStr
 
   TH2F *H2 = new TH2F("Granular2D","Granular2D",200,0,100,120,0,60);
   TH2F *H2S = new TH2F("Smoothed2D","Smoothed2D",200,0,100,120,0,60);
+  TH2F *H2W = new TH2F("Weighted2D","Weighted2D",200,0,100,120,0,60);
+  TH2F *H2C = new TH2F("GranularWCut","Granular with D cut",200,0,120,0,60);
 
+  Double_t ScaleFactor[6] =  {1,1,1,1,1,1}; // order as written above 
+  
+
+  std::vector<Double_t> vec1;
+  int count=0, countcut=0;
+
+  vec1 = munuqq1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[0] = 1.*countcut/vec1.size();
+  countcut=0;
+
+  vec1 = Zmumu1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[1] = 1.*countcut/vec1.size();
+  countcut=0;
+
+  vec1 = Ztautau1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[2] = 1.*countcut/vec1.size();
+  countcut=0;
+
+  vec1 = Zuds1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[3] = 1.*countcut/vec1.size();
+  countcut=0;
+
+  vec1 = Zbb1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[4] = 1.*countcut/vec1.size();
+  countcut=0;
+
+  vec1 = Zcc1.first;
+  for (double d : vec1) if (d<0) countcut++;
+  ScaleFactor[5] = 1.*countcut/vec1.size();
+  countcut=0;
+
+
+  
+
+  
   for (int i=0; i < munuqq1.first.size(); i++){
-    H2->Fill(munuqq1.first[i],munuqq2.first[i], Weight("munuqq","n/a","n/a",munuqq1.second));
-  }
-
-  for (int i=0; i < Ztautau1.first.size(); i++){
-    H2->Fill(Ztautau1.first[i],Ztautau2.first[i], Weight("Ztautau","n/a","n/a",Ztautau1.second));
+    H2->Fill(abs(munuqq1.first[i]),abs(munuqq2.first[i]), Weight("munuqq","n/a","n/a",munuqq1.second));
+    H2W->Fill(abs(munuqq1.first[i]),abs(munuqq2.first[i]), ScaleFactor[0]*Weight("munuqq","n/a","n/a",munuqq1.second));
+    if (munuqq1.first[i]<0) H2C->Fill(abs(munuqq1.first[i]),abs(munuqq2.first[i]), Weight("munuqq","n/a","n/a",munuqq1.second));
   }
 
   for (int i=0; i < Zmumu1.first.size(); i++){
-    H2->Fill(Zmumu1.first[i],Zmumu2.first[i], Weight("Zmumu","n/a","n/a",Zmumu1.second));
+    H2->Fill(abs(Zmumu1.first[i]),abs(Zmumu2.first[i]), Weight("Zmumu","n/a","n/a",Zmumu1.second));
+    H2W->Fill(abs(Zmumu1.first[i]),abs(Zmumu2.first[i]), ScaleFactor[1]*Weight("Zmumu","n/a","n/a",Zmumu1.second));
+    if (Zmumu1.first[i]<0) H2C->Fill(abs(Zmumu1.first[i]),abs(Zmumu2.first[i]), Weight("Zmumu","n/a","n/a",Zmumu1.second));
   }
-
-  for (int i=0; i < Zbb1.first.size(); i++){
-    H2->Fill(Zbb1.first[i],Zbb2.first[i], Weight("Zbb","n/a","n/a",Zbb1.second));
-  }
-
-  for (int i=0; i < Zcc1.first.size(); i++){
-    H2->Fill(Zcc1.first[i],Zcc2.first[i], Weight("Zcc","n/a","n/a",Zcc1.second));
+  
+  for (int i=0; i < Ztautau1.first.size(); i++){
+    H2->Fill(abs(Ztautau1.first[i]),abs(Ztautau2.first[i]), Weight("Ztautau","n/a","n/a",Ztautau1.second));
+    H2W->Fill(abs(Ztautau1.first[i]),abs(Ztautau2.first[i]), ScaleFactor[2]*Weight("Ztautau","n/a","n/a",Ztautau1.second));
+    if (Ztautau1.first[i]<0) H2C->Fill(abs(Ztautau1.first[i]),abs(Ztautau2.first[i]), Weight("Ztautau","n/a","n/a",Ztautau1.second));
   }
 
   for (int i=0; i < Zuds1.first.size(); i++){
-    H2->Fill(Zuds1.first[i],Zuds2.first[i], Weight("Zuds","n/a","n/a",Zuds1.second));
+    H2->Fill(abs(Zuds1.first[i]),abs(Zuds2.first[i]), Weight("Zuds","n/a","n/a",Zuds1.second));
+    H2W->Fill(abs(Zuds1.first[i]),abs(Zuds2.first[i]), ScaleFactor[3]*Weight("Zuds","n/a","n/a",Zuds1.second));
+    if (Zuds1.first[i]<0) H2C->Fill(abs(Zuds1.first[i]),abs(Zuds2.first[i]), Weight("Zuds","n/a","n/a",Zuds1.second));
   }
+
+  for (int i=0; i < Zbb1.first.size(); i++){
+    H2->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), Weight("Zbb","n/a","n/a",Zbb1.second));
+    H2W->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), ScaleFactor[4]*Weight("Zbb","n/a","n/a",Zbb1.second));
+    if (Zbb1.first[i]<0) H2C->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), Weight("Zbb","n/a","n/a",Zbb1.second));
+  }
+
+  for (int i=0; i < Zcc1.first.size(); i++){
+    H2->Fill(abs(Zcc1.first[i]),abs(Zcc2.first[i]), Weight("Zcc","n/a","n/a",Zcc1.second));
+    H2W->Fill(abs(Zcc1.first[i]),abs(Zcc2.first[i]), ScaleFactor[5]*Weight("Zcc","n/a","n/a",Zcc1.second));
+    if (Zcc1.first[i]<0) H2C->Fill(abs(Zcc1.first[i]),abs(Zcc2.first[i]), Weight("Zcc","n/a","n/a",Zcc1.second));
+  }
+
+
+  cout<<endl<<"Scale Factors:"<<endl;
+  cout<<"munuqq  : "<<ScaleFactor[0]<<endl;
+  cout<<"Zmumu   : "<<ScaleFactor[1]<<endl;
+  cout<<"Ztautau : "<<ScaleFactor[2]<<endl;
+  cout<<"Zuds    : "<<ScaleFactor[3]<<endl;
+  cout<<"Zbb     : "<<ScaleFactor[4]<<endl;
+  cout<<"Zcc     : "<<ScaleFactor[5]<<endl<<endl;
+  
+  
   
 
   
@@ -87,23 +148,18 @@ std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TStr
 
   
 
-  H2->GetXaxis()->SetTitle(xlabel);
-  H2->GetYaxis()->SetTitle(ylabel);
-  H2->Scale(0.012);
-  H2->Draw("colz");
+  H2W->GetXaxis()->SetTitle(xlabel);
+  H2W->GetYaxis()->SetTitle(ylabel);
+  H2W->Draw("colz");
   gPad->SetLogz();
   gStyle->SetOptStat(0);
 
   
-  cout<<"*** Integral "<<H2->Integral()<<endl;
+  cout<<"*** Full   Integral "<<H2->Integral()<<endl;
+  cout<<"*** Weight Integral "<<H2W->Integral()<<endl;
 
 
   double zmass = 91.1786;
-
-  
-
-
-  Double_t scalefactor = 0.0102;
 
   
 
@@ -114,11 +170,11 @@ std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TStr
     Double_t precoil = (zmass*zmass - 1.* imass*imass ) / (2 * zmass);
 
     double counter = 0.;
-    for (int i=0; i<H2->GetNbinsX(); i++){
-      for (int j=0; j< H2->GetNbinsY(); j++){
+    for (int i=0; i<H2W->GetNbinsX(); i++){
+      for (int j=0; j< H2W->GetNbinsY(); j++){
 
-	if (TMath::Abs( H2->GetXaxis()->GetBinCenter(i) - imass) <= 4. && TMath::Abs( H2->GetYaxis()->GetBinCenter(j) - precoil) <= 3.5 )
-	  counter += H2->GetBinContent(i,j) * scalefactor;
+	if (TMath::Abs( H2W->GetXaxis()->GetBinCenter(i) - imass) <= 4. && TMath::Abs( H2W->GetYaxis()->GetBinCenter(j) - precoil) <= 3.5 )
+	  counter += H2W->GetBinContent(i,j);
       }
     }
 
@@ -130,156 +186,3 @@ std::map<int,double> SmoothDist(bool BeforeCuts = true, Double_t d0cut=100, TStr
 
   
   
-  
-  /*
-
-  TH1F *h_munuqq = new TH1F("munuqq",Form("#mu#nuqq ",munuqq.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_munuqq->SetFillColor(13);
-  h_munuqq->SetLineColor(13);
- 
-  TH1F *h_zmumu = new TH1F("zmumu",Form("Z#rightarrow#mu#mu ",Zmumu.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_zmumu->SetFillColor(9);
-  h_zmumu->SetLineColor(9);
- 
-  TH1F *h_ztautau = new TH1F("ztautau",Form("Z#rightarrow#tau#tau ",Ztautau.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_ztautau->SetFillColor(8);
-  h_ztautau->SetLineColor(8);
-  
-  TH1F *h_zuds = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_zuds->SetFillColor(6);
-  h_zuds->SetLineColor(6);
-  
-  TH1F *h_zbb = new TH1F("zbb",Form("Z#rightarrowbb ",Zbb.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_zbb->SetFillColor(4);
-  h_zbb->SetLineColor(4);
- 
-  TH1F *h_zcc = new TH1F("zcc",Form("Z#rightarrowcc ",Zcc.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_zcc->SetFillColor(2);
-  h_zcc->SetLineColor(2);
-
-
-
-  TH1F *h_signalM = new TH1F(Form("signal%d",mass),Form("signal %d ",mass,signalM.first.size()),nbin,bmin,bmax);
-  h_signalM->SetLineWidth(3);
-  h_signalM->SetLineColor(1);
-
-  TH1F *h_signal30 = new TH1F(Form("signal%d",30),Form("signal %d ",30,signal30.first.size()),nbin,bmin,bmax);
-  h_signal30->SetLineWidth(3);
-  h_signal30->SetLineColor(30);
-  h_signal30->SetLineStyle(9);
-
-  TH1F *h_signal50 = new TH1F(Form("signal%d",50),Form("signal %d ",50,signal50.first.size()),nbin,bmin,bmax);
-  h_signal50->SetLineWidth(3);
-  h_signal50->SetLineColor(40);
-  h_signal50->SetLineStyle(9);
-
-  TH1F *h_signal70 = new TH1F(Form("signal%d",70),Form("signal %d ",70,signal70.first.size()),nbin,bmin,bmax);
-  h_signal70->SetLineWidth(3);
-  h_signal70->SetLineColor(44);
-  h_signal70->SetLineStyle(9);
-
-  TH1F *h_signal20 = new TH1F(Form("signal%d",20),Form("signal %d ",20,signal20.first.size()),nbin,bmin,bmax);
-  h_signal20->SetLineWidth(3);
-  h_signal20->SetLineColor(30);
-  h_signal20->SetLineStyle(9);
-  
-  
-  
-
-  for (double ie : munuqq.first) h_munuqq->Fill(ie);
-  cout<<"filled 1"<<endl;
-  for (double ie : Zmumu.first) h_zmumu->Fill(ie);
-  cout<<"filled 2"<<endl;
-  for (double ie : Ztautau.first) h_ztautau->Fill(ie);
-  cout<<"filled 3"<<endl;
-  for (double ie : Zuds.first) h_zuds->Fill(ie);
-  cout<<"filled 4"<<endl;
-  for (double ie : Zbb.first) h_zbb->Fill(ie);
-  cout<<"filled 5"<<endl;
-  for (double ie : Zcc.first) h_zcc->Fill(ie);
-  cout<<"filled 6"<<endl;
-
-  for (double ie : signalM.first) h_signalM->Fill(ie);
-  cout<<"filled 7: "<<signalM.first.size()<<" events"<<endl;
-
-
-  for (double ie : signal30.first) h_signal30->Fill(ie);
-  cout<<"filled 7: "<<signal30.first.size()<<" events"<<endl;
-
-
-  for (double ie : signal50.first) h_signal50->Fill(ie);
-  cout<<"filled 7: "<<signal50.first.size()<<" events"<<endl;
-
-
-  for (double ie : signal70.first) h_signal70->Fill(ie);
-  cout<<"filled 7: "<<signal70.first.size()<<" events"<<endl;
-
-  for (double ie : signal20.first) h_signal20->Fill(ie);
-  cout<<"filled 7: "<<signal20.first.size()<<" events"<<endl;
-
-
-  
-  if (ScalePlots){
-    h_munuqq->Scale(Weight("munuqq","n/a","n/a",munuqq.second));
-    h_zmumu->Scale(Weight("Zmumu","n/a","n/a",Zmumu.second));
-    h_ztautau->Scale(Weight("Ztautau","n/a","n/a",Ztautau.second));
-    h_zuds->Scale(Weight("Zuds","n/a","n/a",Zuds.second));
-    h_zbb->Scale(Weight("Zbb","n/a","n/a",Zbb.second));
-    h_zcc->Scale(Weight("Zcc","n/a","n/a",Zcc.second));
-    h_signalM->Scale(Weight("signal",Form("%d",mass),lt,signalM.second));
-    h_signal30->Scale(Weight("signal",Form("%d",30),"m3p0",signal30.second));
-    h_signal50->Scale(Weight("signal",Form("%d",50),"m3p5",signal50.second));
-    h_signal70->Scale(Weight("signal",Form("%d",50),"m4p5",signal70.second));
-    h_signal20->Scale(Weight("signal",Form("%d",20),"m4p5",signal20.second));
-  }
-  
-
-  auto hs = new THStack("hs",Form("%s;%s;%s","",xlabel.Data(),ScalePlots?"Events x Weight":"Events"));;
-  hs->Add(h_munuqq);
-  hs->Add(h_zmumu);
-  hs->Add(h_ztautau);
-  hs->Add(h_zuds);
-  hs->Add(h_zbb);
-  hs->Add(h_zcc);
- 
-  hs->Draw(drawstack ? "HIST" : "HIST nostack");
-
-  hs->SetMinimum(1);
-
-  
- 
-  //h_signalM->Draw("HIST same");
-  h_signal20->Draw("HIST same");
-  //h_signal50->Draw("HIST same");
-  h_signal70->Draw("HIST same");
-
-  gPad->SetLogy();
-
-  auto leg = c1->BuildLegend();
-  leg->SetMargin(0.25);
-  leg->SetBorderSize(0);
-  
-
-  if (vline1 != -999){
-    auto line1 = new TLine(vline1, 1, vline1, hs->GetMaximum());
-    line1->SetLineWidth(2);
-    line1->SetLineStyle(2);
-    line1->SetLineColor(1);
-    line1->Draw("same");
-  }
-
-  if (vline2 != -999){
-    auto line2 = new TLine(vline2, 1, vline2, hs->GetMaximum());
-    line2->SetLineWidth(2);
-    line2->SetLineStyle(2);
-    line2->SetLineColor(1);
-    line2->Draw("same");
-  }
-
-  c1->SaveAs("temp.pdf");
-  c1->SaveAs("temp.png");
-  
- 
-}
-  
-  */

@@ -5,6 +5,9 @@ std::map<int,double> SmoothedLL ={{5 , 831.16352}, {10 , 2574.8944}, { 20 , 2986
 
 std::map<int,double> SmoothedLL_noRoll = {{ 5 , 447.50697},{ 10 , 1350.2468},{ 20 , 1506.8090},{ 30 , 1753.5736},{ 40 , 670.10691},{ 50 , 1148.5794},{ 60 , 3377.6229},{ 70 , 12411.982},{ 80 , 81230.329},{ 85 , 81761.084 }};
 
+std::map<int,double> WeightedLL =  {{ 5 , 0.0000000}, { 10 , 0.0000000}, { 20 , 15.134251}, { 30 , 369.36671}, { 40 , 261.55994}, { 50 , 1051.4037}, { 60 , 3161.1757}, { 70 , 12383.366}, { 80 , 83187.383}, { 85 , 81564.470 }};
+
+
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
 
@@ -40,7 +43,7 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "simple", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dsigma anymass1L2M"){
+std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M"){
   // formulas: atals simple signal myZ
 
   // opt: same as CutFlowOK.C
@@ -116,7 +119,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
     Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
-    totbkg = SmoothedLL[m];
+    totbkg = WeightedLL[m];
 
     Double_t Z;
 	  
@@ -164,6 +167,9 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   
   TGraph2D *Gr = new TGraph2D(npoints, aX, aY, aZ);
 
+  auto c = new TCanvas();
+  //Gr->SetNpx(20);
+  //Gr->SetNpy(60);
   Gr->Draw("colz");
   /*
   cout<<"TwoDsignificance.C:: interpolating..."<<endl;
@@ -252,10 +258,11 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   for (int j=0; j<cx.size(); j++) cout<<"Interpolation result: ---- M "<<cx[j]<<" -> "<<cy[j]<<endl;
 
   // Drawing part
+  
 
   if (Draw){
 
-    auto c = new TCanvas();
+    //auto c = new TCanvas();
 
     const Int_t npoint = cx.size();
     double vcx[npoint], vcy[npoint];
@@ -267,7 +274,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
       H->GetZaxis()->SetRangeUser(1e-5,1000);
     else if (TargetZ  == 0.05)
       H->GetZaxis()->SetRangeUser(0,1);
-    H->Draw("colz");
+    //H->Draw("colz");
     H->SetMarkerSize(1.6);
     H->SetTitle("Significance");
 
@@ -276,11 +283,12 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     gg->Draw("same");
 
     gStyle->SetOptStat(0);
-    gPad->SetLogz();
-    gStyle->SetPalette(kBlackBody);
+    //gPad->SetLogz();
+    //gStyle->SetPalette(kBlackBody);
 
     c->SaveAs("temp.png");
   }
+  
 
   
   return toret;

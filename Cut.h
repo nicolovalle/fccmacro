@@ -131,7 +131,7 @@ Bool_t SELECTION_MM_2JET(int jalg){
   Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
   Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-  Bool_t r1 = (oNReco > 0);
+  Bool_t r1 = (oNReco > 4);
 
   return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && r1;
  
@@ -152,7 +152,7 @@ Bool_t SELECTION_LM_1JET(int jalg){
   Bool_t sel4 = (-0.5 < cosjmu && cosjmu < 0.96);
   Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
 
-  Bool_t r1 = (oNReco > 0);
+  Bool_t r1 = (oNReco > 4);
 
   return sel1 && sel2 && sel3 && sel4 && sel5 && r1;
 
