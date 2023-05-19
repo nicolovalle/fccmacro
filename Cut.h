@@ -110,6 +110,16 @@ void BUILD_DERIVATE(int jalg){
   
 }
 
+// Mass/EMiss
+Bool_t SELECTION_MASS_EMISS(double mass, double masswidth, double emissw=-1){
+
+  double emisswidth = (emissw > 0) ? emissw : masswidth;
+
+  double MZ = 91.1876;
+  double precoil = (MZ*MZ - mass*mass)/(2.*MZ);
+
+  return ((TMath::Abs(lvvis.M() - mass) <= masswidth) && (TMath::Abs(lvmiss.P() - precoil) <= emisswidth));
+}
 
 // Medium Mass: the one used at the beginning for any mass
 Bool_t SELECTION_MM_2JET(int jalg){
@@ -131,7 +141,8 @@ Bool_t SELECTION_MM_2JET(int jalg){
   Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
   Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-  Bool_t r1 = (oNReco > 4);
+
+  Bool_t r1 = true; // (oNReco > 4);
 
   return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && r1;
  
@@ -152,23 +163,25 @@ Bool_t SELECTION_LM_1JET(int jalg){
   Bool_t sel4 = (-0.5 < cosjmu && cosjmu < 0.96);
   Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
 
-  Bool_t r1 = (oNReco > 4);
+  Bool_t sel6 = true; // (TMath::Abs(lvj1.Eta()) < 2. );
 
-  return sel1 && sel2 && sel3 && sel4 && sel5 && r1;
+  Bool_t r1 = true; //(oNReco > 4);
+
+
+  return sel1 && sel2 && sel3 && sel4 && sel5 && sel6 && r1;
 
 }
 
 
 Bool_t SELECTION_LM_2JET(int jalg){
 
-  Bool_t sel1 = SELECTION_LM_1JET(jalg);
+  Bool_t sel1 = SELECTION_LM_1JET(jalg); return false; // CHECK BEFORE USE
 
   Double_t cosjj = TMath::Cos(lvj1.Angle(lvj2.Vect()));
   Bool_t sel2 = (cosjj > -0.8);
 
   return sel1 && sel2;
 }
-
 
 
 // SOME TEMPORARY CUT VARIATION
@@ -240,6 +253,75 @@ std::vector<float> GetFloatArray(TString opt){
 
   
 
+/////////////////////
+// SELECTIONS DRIVEN BY ANALYSIS OPTION
+/////////////////////
+Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ // at the moment it is implemented only for the default "anymass1L2M"
+
+  bool selection = false;
+
+  if (analysis_opt.Contains("anymass") && !analysis_opt.Contains("anymass1L2M")){
+    cout<<"Cut.h:: [ERROR] analysis_option not implemented in Cut.h"<<endl;
+    return selection;
+  }
+
+  if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
+  if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+
+  return selection;
+}
+
+Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
+
+  bool slid1 = false, slid2 = false;
+  
+  if (analysis_opt.Contains("fixedwindow")){
+    return SELECTION_MASS_EMISS(mass, 4., 3.5);
+  }
+
+  else if (analysis_opt.Contains("window")){
+
+    double wwidth_sig, wwidth_bkg;
+    std::vector<float> vcut = GetFloatArray(analysis_opt);
+    wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*mass);
+
+    if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*mass);
+    else wwidth_bkg = wwidth_bkg = wwidth_sig;
+
+    if (opt=="signal") return SELECTION_MASS_EMISS(mass, wwidth_sig, wwidth_sig);
+    else return SELECTION_MASS_EMISS(mass, wwidth_bkg, wwidth_bkg);
+  }
+
+  else {
+    cout<<"Cut.h:: [ERROR] Mass/Emiss window not recognized";
+    return false;
+  }
+}
+
+Bool_t SELECTION_STRING_DCUT(int dcut, TString analysis_opt){
+
+  bool selection = false;
+
+  if (analysis_opt.Contains("d3d") && analysis_opt.Contains("dsigma"))
+    selection =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*dcut);
+  
+  else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
+    selection =  (TMath::Abs(oMuD0sig) < 1.*dcut);
+
+  else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
+    selection = (TMath::Abs(oMuD0) < 1.*dcut/100.);
+
+  else{
+    cout<<"Cut.h:: [ERROR] - OPTIONS FOR DCUT NOT SUPPORTED"<<endl;
+    return false;
+  }
+
+  if (analysis_opt.Contains(">")) selection = !selection;
+
+  return selection;
+ 
+}
+  
 
 
 

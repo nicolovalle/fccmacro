@@ -1,7 +1,7 @@
 
 #include "getvalues.C"
 
-void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = true){
+void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = false){
 
   Int_t mass = 40;
   Int_t jalg = 2;
@@ -9,8 +9,8 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   Long64_t drawN = (Long64_t) 1.e5;
   Bool_t ScalePlots = true;
   TString xlabel;
-  //xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2})";
-  //xlabel = "D0_{#mu}/#sigma";
+  if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
+  if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
   if (obsID == ocosjj) xlabel = "cos(j,j)";
   if (obsID == ocospmissmu) xlabel = "cos(#mu,p_{miss})";
   if (obsID == oMAXcosjmu) xlabel = "cos(j,#mu)";
@@ -33,10 +33,13 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
   std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, 8, jalg);
 
+  
   std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, 8, jalg);
   std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p5", -1, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, 8, jalg);
 
+  
+  std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, 8, jalg);
   
 
   TH1F *h_munuqq = new TH1F("munuqq",Form("#mu#nuqq ",munuqq.first.size()),nbin,bmin,bmax);
@@ -83,6 +86,11 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   h_signal70->SetLineWidth(3);
   h_signal70->SetLineColor(44);
   h_signal70->SetLineStyle(9);
+
+  TH1F *h_signal20 = new TH1F(Form("signal%d",20),Form("signal %d ",20,signal20.first.size()),nbin,bmin,bmax);
+  h_signal20->SetLineWidth(3);
+  h_signal20->SetLineColor(30);
+  h_signal20->SetLineStyle(9);
   
   
   
@@ -115,6 +123,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   for (double ie : signal70.first) h_signal70->Fill(ie);
   cout<<"filled 7: "<<signal70.first.size()<<" events"<<endl;
 
+  for (double ie : signal20.first) h_signal20->Fill(ie);
+  cout<<"filled 7: "<<signal20.first.size()<<" events"<<endl;
+
 
   
   if (ScalePlots){
@@ -128,6 +139,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
     h_signal30->Scale(Weight("signal",Form("%d",30),"m3p0",signal30.second));
     h_signal50->Scale(Weight("signal",Form("%d",50),"m3p5",signal50.second));
     h_signal70->Scale(Weight("signal",Form("%d",50),"m4p5",signal70.second));
+    h_signal20->Scale(Weight("signal",Form("%d",20),"m4p5",signal20.second));
   }
   
 
@@ -143,16 +155,19 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
 
   hs->SetMinimum(1);
 
-  cout<<"AAAAAAAA"<<hs->GetMaximum()<<endl;
+  
  
   //h_signalM->Draw("HIST same");
-  h_signal30->Draw("HIST same");
-  h_signal50->Draw("HIST same");
+  h_signal20->Draw("HIST same");
+  //h_signal50->Draw("HIST same");
   h_signal70->Draw("HIST same");
 
   gPad->SetLogy();
 
-  c1->BuildLegend();
+  auto leg = c1->BuildLegend();
+  leg->SetMargin(0.25);
+  leg->SetBorderSize(0);
+  
 
   if (vline1 != -999){
     auto line1 = new TLine(vline1, 1, vline1, hs->GetMaximum());

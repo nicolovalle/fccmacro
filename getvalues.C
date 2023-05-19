@@ -26,7 +26,8 @@ enum OBS_ID {
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
-  oVtxXYZsliding   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
+  oVtxXYZsliding,   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
+  oNjet_selection //Number of jets after evt selection
 };
 
 
@@ -41,7 +42,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
   TString Dir = dir;
 
-  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm ||
+  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection ||
       obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
       obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut )
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
@@ -158,7 +159,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
     
    
     if (selection){
-      
+
+      if (obsID == oNjet_selection){
+	toret.push_back(oNJet->at(jalg));
+	continue;
+      }
       
       
       if (obsID == omass1mm){
@@ -185,9 +190,29 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
       Double_t im = mass;
       Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
-      Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-      Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
 
+
+
+      Bool_t slid1, slid2;
+	if (analysis_opt.Contains("fixedwindow")){
+	  slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
+	  slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
+	}
+	else if (analysis_opt.Contains("window")){
+	  double wwidth_sig, wwidth_bkg;
+	  std::vector<float> vcut = GetFloatArray(analysis_opt);
+	  wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*im);
+	  if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*im);
+	  else wwidth_bkg = wwidth_bkg = wwidth_sig;
+	  
+	  slid1 = (TMath::Abs(lvvis.M() - 1.*im) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	  slid2 = (TMath::Abs(lvmiss.P() - pRecoil) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	}
+	else{
+	  cout<<"CutFlowOK.C:: [ERROR] Mass/Emiss window not recognized";
+	  slid1 = slid2 = false;
+	}
+      
 
       if (slid1 && slid2){
 	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));

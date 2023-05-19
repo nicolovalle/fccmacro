@@ -7,7 +7,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   Int_t jalg = 2;
   TString lt = "m3p5";
   Long64_t drawN = (Long64_t) 1.e5;
-  Bool_t ScalePlots = true;
+  Bool_t ScalePlots = false;
   TString xlabel;
   if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
   if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
@@ -19,6 +19,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   if (obsID == omtot) xlabel = "M_{tot = vis+miss} (GeV/c^{2})";
   if (obsID == omass_selection) xlabel = "M_{vis} (GeV/c^{2})";
   if (obsID == oemiss_selection) xlabel = "E_{miss} (GeV)";
+  if (obsID == oNjet_selection) xlabel = "Number of jet clusters";
   
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700); 

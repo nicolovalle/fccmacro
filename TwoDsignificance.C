@@ -114,12 +114,12 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
 
     Double_t Y = 2.*TMath::Log10(U);
-    if (TMath::IsNaN(Y)) continue;
+    // if (TMath::IsNaN(Y)) continue; // not needed --> should be protected by AvailableDatapoints
     Double_t X = 1.*m;
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
     Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
-    totbkg = WeightedLL[m];
+    //totbkg = WeightedLL[m];
 
     Double_t Z;
 	  
@@ -162,15 +162,12 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     aX[i] = TDPlot_M.at(i);
     aY[i] = TDPlot_U2.at(i);
     aZ[i] = TDPlot_Z.at(i);
-    cout<<aX[i]<<"\t"<<aY[i]<<"\t"<<aZ[i]<<endl;
+    //cout<<aX[i]<<"\t"<<aY[i]<<"\t"<<aZ[i]<<endl;
   }
-  
-  TGraph2D *Gr = new TGraph2D(npoints, aX, aY, aZ);
 
-  auto c = new TCanvas();
-  //Gr->SetNpx(20);
-  //Gr->SetNpy(60);
-  Gr->Draw("colz");
+  
+  
+  
   /*
   cout<<"TwoDsignificance.C:: interpolating..."<<endl;
   for (int i=1; i<H->GetNbinsX(); i++){
@@ -262,6 +259,18 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 
   if (Draw){
 
+    TGraph2D *Gr = new TGraph2D(npoints, aX, aY, aZ);
+
+  auto c = new TCanvas();
+  //Gr->SetNpx(20);
+  //Gr->SetNpy(60);
+  Gr->Draw("colz");
+  //double conts[] = {0.5, 0.95, 1.};
+  //Gr->SetContour(3,conts);
+  //c->Update();
+
+  
+
     //auto c = new TCanvas();
 
     const Int_t npoint = cx.size();
@@ -280,10 +289,10 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 
     //HBLACK->Draw("same BOX");
 
-    gg->Draw("same");
+    gg->Draw("same L");
 
     gStyle->SetOptStat(0);
-    //gPad->SetLogz();
+    gPad->SetLogz();
     //gStyle->SetPalette(kBlackBody);
 
     c->SaveAs("temp.png");
@@ -302,27 +311,29 @@ void CompareAnalyses(){
   std::vector<std::vector<double>> XY;
 
   Int_t dcut = 8;
-  TString AnalysisOptions = "> d3d dsigma jalg";
+  TString AnalysisOptions = "> d3d dsigma";
 
   int colcounter = 1;
+
+  TString formula = "atlas";
   
   Double_t x0[50], y0[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",0,AnalysisOptions);
-  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"> d2d dmm anymass1L2M");
+  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5,0.25]");
+  //XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
     y0[i] = XY[1][i];
   }
   auto g0 = new TGraph(XY[0].size(), x0, y0);
   g0->SetLineColor(colcounter);
-  g0->SetTitle("D0#mu > 1mm, no beam spread");
+  g0->SetTitle("1.5* 25% sqrt(M)");
   g0->SetLineWidth(2);
-  //colcounter++;
+  colcounter++;
   
 
   Double_t x1[50], y1[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"> d2d dmm anymass1L2M");
+  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5,0.25,1.5,0.35]");
+  //XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"> d2d dmm anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
@@ -330,25 +341,25 @@ void CompareAnalyses(){
   auto g1 = new TGraph(XY[0].size(), x1, y1);
   g1->SetLineColor(colcounter);
   g1->SetLineStyle(7);
-  g1->SetTitle("D0#mu > 1mm, sig+irreduc beam spread");
+  g1->SetTitle("bkg: 35% sqrt(M)");
   g1->SetLineWidth(2);
   colcounter++;
 
 
   Double_t x2[50], y2[50];
-  //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
+  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5, 0.25, 1.5, 0.20]");
+  //XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x2[i] = XY[0][i];
     y2[i] = XY[1][i];
   }
   auto g2 = new TGraph(XY[0].size(), x2, y2);
   g2->SetLineColor(colcounter);
-  g2->SetTitle("D0#mu < 8#sigma, no beam spread");
+  g2->SetTitle("bkg: 20% sqrt(M)");
   g2->SetLineWidth(2);
-  //colcounter++;
+  colcounter++;
 
-
+  /*
   Double_t x3[50], y3[50];
   XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"< d2d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
@@ -392,7 +403,7 @@ void CompareAnalyses(){
   colcounter++;
 
 
-
+  */
   
 
 
@@ -413,9 +424,9 @@ void CompareAnalyses(){
   g0->Draw("same");
   g1->Draw("same");
   g2->Draw("same");
-  g3->Draw("same");
-  g4->Draw("same");
-  g5->Draw("same");
+  //g3->Draw("same");
+  //g4->Draw("same");
+  //g5->Draw("same");
  
 
   

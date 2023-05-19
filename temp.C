@@ -1,8 +1,6 @@
-void M(TString s){
-  cout<<"ciao"+s<<endl;
-}
+double eeta(double a, double b, double c, double d){
 
-
-void M(int s){
-  M(Form("%d",s));
+  TLorentzVector l;
+  l.SetPxPyPzE(a,b,c,d);
+  return l.Eta();
 }
