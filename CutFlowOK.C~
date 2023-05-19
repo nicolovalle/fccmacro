@@ -16,13 +16,14 @@ int dcut_id(int dcut){
   else return -1;
 }
 
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M", Bool_t FixedMass = false){
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.25]", Bool_t FixedMass = false){
 
 
   // analysis options available:
   // ">" or "<" for the type of cut in impact parameter
   // "dsigma" or "dmm" to cut in number of sigma or in unit 10-5 m
   // "d2d" or "d3d" to cut on D0 or D0+Z0
+  // "fixedwindow" to set \pm 4 and \pm 3.5 in the Mvis, Emiss window, or "window [A,B]" where A is in unit of B*sqrt(mass), or "window [Asig,Bsig,Abkg,Bbkg]" using two different parameterizations for signal and background.
   // type of analysis:
   ///// "anymass1L2M" : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
   ///// "anymass1L2L": mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets 
@@ -182,8 +183,26 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
       for (int im : here_possible_masses){
 
 	Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
-	Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-	Bool_t slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
+
+	Bool_t slid1, slid2;
+	if (analysis_opt.Contains("fixedwindow")){
+	  slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
+	  slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
+	}
+	else if (analysis_opt.Contains("window")){
+	  double wwidth_sig, wwidth_bkg;
+	  std::vector<float> vcut = GetFloatArray(analysis_opt);
+	  wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*im);
+	  if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*im);
+	  else wwidth_bkg = wwidth_bkg = wwidth_sig;
+	  
+	  slid1 = (TMath::Abs(lvvis.M() - 1.*im) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	  slid2 = (TMath::Abs(lvmiss.P() - pRecoil) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	}
+	else{
+	  cout<<"CutFlowOK.C:: [ERROR] Mass/Emiss window not recognized";
+	  slid1 = slid2 = false;
+	}
 
 	if (slid1 && slid2){
 	  nSliding[im]++;

@@ -130,43 +130,20 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
 
     Bool_t selection = false;
 
-    if (analysis_opt.Contains("anymass1L2M")){
-
-      if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
-      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
-      
-    }
-
-
-    if (analysis_opt.Contains("anymass1L2L")){
-
-      if (oNJet->at(jalg) == 2) selection = SELECTION_LM_2JET(jalg);
-      if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
-      
-    }
-
     if (analysis_opt.Contains("cutvariation")){
 
-
-      /*
-      
-      double CUTcosjj = std::stof(analysis_opt(0,5));
-      double CUTmincosjmu = std::stof(analysis_opt(5,5));
-      double CUTmaxcosjmu = std::stof(analysis_opt(10,5));
-
-      */
 
       std::vector<float> vcuts = GetFloatArray(analysis_opt);
       double CUTcosjj = vcuts.at(0);
       double CUTmincosjmu = vcuts.at(1);
       double CUTmaxcosjmu = vcuts.at(2);
 
-      // cout<<"CUT HEREEEEEEEE "<<CUTcosjj<<" "<<CUTmincosjmu<<" "<<CUTmaxcosjmu<<endl;
-      
       if (oNJet->at(jalg) == 2) selection = SEL_MM_2J(jalg,CUTcosjj,CUTmincosjmu,CUTmaxcosjmu);
       if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
       
     }
+
+    else selection = SELECTION_STRING_KINE(jalg,analysis_opt);
     
     if (!selection) continue;
     
@@ -182,43 +159,16 @@ std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80
       
       for (int im : here_possible_masses){
 
-	Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
+	Bool_t slidingsel = SELECTION_STRING_SLIDING(im, analysis_opt, opt);
+	
 
-	Bool_t slid1, slid2;
-	if (analysis_opt.Contains("fixedwindow")){
-	  slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-	  slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
-	}
-	else if (analysis_opt.Contains("window")){
-	  double wwidth_sig, wwidth_bkg;
-	  std::vector<float> vcut = GetFloatArray(analysis_opt);
-	  wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*im);
-	  if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*im);
-	  else wwidth_bkg = wwidth_bkg = wwidth_sig;
-	  
-	  slid1 = (TMath::Abs(lvvis.M() - 1.*im) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
-	  slid2 = (TMath::Abs(lvmiss.P() - pRecoil) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
-	}
-	else{
-	  cout<<"CutFlowOK.C:: [ERROR] Mass/Emiss window not recognized";
-	  slid1 = slid2 = false;
-	}
-
-	if (slid1 && slid2){
+	if (slidingsel){
 	  nSliding[im]++;
 	  for (int id0 = 0; id0 < possible_dcut.size(); id0++){
-	    Bool_t cut_condition = false;
-	    
-	    if (analysis_opt.Contains("d3d") and analysis_opt.Contains("dsigma"))
-	      cut_condition =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*possible_dcut[id0]);
-	    else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
-	      cut_condition =  (TMath::Abs(oMuD0sig) < 1.*possible_dcut[id0]);
-	    else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
-	      cut_condition = (TMath::Abs(oMuD0) < 1.*possible_dcut[id0]/100.);
-	    else
-	      cout<<"CutFlowOK.C:: ERROR - OPTIONS NOT SUPPORTED"<<endl;
-	    
-	    if (analysis_opt.Contains(">")) cut_condition = !cut_condition;
+
+	    int dcut = possible_dcut[id0];
+
+	    Bool_t cut_condition = SELECTION_STRING_DCUT(dcut, analysis_opt);
 	    
 	    if (cut_condition) nBcut[id0][im]++;
 	    
