@@ -1,6 +1,7 @@
-#include "lumisettings.h"
-#include "Cut.h"
 
+#include "CutFlowOK.C"
+
+/*
 Double_t Muon_mass = 0.105658;
 Double_t Z_mass = 91.1876;
 
@@ -15,11 +16,13 @@ int dcut_id(int dcut){
   if (itr != possible_dcut.cend()) return std::distance(possible_dcut.begin(), itr) + 4;
   else return -1;
 }
-
+*/
 
 TString RoundWithUnits(double n){
   TString toret;
-  if (n < 1000) toret = Form("%g",n);
+  if (n < 1) toret = Form("%g",n);
+  if (n < 10) toret = Form("%.2f",n);
+  if (n < 1000) toret = Form("%.1f",n);
   else if (n < 1e6) toret = Form("%.1fk",n/1000.);
   else if (n < 1e9) toret = Form("%.1fM",n/1.e6);
   else if (n < 1e12) toret = Form("%.1fB",n/1.e9);
@@ -27,14 +30,30 @@ TString RoundWithUnits(double n){
   return toret;
 }
 
-TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = 10000000, TString analysis_opt="combined_selection anymass1L2M"){
+TString BkgLatex(TString opt){
+  TString toret = opt;
+  if (opt == "Zbb") toret = "$Z\\to bb$";
+  if (opt == "Zcc") toret = "$Z\\to cc$";
+  if (opt == "Zuds") toret = "$Z\\to u/d/s$";
+  if (opt == "Zmumu") toret = "$Z\\to \\mu\\mu$";
+  if (opt == "Ztautau") toret = "$Z\\to \\tau\\tau$";
+  if (opt == "munuqq") toret = "$\\mu\\nu qq$";
+
+  return toret;
+}
+
+TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/skimmed/", Long64_t RunOnN = -1, TString analysis_opt="withdcut anymass1L2M"){
 
   // analysis options:
-  //  only1L ,  only2M  ,  combined_selection anymass1L2M
+  //  only1L ,  only2M  ,  combined_selection anymass1L2M,  withdcut anymass1L2M,
 
 
   
   Int_t jalg = 2;
+
+  Int_t Counters[100];
+  for (int i=0;i<100;i++) Counters[i] = 0;
+
  
 
   TREE->Reset();
@@ -80,8 +99,7 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
   Int_t NOneMuon = NN;
   Int_t NTwoJets = 0;
   Int_t NOneJet = 0;
-  Int_t Counters[20];
-  for (int i=0;i<20;i++) Counters[i] = 0;
+  
  
 
   for (Long64_t i = 0; i < NN; i++){
@@ -103,6 +121,9 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     BUILD_DERIVATE(jalg);
 
 
+
+   
+    
     if (analysis_opt.Contains("combined_selection")){
 
       //                            0
@@ -197,6 +218,9 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     }
 
 
+   
+
+
 
 
     
@@ -246,6 +270,50 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     return toret;
 			 
   }
+
+
+
+  if (analysis_opt.Contains("withdcut") && analysis_opt.Contains("anymass1L2M")){
+
+      //                                                            
+      // Header:  Sample & Ngen, weight  &  Sliding,weighted  &  D<8sig,weighted   & D<20sig,weighted  & D<1mm,weighted  & D>1mm,weighted
+
+    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M", false);
+    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M", false);
+
+
+    TString toret;
+    
+    for (int m : std::vector<int>{5,10,20,30,40,50,60,70,80,85}){
+      if (opt == "signal" && m != mass) continue;
+
+      double weight = Weight(opt,Form("%d",m), lifetime);
+      cout<<"----------------------------------------------"<<endl;
+      cout<<"MASS = "<<m<<endl;
+      TString temp = Form("%s & %s & %s & %s & %s & %s & %s \\\\ \n & %.1f  & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} \\\\",
+			  BkgLatex(opt).Data(),
+			  RoundWithUnits(MAPsigma[m][0]).Data(), 
+			  RoundWithUnits(MAPsigma[m][3]).Data(),  
+			  RoundWithUnits(MAPsigma[m][dcut_id(8)]).Data(), 
+			  RoundWithUnits(MAPsigma[m][dcut_id(20)]).Data(), 
+			  RoundWithUnits(MAPsigma[m][3] - MAPmm[m][dcut_id(100)]).Data(), 
+			  RoundWithUnits(MAPmm[m][dcut_id(100)]).Data(), 
+			  weight,
+			  RoundWithUnits(weight*MAPsigma[m][3]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][dcut_id(8)]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][dcut_id(20)]).Data(),
+			  RoundWithUnits(weight*MAPsigma[m][3] - weight*MAPmm[m][dcut_id(100)]).Data(),
+			  RoundWithUnits(weight*MAPmm[m][dcut_id(100)]).Data());
+
+      if ( m == mass) toret = temp;
+
+      cout<<temp<<endl;
+			  
+    }
+
+
+    
+    }
 
 
 

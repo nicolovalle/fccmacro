@@ -20,9 +20,10 @@ int dcut_id(int dcut){
 
 TString RoundWithUnits(double n){
   TString toret;
-  if (n < 1) toret = Form("%g",n);
-  if (n < 10) toret = Form("%.2f",n);
-  if (n < 1000) toret = Form("%.1f",n);
+  if (n < 1000 && (int)n == n) toret = Form("%d",(int)n);
+  else if (n < 1) toret = Form("%g",n);
+  else if (n < 10) toret = Form("%.2f",n);
+  else if (n < 1000) toret = Form("%.1f",n);
   else if (n < 1e6) toret = Form("%.1fk",n/1000.);
   else if (n < 1e9) toret = Form("%.1fM",n/1.e6);
   else if (n < 1e12) toret = Form("%.1fB",n/1.e9);
@@ -42,7 +43,14 @@ TString BkgLatex(TString opt){
   return toret;
 }
 
-TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/skimmed/", Long64_t RunOnN = -1, TString analysis_opt="withdcut anymass1L2M"){
+TString SampLatex(TString opt, int mass){
+
+  if (opt != "signal") return BkgLatex(opt);
+  else return (TString)Form("$%d \\egev$",mass);
+
+}
+
+TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, TString analysis_opt="combined_selection anymass1L2M"){
 
   // analysis options:
   //  only1L ,  only2M  ,  combined_selection anymass1L2M,  withdcut anymass1L2M,
@@ -126,8 +134,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     
     if (analysis_opt.Contains("combined_selection")){
 
-      //                            0
-      // Header:  sample, Ngen , event_selected , weight
+      //                            0        1    2         3          4    5     
+      // Header:  sample, Ngen , Evt_filter (1j + 2j) , event_selected (1j +2j) , weight
       //   
 
       Bool_t selection = false;
@@ -139,8 +147,15 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       
       }
 
-      if (selection)
-	Counters[0]++;
+      Counters[0]++;
+      if (oNJet->at(jalg) == 1) Counters[1]++;
+      else Counters[2]++;
+      
+      if (selection){
+	Counters[3]++;
+	if (oNJet->at(jalg) == 1) Counters[4]++;
+        else Counters[5]++;
+      }
      }
 
     if (analysis_opt.Contains("only2M")){
@@ -262,10 +277,12 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
 
 
   if (analysis_opt.Contains("combined_selection")){
-    TString toret = Form("%s $%d \\egev$ & %s & %s & %.1f \\\\",
-			 opt.Data(), mass,
+    cout<<"CutFlowTable.C:: !!!! IMPORTANT !!!!!  The event filter number is correct only if you are running on non skimmed data !!!"<<endl;
+    TString toret = Form("%s & %s & %s (%s+%s) & %s (%s+%s) & %.1f \\\\",
+			 SampLatex(opt, mass).Data(),
 			 RoundWithUnits(SF*Nnocut(opt,Form("%d",mass),lifetime)).Data(),
-			 RoundWithUnits(Counters[0]).Data(),
+			 RoundWithUnits(Counters[0]).Data(), RoundWithUnits(Counters[1]).Data(), RoundWithUnits(Counters[2]).Data(),
+			 RoundWithUnits(Counters[3]).Data(), RoundWithUnits(Counters[4]).Data(), RoundWithUnits(Counters[5]).Data(),
 			 Weight(opt,Form("%d",mass),lifetime,SF));
     return toret;
 			 
@@ -278,8 +295,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       //                                                            
       // Header:  Sample & Ngen, weight  &  Sliding,weighted  &  D<8sig,weighted   & D<20sig,weighted  & D<1mm,weighted  & D>1mm,weighted
 
-    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M", false);
-    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M", false);
+    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M fixedwindow", false);
+    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M fixedwindow", false);
 
 
     TString toret;

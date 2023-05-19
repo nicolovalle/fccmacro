@@ -190,9 +190,29 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
       Double_t im = mass;
       Double_t pRecoil = (Z_mass*Z_mass - 1.* im * im ) / (2 * Z_mass);
-      Bool_t slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
-      Bool_t slid2 = (TMath::Abs( lvvis.M() - 1.*im) <= 4.);
 
+
+
+      Bool_t slid1, slid2;
+	if (analysis_opt.Contains("fixedwindow")){
+	  slid1 = (TMath::Abs(lvmiss.P() - pRecoil) <= 3.5);
+	  slid2 = (TMath::Abs( (lvvis).M() - 1.*im) <= 4.);
+	}
+	else if (analysis_opt.Contains("window")){
+	  double wwidth_sig, wwidth_bkg;
+	  std::vector<float> vcut = GetFloatArray(analysis_opt);
+	  wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*im);
+	  if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*im);
+	  else wwidth_bkg = wwidth_bkg = wwidth_sig;
+	  
+	  slid1 = (TMath::Abs(lvvis.M() - 1.*im) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	  slid2 = (TMath::Abs(lvmiss.P() - pRecoil) <= (opt=="signal" ? wwidth_sig : wwidth_bkg));
+	}
+	else{
+	  cout<<"CutFlowOK.C:: [ERROR] Mass/Emiss window not recognized";
+	  slid1 = slid2 = false;
+	}
+      
 
       if (slid1 && slid2){
 	if (obsID == od0sliding) toret.push_back(TMath::Abs(oMuD0sig));

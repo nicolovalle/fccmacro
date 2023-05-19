@@ -167,6 +167,25 @@ The function `std::vector<float> GetFloatArray(TStrning analysis_opt)` is used t
 
 `Cut.h` is the code stiring the cut selection used in the `CutFlowOK.C` and `getvalues.C` macros. The plotting macros and other analyses use `CutFlowOK.C` and `getvalues.C` to get the cut flows or the observable spectra.
 
+This is the list of selections implemented in `Cut.h` and currently supported.
++ First, the detailed ones:
+
+```cpp
+Bool_t SELECTION_MASS_EMISS(double mass, double masswidth, double emissw=-1){ ...
+Bool_t SELECTION_MM_2JET(int jalg){ ...
+Bool_t SELECTION_LM_1JET(int jalg){ ...
+Bool_t SEL_MM_2J(int jalg, double_t CUTcosjj, double CUTmincosjmu, double CUTmaxcosjmu){ ...
+```
+
++ Then, those interpreting the "analysis_opt" string:
+
+```cpp
+Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ ... // at the moment it is implemented only for the default "anymass1L2M"
+Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){ ...
+Bool_t SELECTION_STRING_DCUT(int dcut, TString analysis_opt){ ... // dcut is in unit of sigma or mm/100
+```
+
+
 #### CutFlowOK.C
 
 ```cpp

@@ -27,7 +27,8 @@ enum OBS_ID {
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
   oVtxXYZsliding,   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
-  oNjet_selection //Number of jets after evt selection
+  oNjet_selection, //Number of jets after evt selection
+  oNtracks_selection // Number of tracks, after evt selection
 };
 
 
@@ -42,7 +43,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
   TString Dir = dir;
 
-  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection ||
+  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection || obsID == oNtracks_selection ||
       obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
       obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut )
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
@@ -164,7 +165,11 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 	toret.push_back(oNJet->at(jalg));
 	continue;
       }
-      
+
+      if (obsID == oNtracks_selection){
+	toret.push_back(oNtracks);
+	continue;
+      }
       
       if (obsID == omass1mm){
 	if (oMuD0 > 1.) toret.push_back(lvvis.M());
