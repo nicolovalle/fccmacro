@@ -1,7 +1,7 @@
 
 #include "getvalues.C"
 
-std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d dmm anymass1L2M"){
+std::map<int,double> SmoothDist(Double_t d0cut=8, TString analysis_opt="< d2d dsigma anymass1L2M window [100,100]"){
 
   Int_t mass = 40;
   Int_t jalg = 2;
@@ -84,7 +84,7 @@ std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d 
     H2W->Fill(abs(munuqq1.first[i]),abs(munuqq2.first[i]), ScaleFactor[0]*Weight("munuqq","n/a","n/a",munuqq1.second));
     if (munuqq1.first[i]<0) H2C->Fill(abs(munuqq1.first[i]),abs(munuqq2.first[i]), Weight("munuqq","n/a","n/a",munuqq1.second));
   }
-
+  /*
   for (int i=0; i < Zmumu1.first.size(); i++){
     H2->Fill(abs(Zmumu1.first[i]),abs(Zmumu2.first[i]), Weight("Zmumu","n/a","n/a",Zmumu1.second));
     H2W->Fill(abs(Zmumu1.first[i]),abs(Zmumu2.first[i]), ScaleFactor[1]*Weight("Zmumu","n/a","n/a",Zmumu1.second));
@@ -102,12 +102,13 @@ std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d 
     H2W->Fill(abs(Zuds1.first[i]),abs(Zuds2.first[i]), ScaleFactor[3]*Weight("Zuds","n/a","n/a",Zuds1.second));
     if (Zuds1.first[i]<0) H2C->Fill(abs(Zuds1.first[i]),abs(Zuds2.first[i]), Weight("Zuds","n/a","n/a",Zuds1.second));
   }
-
+  
   for (int i=0; i < Zbb1.first.size(); i++){
     H2->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), Weight("Zbb","n/a","n/a",Zbb1.second));
     H2W->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), ScaleFactor[4]*Weight("Zbb","n/a","n/a",Zbb1.second));
     if (Zbb1.first[i]<0) H2C->Fill(abs(Zbb1.first[i]),abs(Zbb2.first[i]), Weight("Zbb","n/a","n/a",Zbb1.second));
   }
+  
 
   for (int i=0; i < Zcc1.first.size(); i++){
     H2->Fill(abs(Zcc1.first[i]),abs(Zcc2.first[i]), Weight("Zcc","n/a","n/a",Zcc1.second));
@@ -115,7 +116,9 @@ std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d 
     if (Zcc1.first[i]<0) H2C->Fill(abs(Zcc1.first[i]),abs(Zcc2.first[i]), Weight("Zcc","n/a","n/a",Zcc1.second));
   }
 
-
+  */
+  
+  
   cout<<endl<<"Scale Factors:"<<endl;
   cout<<"munuqq  : "<<ScaleFactor[0]<<endl;
   cout<<"Zmumu   : "<<ScaleFactor[1]<<endl;
@@ -153,6 +156,9 @@ std::map<int,double> SmoothDist(Double_t d0cut=100, TString analysis_opt="> d2d 
   H2W->Draw("colz");
   gPad->SetLogz();
   gStyle->SetOptStat(0);
+
+  c1->SaveAs("temp.png");
+  c1->SaveAs("temp.pdf");
 
   
   cout<<"*** Full   Integral "<<H2->Integral()<<endl;

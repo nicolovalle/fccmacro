@@ -1,0 +1,137 @@
+#include "getvalues.C"
+
+double Zmass = 91.1876;
+
+double UseWeight(TString opt){
+  
+  if (opt == "Zbb") return  Weight("Zbb");
+  if (opt == "Zcc") return Weight("Zcc");
+  if (opt == "Zuds") return Weight("Zuds");
+  if (opt == "Zmumu") return Weight("Zmumu");
+  if (opt == "Ztautau") return Weight("Ztautau");
+  
+  if (opt == "munuqq") return Weight("munuqq");
+  return 0;
+}
+
+using namespace std;
+
+void temp2(){
+
+  
+  double de = 0.01;
+
+  double precoil50 = (Zmass*Zmass - 50*50)/(2.*Zmass);
+  double precoil70 = (Zmass*Zmass - 70*70)/(2.*Zmass);
+
+
+  pair<vector<double>, double> sig50e, sig50m, sig70e, sig70m;
+  
+
+  sig50m = getvalues(omass_selection,  "signal", 50, "m3p5", -1, 0, 2, "> d2d dsigma anymass1L2M window [99,99]");
+  sig70m = getvalues(omass_selection,  "signal", 70, "m3p5", -1, 0, 2, "> d2d dsigma anymass1L2M window [99,99]");
+  sig50e = getvalues(oemiss_selection, "signal", 50, "m3p5", -1, 0, 2, "> d2d dsigma anymass1L2M window [99,99]");
+  sig70e = getvalues(oemiss_selection, "signal", 70, "m3p5", -1, 0, 2, "> d2d dsigma anymass1L2M window [99,99]");
+
+  int N50 = sig50m.first.size();
+  int N70 = sig70m.first.size();
+
+  double dM50 =0, dE50 = 0, dM70 = 0, dE70 = 0;
+
+
+  int counter = 0;
+
+  for (double x = 0;; x+=de){
+    counter = 0;
+    for (double s : sig50m.first) if (TMath::Abs( s - 50.) <= x) counter++;
+    if (counter >= 0.68*N50) { dM50 = x; break;}
+  }
+
+  for (double x = 0;; x+=de){
+    counter = 0;
+    for (double s : sig70m.first) if (TMath::Abs( s - 70.) <= x) counter++;
+    if (counter >= 0.68*N70) { dM70 = x; break;}
+  }
+
+  for (double x = 0;; x+=de){
+    counter = 0;
+    for (double s : sig50e.first) if (TMath::Abs( s - precoil50) <= x) counter++;
+    if (counter >= 0.68*N50) { dE50 = x; break;}
+  }
+
+  for (double x = 0;; x+=de){
+    counter = 0;
+    for (double s : sig70e.first) if (TMath::Abs( s - precoil70) <= x) counter++;
+    if (counter >= 0.68*N70) { dE70 = x; break;}
+  }
+
+
+  cout<<"dM50= "<<dM50<<endl;
+  cout<<"dE50= "<<dE50<<endl;
+  cout<<"dM70= "<<dM70<<endl;
+  cout<<"dE70= "<<dE70<<endl;
+  
+
+  
+  TH1F *h50m = new TH1F("h50m","h50m",60,40,60);
+  TH1F *h50msig = new TH1F("h50msig","h50msig",60,40,60);
+  
+  TH1F *h70m = new TH1F("h70m","h70m",30,40,60);
+  TH1F *h50e = new TH1F("h50e","h50e",30,40,60);
+  TH1F *h70e = new TH1F("h70e","h70e",30,40,60);
+
+  
+  for (double s: sig50m.first) h50m->Fill(s);
+  for (double s: sig70m.first) h70m->Fill(s);
+  for (double s: sig50e.first) h50e->Fill(s);
+  for (double s: sig70e.first) h70e->Fill(s);
+
+  for (int i=1; i< h50msig->GetNbinsX(); i++){
+    if (TMath::Abs(h50msig->GetBinCenter(i) - 50 - h50msig->GetXaxis()->GetBinWidth(1)) <= dM50) h50msig->SetBinContent(i, h50m->GetBinContent(i));
+  }
+
+
+  h50m->SetLineColor(1);
+  h70m->SetLineColor(1);
+
+  h50e->SetLineColor(2);
+  h70e->SetLineColor(2);
+
+
+ 
+  h50msig->SetFillStyle(3356);
+  h50msig->SetFillColor(1);
+  h50msig->SetLineColor(0);
+  h50msig->Draw("HIST ");
+   h50m->Draw("HIST same");
+  //h70e->Draw("same HISO");
+  //h70m->Draw("same HISTO");
+  //h70m->Draw("same HISTO");
+  
+  /*
+
+ 
+
+
+
+
+  TGraph *g = new TGraph(nstep,x,y);
+
+  g->SetTitle(Form("Centered on mass M = %d",(int)mass));
+  g->GetXaxis()->SetTitle("#DeltaE");
+  g->GetYaxis()->SetTitle("Number of events with |m-M|<#DeltaE and |p-P|<#DeltaE");
+
+  g->Draw("APL");
+
+  TLine *l1 = new TLine(2* 0.2 * TMath::Sqrt(mass), 0, 2* 0.2 * TMath::Sqrt(mass), y[nstep-1]);
+  TLine *l2 = new TLine(2* 0.3 * TMath::Sqrt(mass), 0, 2* 0.3 * TMath::Sqrt(mass), y[nstep-1]);
+  l1->Draw("same");
+  l2->Draw("same");
+  
+  
+  */
+    
+  
+  
+
+}

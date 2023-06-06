@@ -50,7 +50,7 @@ TString SampLatex(TString opt, int mass){
 
 }
 
-TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, TString analysis_opt="combined_selection anymass1L2M"){
+TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/skimmed/", Long64_t RunOnN = -1, TString analysis_opt="withdcut anymass1L2M"){
 
   // analysis options:
   //  only1L ,  only2M  ,  combined_selection anymass1L2M,  withdcut anymass1L2M,
@@ -295,8 +295,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       //                                                            
       // Header:  Sample & Ngen, weight  &  Sliding,weighted  &  D<8sig,weighted   & D<20sig,weighted  & D<1mm,weighted  & D>1mm,weighted
 
-    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M fixedwindow", false);
-    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M fixedwindow", false);
+    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M window [2,0.2]", false);
+    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M window [2,0.2]", false);
 
 
     TString toret;

@@ -475,6 +475,11 @@ void GetAvailableDatapoints(TString path="../MyExternalAnalysis/results/skimmed/
 
 	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
 
+	  if (Coupling(Form("%d",m),lt) < 0){
+	    cout<<"lumisettings.h [ERROR] - File m="<<m<<", lt="<<lt<<" found but Coupling not set."<<endl;
+	    continue;
+	  }
+
 	  std::pair<int, TString> p{m, lt};
 	  AvailableDatapoints.push_back(p);
 	}

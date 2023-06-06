@@ -5,6 +5,7 @@ TChain *TREE = new TChain("eventsTree");
 Long64_t oNEntries;
 Int_t oNReco;
 Int_t oNMuon;
+Int_t oNElectron;
 std::vector<Int_t>* oNJet = 0;
 std::vector<Double_t>* oPxJet1 = 0;
 std::vector<Double_t>* oPyJet1 = 0;
@@ -50,6 +51,7 @@ void TREESetBranch(){
   TREE->SetBranchAddress("NEntries_tchain",&oNEntries);
   TREE->SetBranchAddress("NReco",&oNReco);
   TREE->SetBranchAddress("NMuon",&oNMuon);
+  TREE->SetBranchAddress("NElectron",&oNElectron);
   TREE->SetBranchAddress("NJet",&oNJet);
   TREE->SetBranchAddress("PxJet1",&oPxJet1);
   TREE->SetBranchAddress("PyJet1",&oPyJet1);
@@ -141,10 +143,11 @@ Bool_t SELECTION_MM_2JET(int jalg){
   Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
   Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-
   Bool_t r1 = true; // (oNReco > 4);
 
-  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && r1;
+  Bool_t nlep = (oNElectron == 0);
+
+  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && nlep && r1;
  
 }
 
@@ -167,8 +170,9 @@ Bool_t SELECTION_LM_1JET(int jalg){
 
   Bool_t r1 = true; //(oNReco > 4);
 
+  Bool_t nlep = (oNElectron == 0);
 
-  return sel1 && sel2 && sel3 && sel4 && sel5 && sel6 && r1;
+  return sel1 && sel2 && sel3 && sel4 && sel5 && sel6 && nlep && r1;
 
 }
 

@@ -7,7 +7,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   Int_t jalg = 2;
   TString lt = "m3p5";
   Long64_t drawN = (Long64_t) 1.e5;
-  Bool_t ScalePlots = false;
+  Bool_t ScalePlots = true;
   TString xlabel;
   if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
   if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
@@ -18,29 +18,33 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   if (obsID == oMINEjet) xlabel = "min E(j) (GeV)";
   if (obsID == omtot) xlabel = "M_{tot = vis+miss} (GeV/c^{2})";
   if (obsID == omass_selection) xlabel = "M_{vis} (GeV/c^{2})";
+  if (obsID == omass_after_dcut) xlabel = "M_{vis} (GeV/c^{2})";
   if (obsID == oemiss_selection) xlabel = "E_{miss} (GeV)";
   if (obsID == oNjet_selection) xlabel = "Number of jet clusters";
   
   
-  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700); 
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
 
-  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, 8, jalg);
+  TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
+  Int_t dcut = 8;
 
-  
-  std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, 8, jalg);
-
-  
-  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, dcut, jalg, analysis_opt);
 
   
-  std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, dcut, jalg, analysis_opt);
+
+  
+  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, dcut, jalg, analysis_opt);
+
+  
+  std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, dcut, jalg, analysis_opt);
   
 
   TH1F *h_munuqq = new TH1F("munuqq",Form("#mu#nuqq ",munuqq.first.size()),nbin,bmin,bmax);
@@ -159,9 +163,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
  
   //h_signalM->Draw("HIST same");
-  h_signal20->Draw("HIST same");
+  h_signal30->Draw("HIST same");
   //h_signal50->Draw("HIST same");
-  h_signal70->Draw("HIST same");
+  //h_signal70->Draw("HIST same");
 
   gPad->SetLogy();
 

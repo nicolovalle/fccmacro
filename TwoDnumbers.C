@@ -12,7 +12,7 @@ Double_t GetUpp(Double_t n){
 std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
 
 
-std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
+std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M window [2,0.2]"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C

@@ -43,7 +43,7 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8, TString formula = "atlas", double addsigmabkg=0., Bool_t Draw = false, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M"){
+std::vector<std::vector<double>> OneDsignificance(Int_t m = 5, Int_t dd0cut = 8, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.2]"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
@@ -76,19 +76,16 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
   std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
   std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",m,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt,true);
 
+  GetAvailableDatapoints(AnalysisResPath);
  
     
-    for (TString mp : mps){
-      for (int unit = 0; unit < 9; unit++){
-	for (int decimal = 0; decimal < 6; decimal += 5){
+    
+	for (int ip = 0; ip<AvailableDatapoints.size(); ip++){
+
+	  if (AvailableDatapoints.at(ip).first != m) continue;
+	  TString lt = AvailableDatapoints.at(ip).second;
 
 
-	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
-	  
-
-	  TString FileNameToCheck = Form("%s%s", AnalysisResPath.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
-      
-	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
      
 	  Int_t myid = dcut_id(dd0cut);
 
@@ -99,8 +96,8 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 	  Double_t U = Coupling(Form("%d",m),lt);
 	  
 	  if (signal == 0){
-	    cout<<"From "<<FileNameToCheck<<" the signal m="<<m<<" lt="<<lt<<" has 0 events"<<endl;
-	    continue;
+	    cout<<"Signal m="<<m<<" lt="<<lt<<" has 0 events"<<endl;
+	    //continue;
 	  }
 
 	
@@ -124,13 +121,42 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 	  Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
 	  Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
 
-	  Double_t Z;
-	  if (formula == "simple")
-	    Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
-	  else if (formula == "atlas"){
-	    
-	      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
-	  }
+	  Double_t Z, TargetZ;
+
+	  if (formula == "simple"){
+      Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
+      TargetZ = 2.;
+    }
+    
+    else if (formula == "atlas"){
+      if (totsig == 0) Z = 0;
+      else Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
+      TargetZ = 2.;
+    }
+    
+    else if (formula == "signal"){
+      Z = totsig;
+      TargetZ = 3.;
+    }
+    
+    else if (formula == "myCL"){
+      Z = 1.-ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
+      TargetZ = 1.-0.05;
+    }
+
+    else if (formula == "myZ"){
+      
+      double alpha = ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
+      if (alpha < 1.e-20) Z = 0.-ROOT::Math::gaussian_quantile(1.e-20/2.,1.);
+      else Z = 0.-ROOT::Math::gaussian_quantile(alpha/2.,1.);
+      if (Z<0) Z = 0;
+      if (totsig == 0) Z = 0;
+      TargetZ = 2.;
+    }
+    
+    else{
+      cout<<"TwoDsignificance.C:: ERROR - FORMULA NOT RECOGNIZED"<<endl;
+    }
 
 	  cout<<"M "<<m<<"     LT "<<lt<<"    logU2 "<<Y<<"    sig "<<totsig<<"    bkg "<<totbkg<<"   Errbkg "<<SigmaBkg<<"    Z "<<Z<<endl;
 	  //LOG<<"-------------------------------------------------"<<endl;
@@ -144,8 +170,7 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 	 
 
 	}
-      }
-    }
+  
  
 
   if (Draw){
@@ -160,12 +185,12 @@ std::vector<std::vector<double>> OneDsignificance(Int_t m = 80, Int_t dd0cut = 8
 
     gg->SetLineColor(2);
 
-    gg->Draw("A C");
+    gg->Draw("A L");
     gg->GetXaxis()->SetTitle("Log(U^{2})");
     gg->GetYaxis()->SetTitle("Significance");
 
     gStyle->SetOptStat(0);
-    gPad->SetLogy();
+    //gPad->SetLogy();
     gPad->SetGridy();
     gPad->SetGridx();
     

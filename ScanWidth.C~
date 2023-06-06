@@ -3,12 +3,13 @@
 double Zmass = 91.1876;
 
 double UseWeight(TString opt){
-
-  //  if (opt == "Zbb") return Weight("Zbb");
-  //if (opt == "Zcc") return Weight("Zcc");
-  //if (opt == "Zuds") return Weight("Zuds");
-  //if (opt == "Zmumu") return Weight("Zmumu");
-  //if (opt == "Ztautau") return Weight("Ztautau");
+  
+  if (opt == "Zbb") return  Weight("Zbb");
+  if (opt == "Zcc") return Weight("Zcc");
+  if (opt == "Zuds") return Weight("Zuds");
+  if (opt == "Zmumu") return Weight("Zmumu");
+  if (opt == "Ztautau") return Weight("Ztautau");
+  
   if (opt == "munuqq") return Weight("munuqq");
   return 0;
 }

@@ -5,6 +5,7 @@ TChain *TREE = new TChain("eventsTree");
 Long64_t oNEntries;
 Int_t oNReco;
 Int_t oNMuon;
+Int_t oNElectron;
 std::vector<Int_t>* oNJet = 0;
 std::vector<Double_t>* oPxJet1 = 0;
 std::vector<Double_t>* oPyJet1 = 0;
@@ -50,6 +51,7 @@ void TREESetBranch(){
   TREE->SetBranchAddress("NEntries_tchain",&oNEntries);
   TREE->SetBranchAddress("NReco",&oNReco);
   TREE->SetBranchAddress("NMuon",&oNMuon);
+  TREE->SetBranchAddress("NElectron",&oNElectron);
   TREE->SetBranchAddress("NJet",&oNJet);
   TREE->SetBranchAddress("PxJet1",&oPxJet1);
   TREE->SetBranchAddress("PyJet1",&oPyJet1);
@@ -141,10 +143,11 @@ Bool_t SELECTION_MM_2JET(int jalg){
   Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
   Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
 
-
   Bool_t r1 = true; // (oNReco > 4);
 
-  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && r1;
+  Bool_t nlep = true; // = (oNElectron == 0);
+
+  return sel1 && sel2 && sel3 && sel41 && sel42 && sel6 && s21 && s22 && s23 && nlep && r1;
  
 }
 
@@ -167,8 +170,9 @@ Bool_t SELECTION_LM_1JET(int jalg){
 
   Bool_t r1 = true; //(oNReco > 4);
 
+  Bool_t nlep = true;//= (oNElectron == 0);
 
-  return sel1 && sel2 && sel3 && sel4 && sel5 && sel6 && r1;
+  return sel1 && sel2 && sel3 && sel4 && sel5 && sel6 && nlep && r1;
 
 }
 
@@ -182,58 +186,6 @@ Bool_t SELECTION_LM_2JET(int jalg){
 
   return sel1 && sel2;
 }
-
-
-/////////////////////
-// SELECTIONS DRIVEN BY ANALYSIS OPTION
-/////////////////////
-Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ // at the moment it is implemented only for the default "anymass1L2M"
-
-  bool selection = false;
-
-  if (analysis_opt.Contains("anymass") && !analysis_opt.Contains("anymass1L2M")){
-    cout<<"Cut.h:: [ERROR] analysis_option not implemented in Cut.h"<<endl;
-    return selection;
-  }
-
-  if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
-  if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
-
-  return selection;
-}
-
-Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
-
-  bool slid1 = false, slid2 = false;
-  
-  if (analysis_opt.Contains("fixedwindow")){
-    return SELECTION_MASS_EMISS(mass, 4., 3.5);
-  }
-
-  else if (analysis_opt.Contains("window")){
-
-    double wwidth_sig, wwidth_bkg;
-    std::vector<float> vcut = GetFloatArray(analysis_opt);
-    wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*mass);
-
-    if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*mass);
-    else wwidth_bkg = wwidth_bkg = wwidth_sig;
-
-    if (opt=="signal") return SELECTION_MASS_EMISS(mass, wwidth_sig, wwidth_sig);
-    else return SELECTION_MASS_EMISS(mass, wwidth_bkg, wwidth_bkg);
-  }
-
-  else {
-    cout<<"CutFlowOK.C:: [ERROR] Mass/Emiss window not recognized";
-    return false;
-  }
-}
-
-Bool_t SELECTION_STRING_DCUT(int dcut, 
-  
-
-  
-
 
 
 // SOME TEMPORARY CUT VARIATION
@@ -305,6 +257,75 @@ std::vector<float> GetFloatArray(TString opt){
 
   
 
+/////////////////////
+// SELECTIONS DRIVEN BY ANALYSIS OPTION
+/////////////////////
+Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ // at the moment it is implemented only for the default "anymass1L2M"
+
+  bool selection = false;
+
+  if (analysis_opt.Contains("anymass") && !analysis_opt.Contains("anymass1L2M")){
+    cout<<"Cut.h:: [ERROR] analysis_option not implemented in Cut.h"<<endl;
+    return selection;
+  }
+
+  if (oNJet->at(jalg) == 2) selection = SELECTION_MM_2JET(jalg);
+  if (oNJet->at(jalg) == 1) selection = SELECTION_LM_1JET(jalg);
+
+  return selection;
+}
+
+Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
+
+  bool slid1 = false, slid2 = false;
+  
+  if (analysis_opt.Contains("fixedwindow")){
+    return SELECTION_MASS_EMISS(mass, 4., 3.5);
+  }
+
+  else if (analysis_opt.Contains("window")){
+
+    double wwidth_sig, wwidth_bkg;
+    std::vector<float> vcut = GetFloatArray(analysis_opt);
+    wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*mass);
+
+    if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*mass);
+    else wwidth_bkg = wwidth_bkg = wwidth_sig;
+
+    if (opt=="signal") return SELECTION_MASS_EMISS(mass, wwidth_sig, wwidth_sig);
+    else return SELECTION_MASS_EMISS(mass, wwidth_bkg, wwidth_bkg);
+  }
+
+  else {
+    cout<<"Cut.h:: [ERROR] Mass/Emiss window not recognized";
+    return false;
+  }
+}
+
+Bool_t SELECTION_STRING_DCUT(int dcut, TString analysis_opt){
+
+  bool selection = false;
+
+  if (analysis_opt.Contains("d3d") && analysis_opt.Contains("dsigma"))
+    selection =  (TMath::Sqrt(oMuD0sig*oMuD0sig + oMuZ0sig*oMuZ0sig) < 1.*dcut);
+  
+  else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dsigma"))
+    selection =  (TMath::Abs(oMuD0sig) < 1.*dcut);
+
+  else if (analysis_opt.Contains("d2d") && analysis_opt.Contains("dmm"))
+    selection = (TMath::Abs(oMuD0) < 1.*dcut/100.);
+
+  else{
+    cout<<"Cut.h:: [ERROR] - OPTIONS FOR DCUT NOT SUPPORTED"<<endl;
+    return false;
+  }
+
+  if (analysis_opt.Contains(">")) selection = !selection;
+
+  return selection;
+ 
+}
+  
 
 
 

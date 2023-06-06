@@ -1,4 +1,4 @@
-Double_t LUMI = 1.5e8;
+Double_t LUMI = 1.5e8*8/5.;
 //Double_t LUMI = 3.3e3;
 
 Double_t
@@ -467,10 +467,9 @@ void GetAvailableDatapoints(TString path="../MyExternalAnalysis/results/skimmed/
   for (int i=0;i<95;i++) masses.push_back(i);
 
   for (int m : masses){
-    for (TString mp : std::vector<TString>{"m","p"}){
-      for (int unit = 0; unit < 9; unit++){
-	for (int decimal = 0; decimal < 10; decimal += 5){
-	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
+    for (TString lt : std::vector<TString>{"m12p0","m11p5","m11p0","m10p5","m10p0","m9p5","m9p0","m8p5","m8p0","m7p5","m7p0","m6p5","m6p0","m5p5","m5p0",
+	  "m4p5","m4p0","m3p5","m3p0","m2p5","m2p0","m1p5","m1p0","m0p5","p0p0","p0p5","p1p0","p1p5","p2p0","p2p5","p3p0","p3p5","p4p0",}){
+     
 	  TString FileNameToCheck = Form("%s%s", path.Data(), AnalysisResults("signal",Form("%d",m),lt).Data());
 
 	  if (gSystem->AccessPathName(FileNameToCheck)) continue;
@@ -482,8 +481,7 @@ void GetAvailableDatapoints(TString path="../MyExternalAnalysis/results/skimmed/
 
 	  std::pair<int, TString> p{m, lt};
 	  AvailableDatapoints.push_back(p);
-	}
-      }
+
     }
   }     
 }

@@ -18,28 +18,33 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   if (obsID == oMINEjet) xlabel = "min E(j) (GeV)";
   if (obsID == omtot) xlabel = "M_{tot = vis+miss} (GeV/c^{2})";
   if (obsID == omass_selection) xlabel = "M_{vis} (GeV/c^{2})";
+  if (obsID == omass_after_dcut) xlabel = "M_{vis} (GeV/c^{2})";
   if (obsID == oemiss_selection) xlabel = "E_{miss} (GeV)";
+  if (obsID == oNjet_selection) xlabel = "Number of jet clusters";
   
   
-  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700); 
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
 
-  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, 8, jalg);
+  TString analysis_opt = "> d2d dmm anymass1L2M window [2,0.2]";
+  Int_t dcut = 100;
 
-  
-  std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, 8, jalg);
-
-  
-  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, 8, jalg);
-  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, dcut, jalg, analysis_opt);
 
   
-  std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, 8, jalg);
+  std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, dcut, jalg, analysis_opt);
+
+  
+  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, dcut, jalg, analysis_opt);
+
+  
+  std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, dcut, jalg, analysis_opt);
   
 
   TH1F *h_munuqq = new TH1F("munuqq",Form("#mu#nuqq ",munuqq.first.size()),nbin,bmin,bmax);
@@ -158,9 +163,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
  
   //h_signalM->Draw("HIST same");
-  h_signal20->Draw("HIST same");
+  h_signal30->Draw("HIST same");
   //h_signal50->Draw("HIST same");
-  h_signal70->Draw("HIST same");
+  //h_signal70->Draw("HIST same");
 
   gPad->SetLogy();
 

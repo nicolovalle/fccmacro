@@ -34,7 +34,7 @@ enum OBS_ID {
 
 
 
-std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/"){
+std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [1.5,0.2]", TString dir="../MyExternalAnalysis/results/"){
   
   // getvalue.second is the scale factor
   // If sliding is not needed, you can use any mass.

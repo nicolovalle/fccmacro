@@ -1,11 +1,10 @@
 #include "CutFlowOK.C"
 
-
-std::map<int,double> SmoothedLL ={{5 , 831.16352}, {10 , 2574.8944}, { 20 , 2986.9197}, { 30 , 3721.1144}, { 40 , 1468.0616}, { 50 , 2259.2084}, { 60 , 7043.7216}, { 70 , 28927.867}, { 80 , 192722.72}, { 85 , 167167.23 }};
-
-std::map<int,double> SmoothedLL_noRoll = {{ 5 , 447.50697},{ 10 , 1350.2468},{ 20 , 1506.8090},{ 30 , 1753.5736},{ 40 , 670.10691},{ 50 , 1148.5794},{ 60 , 3377.6229},{ 70 , 12411.982},{ 80 , 81230.329},{ 85 , 81761.084 }};
-
-std::map<int,double> WeightedLL =  {{ 5 , 0.0000000}, { 10 , 0.0000000}, { 20 , 15.134251}, { 30 , 369.36671}, { 40 , 261.55994}, { 50 , 1051.4037}, { 60 , 3161.1757}, { 70 , 12383.366}, { 80 , 83187.383}, { 85 , 81564.470 }};
+// Can be drawn by hand on top of the TGraph if needed;
+const Int_t CustomLineNpoint = 9;
+// Prompt 8 sigma with 1 sigma bkg:
+Double_t CustomLineX[CustomLineNpoint] = { 5.0000000, 10.000000, 20.000000, 30.000000, 40.000000, 50.000000, 60.000000, 70.000000, 80.000000 };
+Double_t CustomLineY[CustomLineNpoint] = { -5.0979984, -6.8187302, -7.3975944, -7.8407836, -8.2860806, -8.4012408, -8.3185171, -7.8914532, -6.7709753 };
 
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
@@ -33,9 +32,10 @@ Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   
 }
 
-Double_t GetUpp(Double_t n){
+Double_t Get1Sig(Double_t n){
 
-  if (n==0 || n==1) return 1.14;
+  if (n == 0) return 1.14;
+  if (n == 1) return 2.35 -1 ;
   else return TMath::Sqrt(n);
 
 }
@@ -43,8 +43,8 @@ Double_t GetUpp(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M window [4,3]"){
-  // formulas: atals simple signal myZ
+std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.2]"){
+  // formulas: atals simple signal myCL myZ
 
   // opt: same as CutFlowOK.C
   
@@ -59,6 +59,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 
   TH2F* H = new TH2F("H","H",91,0-2.5,90+2.5,64,-12,-4);
   //TH2F* HBLACK = new TH2F("HBLACK","HBLACK",91,0-2.5,90+2.5,128,-12,-4);
+  
 
   
 
@@ -103,6 +104,9 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
 
     Double_t U = Coupling(Form("%d",m),lt);
+    Double_t Y = 2.*TMath::Log10(U);
+    // if (TMath::IsNaN(Y)) continue; // not needed --> should be protected by AvailableDatapoints
+    Double_t X = 1.*m;
 
     Double_t Zmumu = bkgMapZmumu[m][myid];
     Double_t Ztautau = bkgMapZtautau[m][myid];
@@ -111,25 +115,28 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     Double_t Zuds = bkgMapZuds[m][myid];
     Double_t munuqq = bkgMapmunuqq[m][myid];
 
-    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
+    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(Get1Sig(Zmumu)*Weight("Zmumu"),2) + TMath::Power(Get1Sig(Ztautau)*Weight("Ztautau"),2) + TMath::Power(Get1Sig(Zbb)*Weight("Zbb"),2) + TMath::Power(Get1Sig(Zcc)*Weight("Zcc"),2) + TMath::Power(Get1Sig(Zuds)*Weight("Zuds"),2) + TMath::Power(Get1Sig(munuqq)*Weight("munuqq"),2));
 
-    Double_t Y = 2.*TMath::Log10(U);
-    // if (TMath::IsNaN(Y)) continue; // not needed --> should be protected by AvailableDatapoints
-    Double_t X = 1.*m;
+    
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
     Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
     //totbkg = WeightedLL[m];
 
+
+
     Double_t Z;
 	  
     if (formula == "simple"){
-      Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      Z = totsig / TMath::Sqrt(totsig + bkgeff);
       TargetZ = 2.;
     }
     
     else if (formula == "atlas"){
-      Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      if (totsig == 0) Z = 0;
+      else Z = AtlasZ(totsig, bkgeff ,0);
       TargetZ = 2.;
     }
     
@@ -138,9 +145,20 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
       TargetZ = 3.;
     }
     
+    else if (formula == "myCL"){
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      Z = 1.-ROOT::Math::poisson_cdf((int)(bkgeff), totsig+bkgeff);
+      TargetZ = 1.-0.05;
+    }
+
     else if (formula == "myZ"){
-      Z = 1.-ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
-      TargetZ = 0.95;
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      double alpha = ROOT::Math::poisson_cdf((int)(bkgeff), totsig+bkgeff);
+      if (alpha < 1.e-20) Z = 0.-ROOT::Math::gaussian_quantile(1.e-20/2.,1.);
+      else Z = 0.-ROOT::Math::gaussian_quantile(alpha/2.,1.);
+      if (Z<0) Z = 0;
+      if (totsig == 0) Z = 0;
+      TargetZ = 2.;
     }
     
     else{
@@ -150,6 +168,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     TDPlot_M.push_back(X);
     TDPlot_U2.push_back(Y);
     TDPlot_Z.push_back(Z);
+    LOG<<"M/lt = "<<m<<" "<<lt<<" Sig/Bkg/ErrBkg "<<totsig<<" "<<totbkg<<" "<<SigmaBkg<<" Z("<<formula<<") "<<Z<<endl;
 
   }
 
@@ -261,10 +280,14 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 
     TGraph2D *Gr = new TGraph2D(npoints, aX, aY, aZ);
 
-  auto c = new TCanvas();
+    auto c = new TCanvas("c","c",800,550);
+   c->SetRightMargin(0.15);
   //Gr->SetNpx(20);
   //Gr->SetNpy(60);
+  Gr->SetTitle(";M_{HN} (GeV/c^{2});Log(U^{2});Z score");
   Gr->Draw("colz");
+  Gr->GetXaxis()->SetTitle("M_{HN} (GeV/c^{2})");
+  Gr->GetYaxis()->SetTitle("Log(U^{2})");
   //double conts[] = {0.5, 0.95, 1.};
   //Gr->SetContour(3,conts);
   //c->Update();
@@ -283,19 +306,44 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
       H->GetZaxis()->SetRangeUser(1e-5,1000);
     else if (TargetZ  == 0.05)
       H->GetZaxis()->SetRangeUser(0,1);
-    //H->Draw("colz");
+    // H->Draw("colz");
     H->SetMarkerSize(1.6);
     H->SetTitle("Significance");
 
     //HBLACK->Draw("same BOX");
 
+    gg->SetLineWidth(4);
+    gg->SetLineStyle(1);
     gg->Draw("same L");
 
     gStyle->SetOptStat(0);
-    gPad->SetLogz();
-    //gStyle->SetPalette(kBlackBody);
+    // gPad->SetLogz();
+    gStyle->SetPalette(kBlackBody);
+    
+    TGraph* AvPoints = new TGraph(npoints,aX,aY);
+    AvPoints->SetMarkerSize(2);
+    AvPoints->SetMarkerStyle(5);
+    AvPoints->Draw("same P");
 
+    TLatex *latex = new TLatex();
+    latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",(int)(LUMI*1e-6)));
+
+    if (true){
+      auto gg2 = new TGraph(CustomLineNpoint,CustomLineX,CustomLineY);
+      gg2->SetLineWidth(3);
+      gg2->SetLineStyle(7);
+      gg2->Draw("same L");
+      auto legend = new TLegend();
+      legend->AddEntry(gg,"Curve at Z #approx 2","l");
+      legend->AddEntry(gg2,"+1#sigma MC uncert.","l");
+      legend->SetBorderSize(0);
+      legend->SetFillStyle(0);
+      legend->Draw("same");
+    }
+
+   
     c->SaveAs("temp.png");
+    c->SaveAs("temp.pdf");
   }
   
 
@@ -304,61 +352,81 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 }
 
 
+Double_t findY(std::vector<std::vector<double>> XY, double x){
+
+  for (int i=0; i<XY[1].size(); i++)
+    if (XY[0][i] == x) return XY[1][i];
+  return -999.;
+}
+
+
 void CompareAnalyses(){
 
-  auto c = new TCanvas("c","c",1000,600);
+  Bool_t makeratio = true;
+
+  auto c = new TCanvas("c","c",800,550);
 
   std::vector<std::vector<double>> XY;
+  std::vector<std::vector<double>> XYref;
 
   Int_t dcut = 8;
   TString AnalysisOptions = "> d3d dsigma";
 
   int colcounter = 1;
 
-  TString formula = "atlas";
+  TString formula = "myZ";
   
   Double_t x0[50], y0[50];
-  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5,0.25]");
-  //XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"> d2d dmm anymass1L2M");
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XYref = XY;
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
     y0[i] = XY[1][i];
+    if (makeratio) y0[i]=1;
   }
   auto g0 = new TGraph(XY[0].size(), x0, y0);
   g0->SetLineColor(colcounter);
-  g0->SetTitle("1.5* 25% sqrt(M)");
+  //g0->SetTitle("~ 20% / #sqrt{E}");
+  //g0->SetTitle("Without D_{#mu} < 8#sigma");
   g0->SetLineWidth(2);
   colcounter++;
   
 
   Double_t x1[50], y1[50];
-  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5,0.25,1.5,0.35]");
-  //XY = TwoDsignificance(100,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"> d2d dmm anymass1L2M");
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
+    if (makeratio) y1[i] = TMath::Power(10,y1[i]-findY(XYref,x1[i]));
   }
   auto g1 = new TGraph(XY[0].size(), x1, y1);
-  g1->SetLineColor(colcounter);
+  g1->SetLineColor(2);
   g1->SetLineStyle(7);
-  g1->SetTitle("bkg: 35% sqrt(M)");
+  //g1->SetTitle("~ 15% / #sqrt{E}");
+  //g1->SetTitle("D_{#mu} < 20#sigma");
   g1->SetLineWidth(2);
   colcounter++;
 
 
   Double_t x2[50], y2[50];
-  XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [1.5, 0.25, 1.5, 0.20]");
-  //XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
+   XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
   for (int i=0; i<XY[0].size(); i++){
     x2[i] = XY[0][i];
     y2[i] = XY[1][i];
+    if (makeratio) y2[i] = TMath::Power(10,y2[i]-findY(XYref,x2[i]));
   }
   auto g2 = new TGraph(XY[0].size(), x2, y2);
-  g2->SetLineColor(colcounter);
-  g2->SetTitle("bkg: 20% sqrt(M)");
+  g2->SetLineColor(4);
+  g2->SetLineStyle(6);
+  //g2->SetTitle("~ 30% / #sqrt(E)");
+  //g2->SetTitle("Without D_{#mu} cut");
   g2->SetLineWidth(2);
   colcounter++;
 
+ 
   /*
   Double_t x3[50], y3[50];
   XY = TwoDsignificance(8,"atlas",0.,false,"../MyExternalAnalysis/results/",2,"< d2d dsigma anymass1L2M");
@@ -377,7 +445,7 @@ void CompareAnalyses(){
 
   Double_t x4[50], y4[50];
   //XY = TwoDsignificance(dcut,"simple",0.,false,"../MyExternalAnalysis/results/skimmed/",2,AnalysisOptions);
-  XY = TwoDsignificance(16,"atlas",0.,false,"../MyExternalAnalysis/results-V230322/skimmed_loose/",2,"< d2d dsigma anymass1L2M");
+  XY = TwoDsignificance(16,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M");
   for (int i=0; i<XY[0].size(); i++){
     x4[i] = XY[0][i];
     y4[i] = XY[1][i];
@@ -410,9 +478,10 @@ void CompareAnalyses(){
   auto gax = (TGraph*)g0->Clone("ciao");
   gax->SetMarkerColor(0);
   gax->SetLineColor(0);
-  gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-12,-5);
-  gax->GetYaxis()->SetTitle("Log (U^{2})");
+  gax->SetTitle("");
+  gax->GetYaxis()->SetRangeUser(0,10);
+  //gax->GetYaxis()->SetTitle("Log (U^{2})");
+  gax->GetYaxis()->SetTitle("U^{2} limit / U^{2} limit default analysis");
   gax->GetXaxis()->SetLimits(0,90);
   gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
   
@@ -429,9 +498,20 @@ void CompareAnalyses(){
   //g5->Draw("same");
  
 
-  
+  TLatex *latex = new TLatex();
+  latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",(int)(LUMI*1e-6)));
 
-  c->BuildLegend();
+  auto legend = new TLegend();
+
+ legend->AddEntry(gax,"Curve at significance #approx 2","l");
+ legend->AddEntry(g0,"~ 20% / #sqrt{E}","l");
+ legend->AddEntry(g1,"~ 20% / #sqrt{E}","l");
+ legend->AddEntry(g2,"~ 30% / #sqrt{E}","l");
+ legend->SetBorderSize(0);
+ //legend->SetFillStyle(0);
+ legend->Draw("same");
+
+ //c->BuildLegend();
 
   c->SetGridy();
   c->SaveAs("temp.png");
@@ -439,100 +519,90 @@ void CompareAnalyses(){
 
   
 }
+
+
   
 
+void CompareAnalyses2(){
 
-void ScanD0Cut(){
+  Bool_t makeratio = false;
 
-  auto c = new TCanvas("c","c",1000,600);
-
-  Int_t dcut;
-
-  Int_t jalg = 2;
+  auto c = new TCanvas("c","c",800,550);
 
   std::vector<std::vector<double>> XY;
-  int colcounter=1;
+  std::vector<std::vector<double>> XYref;
 
-  TString AnalysisOptions = "< d3d dsigma anymass1L2M";
+  Int_t dcut = 8;
+  TString AnalysisOptions = "> d3d dsigma";
 
-  dcut = 4;
-  double_t x4[50], y4[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
+  int colcounter = 1;
+
+  TString formula = "myZ";
+  
+  Double_t x0[50], y0[50];
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(100,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
+  XYref = XY;
   for (int i=0; i<XY[0].size(); i++){
-    x4[i] = XY[0][i];
-    y4[i] = XY[1][i];
+    x0[i] = XY[0][i];
+    y0[i] = XY[1][i];
+    if (makeratio) y0[i] = TMath::Power(10,y0[i]-findY(XYref,x0[i]));
   }
-  auto g4 = new TGraph(XY[0].size(), x4, y4);
-  g4->SetLineColor(colcounter);
-  g4->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g4->SetLineWidth(2);
+  auto g0 = new TGraph(XY[0].size(), x0, y0);
+  g0->SetLineColor(1);
+  //g0->SetTitle("~ 20% / #sqrt{E}");
+  //g0->SetTitle("Without D_{#mu} < 8#sigma");
+  g0->SetLineWidth(2);
+  colcounter++;
+  
+
+  Double_t x1[50], y1[50];
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
+  XY = TwoDsignificance(100,formula,1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
+  for (int i=0; i<XY[0].size(); i++){
+    x1[i] = XY[0][i];
+    y1[i] = XY[1][i];
+    if (makeratio) y1[i] = TMath::Power(10,y1[i]-findY(XYref,x1[i]));
+   
+  }
+  auto g1 = new TGraph(XY[0].size(), x1, y1);
+  g1->SetLineColor(1);
+  g1->SetLineStyle(9);
+  //g1->SetTitle("~ 15% / #sqrt{E}");
+  //g1->SetTitle("D_{#mu} < 20#sigma");
+  g1->SetLineWidth(2);
+  colcounter++;
+
+
+  Double_t x2[50], y2[50];
+  //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
+  // XY = TwoDsignificance(100,formula,-1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
+  for (int i=0; i<XY[0].size(); i++){
+    x2[i] = XY[0][i];
+    y2[i] = XY[1][i];
+    if (makeratio) y2[i] = TMath::Power(10,y2[i]-findY(XYref,x2[i]));
+    
+  }
+  auto g2 = new TGraph(XY[0].size(), x2, y2);
+  g2->SetLineColor(1);
+  g2->SetLineStyle(9);
+  //g2->SetTitle("~ 30% / #sqrt(E)");
+  //g2->SetTitle("Without D_{#mu} cut");
+  g2->SetLineWidth(2);
   colcounter++;
 
  
-  dcut = 8;
-  double_t x8[50], y8[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x8[i] = XY[0][i];
-    y8[i] = XY[1][i];
-  }
-  auto g8 = new TGraph(XY[0].size(), x8, y8);
-  g8->SetLineColor(colcounter);
-  g8->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g8->SetLineWidth(2);
-  colcounter++;
-
- 
-  dcut = 30;
-  double_t x12[50], y12[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x12[i] = XY[0][i];
-    y12[i] = XY[1][i];
-  }
-  auto g12 = new TGraph(XY[0].size(), x12, y12);
-  g12->SetLineColor(colcounter);
-  g12->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g12->SetLineWidth(2);
-  colcounter++;
-
-
-  dcut = 100;
-  double_t x16[50], y16[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x16[i] = XY[0][i];
-    y16[i] = XY[1][i];
-  }
-  auto g16 = new TGraph(XY[0].size(), x16, y16);
-  g16->SetLineColor(colcounter);
-  g16->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g16->SetLineWidth(2);
-  colcounter++;
-
-  
-  dcut = 200;
-  double_t x20[50], y20[50];
-  XY = TwoDsignificance(dcut,"atlas",0.,false,"../MyExternalAnalysis/results/skimmed/",jalg,AnalysisOptions);
-  for (int i=0; i<XY[0].size(); i++){
-    x20[i] = XY[0][i];
-    y20[i] = XY[1][i];
-  }
-  auto g20 = new TGraph(XY[0].size(), x20, y20);
-  g20->SetLineColor(colcounter+1);
-  g20->SetTitle(Form("Impact par < %d #sigma",dcut));
-  g20->SetLineWidth(2);
-  colcounter++;
-
-
   
 
-  auto gax = (TGraph*)g4->Clone("ciao");
+
+  auto gax = (TGraph*)g0->Clone("ciao");
   gax->SetMarkerColor(0);
   gax->SetLineColor(0);
-  gax->SetTitle("Curve at significance #approx 2");
-  gax->GetYaxis()->SetRangeUser(-14,-4);
-  gax->GetYaxis()->SetTitle("Log (U^{2})");
+  gax->SetTitle("");
+  gax->GetYaxis()->SetRangeUser(-10,-5);
+  if (makeratio) gax->GetYaxis()->SetRangeUser(0,10);
+  //gax->GetYaxis()->SetTitle("Log (U^{2})");
+  gax->GetYaxis()->SetTitle("U^{2} limit / U^{2} limit default analysis");
   gax->GetXaxis()->SetLimits(0,90);
   gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
   
@@ -541,18 +611,33 @@ void ScanD0Cut(){
 
   
   
-  g4->Draw("same");
-  g8->Draw("same");
-  g12->Draw("same");
-  g16->Draw("same");
-  g20->Draw("same");
+  g0->Draw("same");
+  g1->Draw("same");
+  //g2->Draw("same");
+  //g3->Draw("same");
+  //g4->Draw("same");
+  //g5->Draw("same");
+ 
 
+  TLatex *latex = new TLatex();
+  latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",(int)(LUMI*1e-6)));
 
-  
-  
-  c->BuildLegend();
+  auto legend = new TLegend();
+
+ legend->AddEntry(gax,"Curve at significance #approx 2","l");
+ legend->AddEntry(g1,"+ 1#sigma MC uncertainty","l");
+
+ legend->SetBorderSize(0);
+ //legend->SetFillStyle(0);
+ legend->Draw("same");
+
+ //c->BuildLegend();
 
   c->SetGridy();
   c->SaveAs("temp.png");
-}
+  c->SaveAs("temp.pdf");
 
+
+  
+}
+  
