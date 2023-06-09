@@ -24,13 +24,25 @@ DelphesPythia8_EDM4HEP FCC-config/FCCee/Delphes/card_IDEA.tcl edm4hep_output_con
     set MCRecoAssociationCollectionName  MCRecoAssociations
     }
     ```
-+ Finally, the Pythia card is as follows:
++ Finally, the Pythia card is as follows, adapted from https://github.com/HEP-FCC/FCC-config/blob/spring2021/FCCee/Generator/Pythia8/p8_ee_Zbb_ecm91.cmd
     ```
-    Main:numberOfEvents = 1000000000
+    Main:numberOfEvents = 100000000
     Beams:frameType             = 4
     Beams:setProductionScalesFromLHEF = off
-    Beams:LHEF = XXX.lhe
-    Main:timesAllowErrors = 100000
+    Beams:LHEF = symlink50.lhe
+
+    ! Beam energy spread: 0.132% x 45.594 GeV = 0.0602 GeV
+    ! Beams:allowMomentumSpread  = on
+    ! Beams:sigmaPzA = 0.0602
+    ! Beams:sigmaPzB = 0.0602
+
+    ! Vertex smearing :
+    Beams:allowVertexSpread = on
+    Beams:sigmaVertexX = 4.50e-3   !  6.4 mum / sqrt2
+    Beams:sigmaVertexY = 20.0E-6   !  28.3 nm / sqrt2
+    Beams:sigmaVertexZ = 0.30      !  0.30 mm
+
+    Main:timesAllowErrors = 100000    
     ```
 
 ## From EDMH4HEP to n-tuples
@@ -74,17 +86,41 @@ To run the macro one shall use `runMyExternalAnalysis.C`. It requires a manual l
 ```bash
 ./runrunMyExternalAnalysis.sh filelist.txt [output_suffix]
 ```
-which created an additional root macros containing the loading of `libfastjet` end the execution of `runMyExternalAnalysis.C`. Such macro is removed at the end. *All the file lists are in `MyExternalAnalysis/`* and must be kept updated with the proper outputs of the `fccanalysis`. For the Zbb and Zcc samples of spring2021 (~1B events), the files are split into 8 files and the list of the list names is written in `LIST_of_Z*.txt`. The parallelization can be done with the following script
-```
-parallel -j 8 ./script_for_bkg_parallel.sh < LIST_of_Z...
-```
-It produces in the local directory 8 output files and 8 LOG files (no output on the screen) having as suffix the .txt file list names. They must be merged through `hadd` (see naming conventions below).
+which creates an additional root macro containing the loading of `libfastjet` end the execution of `runMyExternalAnalysis.C`. Such macro is removed at the end. *All the file lists are in `MyExternalAnalysis/`* and must be kept updated with the proper outputs of the `fccanalysis`. 
+
+The most efficient way consists in runninng the macro on single chunk files and merge everythin with `hadd` at the end (see naming conventions below).
 
 Each change in the code should be preceeded by a manual change of the macro version in `MyExternalAnalysis.C`. E.g.:
 ```cpp
 Int_t MacroVersion = 230322;
 ```
-The output files produced with a given version should go in a separate folder `MyExternalAnalysis/results-V<version>`. The one in use **MUST** be linked as `results/`. Furthermore the `results/` directory will contain one or more `skimmed/` directories with the output of the skimmed task. The macro version should finally correspond to the branch name of the "fccmacro" repo that can be used to analyize those files. 
+The output files produced with a given version should go in a separate folder `MyExternalAnalysis/results-V<version>`. The one in use **MUST** be linked as `results/`. Furthermore the `results/` directory will contain one or more `skimmed/` directories with the output of the skimmed task and a `partial/` directory with the output of large datasets processed in chunks. Starting from June 23, `results/` and `results/skimmed/` are further split in `Spring2021/` and `Winter2023/` which finally contain the AnalysisResults files. 
+```
+MyExternalAnalysis
+|-- [...]
+|-- results-OtherBackup
+|   |-- back-230222
+|   |-- [...]
+|-- results-V230317
+|   `-- skimmed
+|-- results-V230322
+|   |-- skimmed -> skimmed_loose
+|   |-- skimmed_forcutvar
+|   `-- skimmed_loose
+|-- results-V230322-BeamSpread
+`-- results-V230519
+    |-- Spring2021
+    |-- Winter2023
+    |-- partial
+    |   |-- Spring2021
+    |   `-- Winter2023
+    |-- skimmed -> skimmed_loose
+    `-- skimmed_loose
+        |-- Spring2021
+        `-- Winter2023
+```
+
+The macro version should finally correspond to the branch name of the "fccmacro" repo that can be used to analyize those files. 
 
 ### Multiple jet algorithms
 
@@ -94,6 +130,13 @@ The Jet 4-momenta variables in the `eventsTree` output tree (`oPxJet1, ... , oEJ
 + **jalg==2** -> First, it clusterizes in any number of jets according to Durham kt with rtd cut = 10.0 (`durham_kt_dcut_mode`). If the number of resulting jets is > 2, the method jalg==0 is used.
  
 jalg==0 (`durham_kt_njets_mode`) is the method used since the version before 230222.
+
+Starting from version 230519, the following components are used:
+
++ **jalg==0** -> Durham kt algorithm with number of jet fixed to 2. (`durham_kt_njets_mode`)
++ **jalg==2** -> First, it clusterizes in any number of jets according to Durham kt with rtd cut = 10.0 (`durham_kt_dcut_mode`). If the number of resulting jets is > 2, the method jalg==0 is used.
++ **jalg==2** -> First, it clusterizes in any number of jets according to Durham kt with rtd cut = 5.0 (`durham_kt_dcut_mode`). If the number of resulting jets is > 2, the method jalg==0 is used.
+
 
 ### Output file naming conventions
 
@@ -109,23 +152,20 @@ else if (opt == "signal" && lifetime == "n/a")  toret = Form("AnalysisResults-si
 else if (lifetime == "n/a") toret = Form("AnalysisResults-signal-M-%s.root",opt.Data());
 else if (lifetime != "n/a") toret = Form("AnalysisResults-signal_10k_%s_%s.root",HNMass.Data(),lifetime.Data());
 ```
+Starting from June 23, the production name "Spring2021" or "Winter2023" is returned as part of the name: e.g. `Winter2023/AnalysisResults-Zmumu.root`
 
 ## Filtered trees
 
 A skimming task is available to filter the `AnalysisResults.root` with a first event selection. It reduces the Zbb size by a factor >1000. The root macro `SkimmingTask.C` is in `MyExternalAnalysis/`.
 
 ```cpp
-void SkimmingTask(TString fin, TString outdir="./results/skimmed/", TString suffix="", TString opt="loose")
+void SkimmingTask(TString fin, TString outdir="./results/skimmed/Winter2023/", TString suffix="", TString opt="loose")
 ```
 
 A) if fin is a .txt file, output file is `<outdir>/AnalysisResults<suffix>.root`
 B) if fin is `AnalysisResult<any>.root`, outputfile is `<outdir>/AnalysisResults<any><suffix>.root`
 C) if fin is a .root file not beginning with "AnalysisResults", option A. is used.
     
-A script is also available to process with default option all the `AnalysisResults*.root` files present in `results/`:
-```bash
-./skimm_all.sh
-```
 
 The output of the macro is a `AnalysisResults.root` file with the tree `eventsTree` having the same structure of the original one, but less events.
 
@@ -137,7 +177,10 @@ The options currently implemented are:
 The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods. See the table below for the cuts implemented with each option. 
 
 
+---
+Checked up to this point
 
+---
 
 
 ## Analysis macros

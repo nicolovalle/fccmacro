@@ -246,7 +246,7 @@ That's the list of cuts currently implemented.
 
 |                 | 1J LM  | 2J LM  | 2J MM   | loose      | forcutvar |
 | --------------- | ------ | ------ | ------- | ---------- | --------- |
-| |cos(pmiss)|    | < 0.94 | 1JLM   | < 0.94  | < 0.94(A)  | < 0.94(A) |
+| abs(cos(pmiss)) | < 0.94 | 1JLM   | < 0.94  | < 0.94(A)  | < 0.94(A) |
 | cos(pmiss,mu)   | < 0.50 | 1JLM   | < 0.80  | < 0.80     | < 0.80    |
 | min [Ej]        | >= 3   | 1JLM   | >= 3    | >= 3       | >= 3      |
 | cos(jj)         |        | > -0.8 | > -0.8  | > -0.8     | > -0.96   |
