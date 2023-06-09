@@ -1,6 +1,8 @@
 
 #include "getvalues.C"
 
+// WORKING WITH BOTH PRODUCTIONS
+
 void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = false){
 
   Int_t mass = 40;
@@ -28,12 +30,16 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
   Int_t dcut = 8;
 
-  std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> munuqq, Zmumu, Ztautau, Zuds, Zbb, Zcc, Zss, Zud;
+  
+  munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  Ztautau = getvalues(obsID, "Ztautau", mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  if (PRODUCTION == "Spring2021") Zuds = getvalues(obsID, "Zuds",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  if (PRODUCTION == "Winter2023") Zud = getvalues(obsID, "Zud",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  if (PRODUCTION == "Winter2023") Zss = getvalues(obsID, "Zss",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  Zbb = getvalues(obsID, "Zbb",mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  Zcc = getvalues(obsID, "Zcc",mass, "n/a", drawN, dcut, jalg, analysis_opt);
 
   
   std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, dcut, jalg, analysis_opt);
@@ -62,6 +68,14 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   TH1F *h_zuds = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zuds->SetFillColor(6);
   h_zuds->SetLineColor(6);
+
+  TH1F *h_zud = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
+  if (drawstack) h_zud->SetFillColor(6);
+  h_zud->SetLineColor(6);
+
+  TH1F *h_zss = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
+  if (drawstack) h_zss->SetFillColor(6);
+  h_zss->SetLineColor(6);
   
   TH1F *h_zbb = new TH1F("zbb",Form("Z#rightarrowbb ",Zbb.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zbb->SetFillColor(4);
@@ -106,7 +120,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   cout<<"filled 2"<<endl;
   for (double ie : Ztautau.first) h_ztautau->Fill(ie);
   cout<<"filled 3"<<endl;
-  for (double ie : Zuds.first) h_zuds->Fill(ie);
+  if (PRODUCTION == "Spring2021") for (double ie : Zuds.first) h_zuds->Fill(ie);
+  if (PRODUCTION == "Winter2023") for (double ie : Zud.first) h_zud->Fill(ie);
+  if (PRODUCTION == "Winter2023") for (double ie : Zss.first) h_zss->Fill(ie);
   cout<<"filled 4"<<endl;
   for (double ie : Zbb.first) h_zbb->Fill(ie);
   cout<<"filled 5"<<endl;
@@ -137,7 +153,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
     h_munuqq->Scale(Weight("munuqq","n/a","n/a",munuqq.second));
     h_zmumu->Scale(Weight("Zmumu","n/a","n/a",Zmumu.second));
     h_ztautau->Scale(Weight("Ztautau","n/a","n/a",Ztautau.second));
-    h_zuds->Scale(Weight("Zuds","n/a","n/a",Zuds.second));
+    if (PRODUCTION == "Spring2021") h_zuds->Scale(Weight("Zuds","n/a","n/a",Zuds.second));
+    if (PRODUCTION == "Winter2023") h_zud->Scale(Weight("Zud","n/a","n/a",Zud.second));
+    if (PRODUCTION == "Winter2023") h_zss->Scale(Weight("Zss","n/a","n/a",Zss.second));
     h_zbb->Scale(Weight("Zbb","n/a","n/a",Zbb.second));
     h_zcc->Scale(Weight("Zcc","n/a","n/a",Zcc.second));
     h_signalM->Scale(Weight("signal",Form("%d",mass),lt,signalM.second));
@@ -152,7 +170,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   hs->Add(h_munuqq);
   hs->Add(h_zmumu);
   hs->Add(h_ztautau);
-  hs->Add(h_zuds);
+  if (PRODUCTION == "Spring2021") hs->Add(h_zuds);
+  if (PRODUCTION == "Spring2021") hs->Add(h_zud);
+  if (PRODUCTION == "Spring2021") hs->Add(h_zss);
   hs->Add(h_zbb);
   hs->Add(h_zcc);
  

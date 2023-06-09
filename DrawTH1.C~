@@ -25,8 +25,8 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
 
-  TString analysis_opt = "> d2d dmm anymass1L2M window [2,0.2]";
-  Int_t dcut = 100;
+  TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
+  Int_t dcut = 8;
 
   std::pair<std::vector<Double_t>, Double_t> munuqq = getvalues(obsID, "munuqq", mass, "n/a", drawN, dcut, jalg, analysis_opt);
   std::pair<std::vector<Double_t>, Double_t> Zmumu = getvalues(obsID, "Zmumu", mass, "n/a", drawN, dcut, jalg, analysis_opt);

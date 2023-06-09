@@ -1,10 +1,14 @@
 #include "CutFlowOK.C"
 
+
+// WORKING WITH BOTH PRODUCTIONS
+
 // Can be drawn by hand on top of the TGraph if needed;
 const Int_t CustomLineNpoint = 9;
 // Prompt 8 sigma with 1 sigma bkg:
 Double_t CustomLineX[CustomLineNpoint] = { 5.0000000, 10.000000, 20.000000, 30.000000, 40.000000, 50.000000, 60.000000, 70.000000, 80.000000 };
 Double_t CustomLineY[CustomLineNpoint] = { -5.0979984, -6.8187302, -7.3975944, -7.8407836, -8.2860806, -8.4012408, -8.3185171, -7.8914532, -6.7709753 };
+TString CustomLineName = "Spring2021";
 
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
@@ -77,13 +81,17 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   TDPlot_Z.clear();
 
 
- 
-  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+
+  std::map<int, std::vector<double>> bkgMapZmumu, bkgMapZtautau, bkgMapZbb, bkgMapZcc, bkgMapZuds, bkgMapZss, bkgMapZud, bkgMapmunuqq;
+  
+  bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Spring2021") bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Winter2023") bkgMapZud = CutFlowOK("Zud",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Winter2023") bkgMapZss = CutFlowOK("Zss",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
 
   ofstream LOG;
   LOG.open("LOG_TwoDsignificance.txt", std::ios_base::app);
@@ -95,6 +103,8 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
 
     int m = AvailableDatapoints.at(ip).first;
 
+
+    if (m<10 || m>80) continue;
     
 
     TString lt = AvailableDatapoints.at(ip).second;
@@ -108,22 +118,33 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     // if (TMath::IsNaN(Y)) continue; // not needed --> should be protected by AvailableDatapoints
     Double_t X = 1.*m;
 
-    Double_t Zmumu = bkgMapZmumu[m][myid];
-    Double_t Ztautau = bkgMapZtautau[m][myid];
-    Double_t Zbb = bkgMapZbb[m][myid];
-    Double_t Zcc = bkgMapZcc[m][myid];
-    Double_t Zuds = bkgMapZuds[m][myid];
-    Double_t munuqq = bkgMapmunuqq[m][myid];
+    Double_t Zmumu=0, Ztautau=0,  Zbb=0, Zcc=0, Zuds=0, Zud=0, Zss=0, munuqq=0;
+    
+    Zmumu = bkgMapZmumu[m][myid];
+    Ztautau = bkgMapZtautau[m][myid];
+    Zbb = bkgMapZbb[m][myid];
+    Zcc = bkgMapZcc[m][myid];
+    if (PRODUCTION == "Spring2021") Zuds = bkgMapZuds[m][myid];
+    if (PRODUCTION == "Winter2023") Zud =  bkgMapZud[m][myid];
+    if (PRODUCTION == "Winter2023") Zss =  bkgMapZss[m][myid];
+    munuqq = bkgMapmunuqq[m][myid];
 
-    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(Get1Sig(Zmumu)*Weight("Zmumu"),2) + TMath::Power(Get1Sig(Ztautau)*Weight("Ztautau"),2) + TMath::Power(Get1Sig(Zbb)*Weight("Zbb"),2) + TMath::Power(Get1Sig(Zcc)*Weight("Zcc"),2) + TMath::Power(Get1Sig(Zuds)*Weight("Zuds"),2) + TMath::Power(Get1Sig(munuqq)*Weight("munuqq"),2));
+    
+    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(Get1Sig(Zmumu)*Weight("Zmumu"),2) + TMath::Power(Get1Sig(Ztautau)*Weight("Ztautau"),2) + TMath::Power(Get1Sig(Zbb)*Weight("Zbb"),2) + TMath::Power(Get1Sig(Zcc)*Weight("Zcc"),2) + TMath::Power(Get1Sig(munuqq)*Weight("munuqq"),2));
+    if (PRODUCTION == "Spring2021") SigmaBkg = TMath::Sqrt(SigmaBkg*SigmaBkg + TMath::Power(Get1Sig(Zuds)*Weight("Zuds"),2));
+    else if (PRODUCTION == "Winter2023") SigmaBkg = TMath::Sqrt(SigmaBkg*SigmaBkg + TMath::Power(Get1Sig(Zud)*Weight("Zud"),2) + TMath::Power(Get1Sig(Zss)*Weight("Zss"),2));
 
     
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
-    Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
+    Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + munuqq * Weight("munuqq");
+    if (PRODUCTION == "Spring2021") totbkg = totbkg + Zuds * Weight("Zuds");
+    else if (PRODUCTION == "Winter2023") totbkg = totbkg + Zud * Weight("Zud") + Zss * Weight("Zss");
+				      
     //totbkg = WeightedLL[m];
 
 
+    cout<<"TwoDsignificance.C:: Sig/bkg: "<<totsig<<"/"<<totbkg<<endl;
 
     Double_t Z;
 	  
@@ -326,7 +347,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     AvPoints->Draw("same P");
 
     TLatex *latex = new TLatex();
-    latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",(int)(LUMI*1e-6)));
+    latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - %s - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",PRODUCTION.Data(),(int)(LUMI*1e-6)));
 
     if (true){
       auto gg2 = new TGraph(CustomLineNpoint,CustomLineX,CustomLineY);
@@ -625,7 +646,7 @@ void CompareAnalyses2(){
   auto legend = new TLegend();
 
  legend->AddEntry(gax,"Curve at significance #approx 2","l");
- legend->AddEntry(g1,"+ 1#sigma MC uncertainty","l");
+ legend->AddEntry(g1,CustomLineName,"l");
 
  legend->SetBorderSize(0);
  //legend->SetFillStyle(0);

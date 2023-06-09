@@ -1,8 +1,14 @@
 #include "CutFlowOK.C"
 
-/*
-std::map<int,double> WeightedLL =  {{ 5 , 0.0000000}, { 10 , 0.0000000}, { 20 , 15.134251}, { 30 , 369.36671}, { 40 , 261.55994}, { 50 , 1051.4037}, { 60 , 3161.1757}, { 70 , 12383.366}, { 80 , 83187.383}, { 85 , 81564.470 }};
-*/
+
+// WORKING WITH BOTH PRODUCTIONS
+
+// Can be drawn by hand on top of the TGraph if needed;
+const Int_t CustomLineNpoint = 9;
+// Prompt 8 sigma with 1 sigma bkg:
+Double_t CustomLineX[CustomLineNpoint] = { 5.0000000, 10.000000, 20.000000, 30.000000, 40.000000, 50.000000, 60.000000, 70.000000, 80.000000 };
+Double_t CustomLineY[CustomLineNpoint] = { -5.0979984, -6.8187302, -7.3975944, -7.8407836, -8.2860806, -8.4012408, -8.3185171, -7.8914532, -6.7709753 };
+
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   // http://cds.cern.ch/record/2736148/files/ATL-PHYS-PUB-2020-025.pdf
@@ -29,9 +35,10 @@ Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
   
 }
 
-Double_t GetUpp(Double_t n){
+Double_t Get1Sig(Double_t n){
 
-  if (n==0 || n==1) return 1.14;
+  if (n == 0) return 1.14;
+  if (n == 1) return 2.35 -1 ;
   else return TMath::Sqrt(n);
 
 }
@@ -73,13 +80,17 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   TDPlot_Z.clear();
 
 
- 
-  std::map<int, std::vector<double>> bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
-  std::map<int, std::vector<double>> bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+
+  std::map<int, std::vector<double>> bkgMapZmumu, bkgMapZtautau, bkgMapZbb, bkgMapZcc, bkgMapZuds, bkgMapZss, bkgMapZud, bkgMapmunuqq;
+  
+  bkgMapZmumu = CutFlowOK("Zmumu",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZtautau = CutFlowOK("Ztautau",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZbb = CutFlowOK("Zbb",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapZcc = CutFlowOK("Zcc",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Spring2021") bkgMapZuds = CutFlowOK("Zuds",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Winter2023") bkgMapZud = CutFlowOK("Zud",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  if (PRODUCTION == "Winter2023") bkgMapZss = CutFlowOK("Zss",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
+  bkgMapmunuqq = CutFlowOK("munuqq",-1,"n/a",AnalysisResPath,-1,false,jalg,analysis_opt);
 
   ofstream LOG;
   LOG.open("LOG_TwoDsignificance.txt", std::ios_base::app);
@@ -100,36 +111,49 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     Double_t signal = CutFlowOK("signal",m,lt,AnalysisResPath,-1,false,jalg,analysis_opt)[m][myid];
 
     Double_t U = Coupling(Form("%d",m),lt);
-
-    Double_t Zmumu = bkgMapZmumu[m][myid];
-    Double_t Ztautau = bkgMapZtautau[m][myid];
-    Double_t Zbb = bkgMapZbb[m][myid];
-    Double_t Zcc = bkgMapZcc[m][myid];
-    Double_t Zuds = bkgMapZuds[m][myid];
-    Double_t munuqq = bkgMapmunuqq[m][myid];
-
-    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(GetUpp(Zmumu)*Weight("Zmumu"),2) + TMath::Power(GetUpp(Ztautau)*Weight("Ztautau"),2) + TMath::Power(GetUpp(Zbb)*Weight("Zbb"),2) + TMath::Power(GetUpp(Zcc)*Weight("Zcc"),2) + TMath::Power(GetUpp(Zuds)*Weight("Zuds"),2) + TMath::Power(GetUpp(munuqq)*Weight("munuqq"),2));
-
     Double_t Y = 2.*TMath::Log10(U);
     // if (TMath::IsNaN(Y)) continue; // not needed --> should be protected by AvailableDatapoints
     Double_t X = 1.*m;
+
+    Double_t Zmumu=0, Ztautau=0,  Zbb=0, Zcc=0, Zuds=0, Zud=0, Zss=0, munuqq=0;
+    
+    Zmumu = bkgMapZmumu[m][myid];
+    Ztautau = bkgMapZtautau[m][myid];
+    Zbb = bkgMapZbb[m][myid];
+    Zcc = bkgMapZcc[m][myid];
+    if (PRODUCTION == "Spring2021") Zuds = bkgMapZuds[m][myid];
+    if (PRODUCTION == "Winter2023") Zud =  bkgMapZud[m][myid];
+    if (PRODUCTION == "Winter2023") Zss =  bkgMapZud[m][myid];
+    munuqq = bkgMapmunuqq[m][myid];
+
+    
+    Double_t SigmaBkg = TMath::Sqrt( TMath::Power(Get1Sig(Zmumu)*Weight("Zmumu"),2) + TMath::Power(Get1Sig(Ztautau)*Weight("Ztautau"),2) + TMath::Power(Get1Sig(Zbb)*Weight("Zbb"),2) + TMath::Power(Get1Sig(Zcc)*Weight("Zcc"),2) + TMath::Power(Get1Sig(munuqq)*Weight("munuqq"),2));
+    if (PRODUCTION == "Spring2021") SigmaBkg = TMath::Sqrt(SigmaBkg*SigmaBkg + TMath::Power(Get1Sig(Zuds)*Weight("Zuds"),2));
+    else if (PRODUCTION == "Winter2023") SigmaBkg = TMath::Sqrt(SigmaBkg*SigmaBkg + TMath::Power(Get1Sig(Zud)*Weight("Zud"),2) + TMath::Power(Get1Sig(Zss)*Weight("Zss"),2));
+
+    
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
-    Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + Zuds * Weight("Zuds") +  munuqq * Weight("munuqq");
+    Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + munuqq * Weight("munuqq");
+    if (PRODUCTION == "Spring2021") totbkg = totbkg + Zuds * Weight("Zuds");
+    else if (PRODUCTION == "Winter2023") totbkg = totbkg + Zud * Weight("Zud") + Zss * Weight("Zss");
+				      
     //totbkg = WeightedLL[m];
 
-   
+
 
     Double_t Z;
 	  
     if (formula == "simple"){
-      Z = totsig / TMath::Sqrt(totsig + totbkg + addsigmabkg*SigmaBkg);
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      Z = totsig / TMath::Sqrt(totsig + bkgeff);
       TargetZ = 2.;
     }
     
     else if (formula == "atlas"){
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
       if (totsig == 0) Z = 0;
-      else Z = AtlasZ(totsig,totbkg + addsigmabkg*SigmaBkg,0);
+      else Z = AtlasZ(totsig, bkgeff ,0);
       TargetZ = 2.;
     }
     
@@ -139,13 +163,14 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     }
     
     else if (formula == "myCL"){
-      Z = 1.-ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      Z = 1.-ROOT::Math::poisson_cdf((int)(bkgeff), totsig+bkgeff);
       TargetZ = 1.-0.05;
     }
 
     else if (formula == "myZ"){
-      
-      double alpha = ROOT::Math::poisson_cdf(int(totbkg + addsigmabkg*SigmaBkg), totbkg+totsig+addsigmabkg*SigmaBkg);
+      double bkgeff = TMath::Max(totbkg + addsigmabkg*SigmaBkg,0.);
+      double alpha = ROOT::Math::poisson_cdf((int)(bkgeff), totsig+bkgeff);
       if (alpha < 1.e-20) Z = 0.-ROOT::Math::gaussian_quantile(1.e-20/2.,1.);
       else Z = 0.-ROOT::Math::gaussian_quantile(alpha/2.,1.);
       if (Z<0) Z = 0;
@@ -305,21 +330,33 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     //HBLACK->Draw("same BOX");
 
     gg->SetLineWidth(4);
-    gg->SetLineStyle(7);
+    gg->SetLineStyle(1);
     gg->Draw("same L");
 
     gStyle->SetOptStat(0);
     // gPad->SetLogz();
     gStyle->SetPalette(kBlackBody);
     
-
     TGraph* AvPoints = new TGraph(npoints,aX,aY);
     AvPoints->SetMarkerSize(2);
     AvPoints->SetMarkerStyle(5);
     AvPoints->Draw("same P");
 
     TLatex *latex = new TLatex();
-    latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",(int)(LUMI*1e-6)));
+    latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - %s - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",PRODUCTION.Data(),(int)(LUMI*1e-6)));
+
+    if (true){
+      auto gg2 = new TGraph(CustomLineNpoint,CustomLineX,CustomLineY);
+      gg2->SetLineWidth(3);
+      gg2->SetLineStyle(7);
+      gg2->Draw("same L");
+      auto legend = new TLegend();
+      legend->AddEntry(gg,"Curve at Z #approx 2","l");
+      legend->AddEntry(gg2,"+1#sigma MC uncert.","l");
+      legend->SetBorderSize(0);
+      legend->SetFillStyle(0);
+      legend->Draw("same");
+    }
 
    
     c->SaveAs("temp.png");
@@ -521,7 +558,7 @@ void CompareAnalyses2(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
-  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(100,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
   XYref = XY;
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
@@ -538,7 +575,7 @@ void CompareAnalyses2(){
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
-  XY = TwoDsignificance(8,formula,1.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(100,formula,1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
@@ -556,7 +593,7 @@ void CompareAnalyses2(){
 
   Double_t x2[50], y2[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
-   XY = TwoDsignificance(8,formula,-1.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  // XY = TwoDsignificance(100,formula,-1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
   for (int i=0; i<XY[0].size(); i++){
     x2[i] = XY[0][i];
     y2[i] = XY[1][i];
@@ -593,7 +630,7 @@ void CompareAnalyses2(){
   
   g0->Draw("same");
   g1->Draw("same");
-  g2->Draw("same");
+  //g2->Draw("same");
   //g3->Draw("same");
   //g4->Draw("same");
   //g5->Draw("same");
@@ -605,7 +642,7 @@ void CompareAnalyses2(){
   auto legend = new TLegend();
 
  legend->AddEntry(gax,"Curve at significance #approx 2","l");
- legend->AddEntry(g1,"#pm 1#sigma MC uncertainty","l");
+ legend->AddEntry(g1,"+ 1#sigma MC uncertainty","l");
 
  legend->SetBorderSize(0);
  //legend->SetFillStyle(0);

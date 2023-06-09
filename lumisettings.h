@@ -1,15 +1,28 @@
-Double_t LUMI = 1.5e8*8/5.;
+Double_t LUMI = 2.4e8;
 //Double_t LUMI = 3.3e3;
 
-Double_t
-  Nsignal =  1.e5, //0
-  NsignalLT = 1.e4,
-  NZbb =    9.8e8, // 1.e7, //1
-  NZcc =     9.9e8, // 1.e7, //2
-  NZuds =    1.e9, // 1.e8, //5
-  NZmumu =   1.e7, //3
-  NZtautau = 1.e7, //4
-  Nmunuqq =  5.e5; //6 
+TString PRODUCTION = "Winter2023";
+
+void SetProduction(TString prod){
+  PRODUCTION = prod;
+}
+
+void SetLumi(Double_t lumi){
+  LUMI = lumi;
+}
+
+std::map<TString, double> Nsignal   {{"Spring2021", 1.e5},   {"Winter2023", 0}};
+std::map<TString, double> NsignalLT {{"Spring2021", 1.e4},   {"Winter2023", 1.e4}};
+std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.29991e8}};
+std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.89895e8}};
+std::map<TString, double> NZss      {{"Spring2021", 0},      {"Winter2023", 4.9984244e8 }};
+std::map<TString, double> NZud      {{"Spring2021", 0},      {"Winter2023", 4.97658654e8}};
+std::map<TString, double> NZuds     {{"Spring2021", 1.e9},   {"Winter2023", 0}};
+std::map<TString, double> NZmumu    {{"Spring2021", 1.e7},   {"Winter2023", 1.e8}};
+std::map<TString, double> NZtautau  {{"Spring2021", 1.e7},   {"Winter2023", 1.e8}};
+std::map<TString, double> Nmunuqq   {{"Spring2021", 5.e5},   {"Winter2023", 5.e5}};
+  
+
 
 std::map<TString, Double_t> xs_vs_m = {
   {"10",0.3665},
@@ -29,22 +42,24 @@ std::map<TString, Double_t> xs_vs_m = {
 
 Double_t Nnocut(TString opt, TString HNMass="any", TString lifetime="n/a"){
 
-  if (opt == "signal" && lifetime == "m0p5" && HNMass == "40") return 5000.;
+  if (PRODUCTION == "Spring2021" && opt == "signal" && lifetime == "m0p5" && HNMass == "40") return 5000.;
   
-  if (opt == "Zbb")     return NZbb;
-  else if (opt == "Zcc")     return NZcc;
-  else if (opt == "Zmumu")   return NZmumu;
-  else if (opt == "Ztautau") return NZtautau;
-  else if (opt == "Zuds")    return NZuds;
-  else if (opt == "munuqq")  return Nmunuqq;
+  if (opt == "Zbb")     return NZbb[PRODUCTION];
+  else if (opt == "Zcc")     return NZcc[PRODUCTION];
+  else if (opt == "Zmumu")   return NZmumu[PRODUCTION];
+  else if (opt == "Ztautau") return NZtautau[PRODUCTION];
+  else if (opt == "Zud")     return NZud[PRODUCTION];
+  else if (opt == "Zss")     return NZss[PRODUCTION];
+  else if (opt == "Zuds")    return NZuds[PRODUCTION];
+  else if (opt == "munuqq")  return Nmunuqq[PRODUCTION];
   
-  if (opt == "signal" && lifetime != "n/a") return NsignalLT;
-  else if (opt=="signal") return Nsignal;
+  if (opt == "signal" && lifetime != "n/a") return NsignalLT[PRODUCTION];
+  else if (opt=="signal") return Nsignal[PRODUCTION];
 
   return -1;
   
- 
 }
+
 Double_t Nnocut(TString opt, int HNMass, TString lifetime="n/a"){
   return Nnocut(opt,Form("%d",HNMass),lifetime);
 }
@@ -58,6 +73,8 @@ TString AnalysisResults(TString opt, TString HNMass = "50", TString lifetime="n/
   if      (opt == "Zbb")     toret = "AnalysisResults-Zbb_highstat.root";
   else if (opt == "Zcc")     toret = "AnalysisResults-Zcc_highstat.root";
   else if (opt == "Zuds")    toret = "AnalysisResults-Zuds_highstat.root";
+  else if (opt == "Zud")     toret = "AnalysisResults-Zud_highstat.root";
+  else if (opt == "Zss")     toret = "AnalysisResults-Zss_highstat.root";
   else if (opt == "Zmumu")   toret = "AnalysisResults-Zmumu.root";
   else if (opt == "Ztautau") toret = "AnalysisResults-Ztautau.root";
   else if (opt == "munuqq")  toret = "AnalysisResults-munuqq.root";
@@ -65,8 +82,9 @@ TString AnalysisResults(TString opt, TString HNMass = "50", TString lifetime="n/
   else if (lifetime == "n/a") toret = Form("AnalysisResults-signal-M-%s.root",opt.Data());
   else if (lifetime != "n/a") toret = Form("AnalysisResults-signal_10k_%s_%s.root",HNMass.Data(),lifetime.Data());
 
-  return toret;
+  return PRODUCTION+"/"+toret;
 }
+
 TString AnalysisResults(TString opt, int HNMass = 50, TString lifetime="n/a" ){
   return AnalysisResults(opt,Form("%d",HNMass),lifetime);
 }
@@ -80,6 +98,8 @@ Double_t xsec(TString opt, TString HNMass = "50", TString lifetime="n/a"){
   else if (opt == "Zmumu")    return 1462.09;
   else if (opt == "Ztautau")  return 1476.58;
   else if (opt == "Zuds")     return 18616.5;
+  else if (opt == "Zud")      return 11870.5;
+  else if (opt == "Zss")      return 6645.46;  // MANCA VALORE CORRETTO
   else if (opt == "munuqq")   return 0.003192;
   else if (opt == "signal" && lifetime == "n/a") return xs_vs_m[HNMass];
 
@@ -455,6 +475,18 @@ Double_t Coupling(int HNMass, TString lifetime){
   return Coupling(Form("%d",HNMass), lifetime);
 }
 
+Double_t lifetime_to_double(TString lt){
+  if (lt == "n/a") return 0.;
+  int unit = atoi(&lt[1]);
+  int decimal = atoi(&lt[3]);
+
+  double toret;
+  if (lt[0]=='m') toret = (-1.)*(unit+0.1*decimal);
+  else toret = (1.)*(unit+0.1*decimal);
+ 
+  return toret;
+}
+
 
 std::vector<std::pair<int, TString>> AvailableDatapoints;
 
@@ -506,27 +538,25 @@ void DrawCol()
 
 
 
-void MapPoint(){
+void MapPoint(TString path="../MyExternalAnalysis/results/", TString opt="U2"){
+  // opt : "lt" or "U2"
+
+  GetAvailableDatapoints(path);
 
   Double_t x[1000], y[10000];
   Int_t npoint = 0;
 
-  for (int m = 0; m < 95; m++){
-    for (TString mp : std::vector<TString>{"m","p"}){
-      for (int unit = 0; unit < 9; unit++){
-	for (int decimal = 0; decimal < 6; decimal += 5){
+  for (int ip = 0; ip<AvailableDatapoints.size(); ip++){
 
-	  TString lt = Form("%s%dp%d", mp.Data(), unit, decimal);
+    int m = AvailableDatapoints.at(ip).first;
+    TString lt = AvailableDatapoints.at(ip).second;
 
-	  if (Coupling(Form("%d",m), lt) > 0){
-	    x[npoint] = 1.*m;
-	    //y[npoint] = ( mp == "m" ? -1. : 1.)*(unit+0.1*decimal);
-	    y[npoint] = 2.*TMath::Log10(Coupling(Form("%d",m), lt));
-	    npoint++;
-	  }
-	  
-	}
-      }
+    if (Coupling(Form("%d",m), lt) > 0){
+      x[npoint] = 1.*m;
+      if (opt=="lt") y[npoint] = lifetime_to_double(lt);
+      else if (opt == "U2") y[npoint] = 2.*TMath::Log10(Coupling(Form("%d",m), lt));
+      else break;
+      npoint++;
     }
   }
 
@@ -538,13 +568,13 @@ void MapPoint(){
 
   TExec *ex = new TExec("ex","DrawCol();");
 
-   g->GetListOfFunctions()->Add(ex);
-  g->GetYaxis()->SetRangeUser(-12,-2);
-   //g->GetYaxis()->SetRangeUser(-8,3);
+  g->GetListOfFunctions()->Add(ex);
+  if (opt == "U2") g->GetYaxis()->SetRangeUser(-12,-2);
+  else if (opt == "lt") g->GetYaxis()->SetRangeUser(-8,3);
   g->GetXaxis()->SetLimits(0,90);
   g->GetXaxis()->SetTitle("M_{HN} (GeV)");
-  g->GetYaxis()->SetTitle("Log (U^{2})");
-  //g->GetYaxis()->SetTitle("Log (decay length / m)");
+  if (opt == "U2") g->GetYaxis()->SetTitle("Log (U^{2})");
+  else if (opt == "lt") g->GetYaxis()->SetTitle("Log (decay length / m)");
   g->SetMarkerColor(0);
   g->SetMarkerSize(0);
   g->SetTitle("");
