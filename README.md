@@ -177,11 +177,6 @@ The options currently implemented are:
 The events are discarded if the conditions are not fullfilled for *any of the clustering alogorithms*. This allows to run on the skimmed file using any of the jet methods. See the table below for the cuts implemented with each option. 
 
 
----
-Checked up to this point
-
----
-
 
 ## Analysis macros
 
@@ -195,12 +190,14 @@ There are different branch and the main one. The branch name should correspond t
 
 In this file the Luminosity, cross sections, weights, coupling, file names are written or computed by dedicated methods receiving as input the sample type, mass, lifetime,...
 
-In addition, the function `MapPoint()` can be used to display the grid of available signal data points.
+The function `SetProduction(TString prod)` can be used to change the string `PRODUCTION` on the fly.
+
+In addition, the vector of `pair<int=mass,TString=lt>` name `AvailableDapoints` can be filled with the function `GetAvailableDatapoints(TString path)` with all the signal datasamples which exist in `path` according to the naming conventions. `MapPoint(...)` can be used to display the grid of those points.
 
 #### Cut.h
 
 Here the main TChain `TREE` is defined and linked to `eventsTree`. The branch variables are declared and the addresses are set. To use it in a macro looping over the events tree, one has to:
-+ **IMPORTANT** Reset the chain at the beginning: `TREE->Reset();`. If not done, files are constantly added when the same function (e.g. CutFlowOK) is called recursively by other functions.
++ **IMPORTANT** Reset the chain at the beginning: `TREE->Reset();`. If not done, files are constantly added when the same function is called recursively by other functions.
 + Add root files to the chain: `TREE->Add(<filename>);`
 + Set the branches addresses before the loop: `TREESetBranch();`
 + Call `BUILD_DERIVATE(int jalg)` at the beginning of each interation of the loop. This initialize some derivate variables, also delcared in `Cut.h`.
@@ -232,7 +229,7 @@ Bool_t SELECTION_STRING_DCUT(int dcut, TString analysis_opt){ ... // dcut is in 
 #### CutFlowOK.C
 
 ```cpp
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M", Bool_t FixedMass = false)
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.20]", Bool_t FixedMass = false)
 ```
 
 *The implementation with `CutByCutFlow = true` is not supported*
@@ -244,18 +241,13 @@ To be read like this: `CutFlowOK[M]` where `M`(int) is the mass in GeV. In case 
   + In units of sigmas for analyses with option `dsigma` (see below for analyses options)
   + In units of mm/100 for analysese with option `dmm`
 
-```cpp
-void makeHTMLtable(TString outfile="./summary.html", int iopt = 1, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2,  Bool_t ProcessOnlySignal = false, Int_t RunOnN = -1, Bool_t upload = false, TString comments_on_top="")
-```
-
-*The implementation with `iopt = 2` was intended to print cut by cut efficiency but it is not supported*
 
 
 
 #### getvalues.C
 
 ```cpp
-std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M", TString dir="../MyExternalAnalysis/results/")
+std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [2,0.20]", TString dir="../MyExternalAnalysis/results/")
 ```
 See the code for possible observables IDs: all the possibilities must be listed in the `OBS_ID` `enum` defined at the beginning of the macro.
 
@@ -269,17 +261,22 @@ See below for the analysis options.
 
 This is string inteprepret by many of the macros reading the events tree. According to this string, different selections can be chosed. The event selection must be always done using the methods implemented in `Cut.h`
 
+This is the default for prompt analysis (not that the value of D0 cut is still specified in a separate `double` argument)
 ```cpp
-TString analysis_opt = "< d2d dsigma anymass1L2M"
+TString analysis_opt = "< d2d dsigma anymass1L2M window [2,0.2]"
 ```
 Analysis options available (separated by space):
 + `>` or `<` for the type of cut in impact parameter
 + `dsigma` or `dmm` to cut in number of sigma or in unit 10-5 m
 + `d2d` or `d3d` to cut on D0 or D0+Z0
++ `fixedwindow` or `window [A,B]` or `window [A,C,D,E]`:
+    + fixedwindow: it sets 4 and 3.5 GeV as M / Evis windows (obsolete)
+    + window [A,B]: it sets A x B x sqrt(M) both as M and Evis window
+    + window [A,B,C,D]: it uses AxBxsqrt(M) if used on signal and CxDxsqrt(M) if used on background
 + Type of analysis:
   + `anymass1L2M` : mass independent, it uses old analysis for all cases with 2 Jets and LM-1j analysis for all cases with 1 jet
   + `anymass1L2L` : mass independent, it uses LM-1j analysis or LM-2j analyses according to number of jets
-  + `cutvariation` : it calls a selection function requiring some parameters (cut values) as argument. They are specified in between brackets.
+  + `cutvariation` : it calls a selection function requiring some parameters (cut values) as argument. They are specified in between brackets. NOTE: CHECK THIS. IT CAN INTERFERE WITH STANDARD `window` OPTION!
     + The array of cut values must be formatted like this (comma separated) (`std::stof` is used to read): `[0.123, 987.6 , -0.001]`
 
 

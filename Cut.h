@@ -290,7 +290,7 @@ Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
     wwidth_sig = vcut[0]*vcut[1]*TMath::Sqrt(1.*mass);
 
     if (vcut.size()>2)  wwidth_bkg = vcut[2]*vcut[3]*TMath::Sqrt(1.*mass);
-    else wwidth_bkg = wwidth_bkg = wwidth_sig;
+    else wwidth_bkg = wwidth_sig;
 
     if (opt=="signal") return SELECTION_MASS_EMISS(mass, wwidth_sig, wwidth_sig);
     else return SELECTION_MASS_EMISS(mass, wwidth_bkg, wwidth_bkg);
