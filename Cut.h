@@ -3,6 +3,7 @@
 TChain *TREE = new TChain("eventsTree");
 
 Long64_t oNEntries;
+//Long64_t oEvtID;
 Int_t oNReco;
 Int_t oNMuon;
 Int_t oNElectron;
@@ -49,6 +50,7 @@ Double_t oVtx_ntrk;
 
 void TREESetBranch(){
   TREE->SetBranchAddress("NEntries_tchain",&oNEntries);
+  //TREE->SetBranchAddress("EvtID",&oEvtID);
   TREE->SetBranchAddress("NReco",&oNReco);
   TREE->SetBranchAddress("NMuon",&oNMuon);
   TREE->SetBranchAddress("NElectron",&oNElectron);
@@ -280,7 +282,8 @@ Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
   bool slid1 = false, slid2 = false;
   
   if (analysis_opt.Contains("fixedwindow")){
-    return SELECTION_MASS_EMISS(mass, 4., 3.5);
+    //return SELECTION_MASS_EMISS(mass, 4., 3.5);
+    return SELECTION_MASS_EMISS(mass, 5., 3000.5);
   }
 
   else if (analysis_opt.Contains("window")){
@@ -294,6 +297,27 @@ Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
 
     if (opt=="signal") return SELECTION_MASS_EMISS(mass, wwidth_sig, wwidth_sig);
     else return SELECTION_MASS_EMISS(mass, wwidth_bkg, wwidth_bkg);
+  }
+
+  else if (analysis_opt.Contains("giac_res")){
+
+    std::vector<float> vcut = GetFloatArray(analysis_opt);
+    
+    double MZ = 91.1876;
+    double precoil = (MZ*MZ - mass*mass)/(2.*MZ);
+    double evis_th = 91.2 - precoil;
+
+    //double wwidth = vcut[0]*vcut[1]*TMath::Sqrt(evis_th);
+    //if (TMath::Abs(oEVis - evis_th) > wwidth) return false;
+    double wwidth = vcut[0]*vcut[1]*TMath::Sqrt(precoil);
+    if (TMath::Abs(oEMiss - precoil) > wwidth) return false;
+
+    double f1 = mass/ (MZ * (TMath::Sqrt(2.*MZ*oEVis - MZ*MZ) - mass));
+
+    if (TMath::Abs( oMVis - mass - f1) > precoil*0.033) return false;
+
+    return true;
+    
   }
 
   else {

@@ -3,13 +3,65 @@
 
 // WORKING WITH BOTH PRODUCTIONS
 
+void DrawTH1SingleSample(TString opt="Zmumu", OBS_ID obsID=oNjet_selection, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999){
+
+  SetProduction("Spring2021");
+  
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
+  
+  TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
+  Int_t dcut = 8;
+  Long64_t drawN = (Long64_t) 1.e5;
+  Int_t jalg = 2;
+  Int_t mass = 40;
+
+  std::pair<std::vector<Double_t>, Double_t> sample = getvalues(obsID, opt, mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  TH1F *h_sample = new TH1F(opt,opt,nbin,bmin,bmax);
+  for (double ie : sample.first) h_sample->Fill(ie);
+
+  h_sample->Draw();
+
+  gStyle->SetOptStat(0);
+  
+}
+
+
+void DrawTH2SingleSample(TString opt="Zmumu", OBS_ID obsID1=oNjet_selection, OBS_ID obsID2=oNjet_selection, Int_t xnbin=50, Double_t xbmin=-1, Double_t xbmax=1, Int_t ynbin=50, Double_t ybmin=-1, Double_t ybmax=1){
+
+  // SetProduction("Spring2021");
+  
+  TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
+  
+  TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
+  Int_t dcut = 8;
+  Long64_t drawN = (Long64_t) 1.e5;
+  Int_t jalg = 2;
+  Int_t mass = 40;
+
+  std::pair<std::vector<Double_t>, Double_t> sample1 = getvalues(obsID1, opt, mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> sample2 = getvalues(obsID2, opt, mass, "n/a", drawN, dcut, jalg, analysis_opt);
+  TH2F *h_sample = new TH2F(opt,opt,xnbin,xbmin,xbmax,ynbin,ybmin,ybmax);
+
+  if (sample1.first.size() != sample2.first.size()) cout<<"DrawTH2SingleSample:: [ERROR] CRITITCAL ERROR!!!!!!!!"<<endl;
+
+  for (int i=0; i<sample1.first.size(); i++) h_sample->Fill(sample1.first.at(i), sample2.first.at(i));
+ 
+  h_sample->Draw("colz");
+
+  gStyle->SetOptStat(0);
+
+  
+}
+
 void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = false){
 
+  
+  
   Int_t mass = 40;
   Int_t jalg = 2;
   TString lt = "m3p5";
   Long64_t drawN = (Long64_t) 1.e5;
-  Bool_t ScalePlots = true;
+  Bool_t ScalePlots = false;
   TString xlabel;
   if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
   if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
@@ -167,14 +219,14 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
 
   auto hs = new THStack("hs",Form("%s;%s;%s","",xlabel.Data(),ScalePlots?"Events x Weight":"Events"));;
-  hs->Add(h_munuqq);
+  //hs->Add(h_munuqq);
   hs->Add(h_zmumu);
   hs->Add(h_ztautau);
-  if (PRODUCTION == "Spring2021") hs->Add(h_zuds);
-  if (PRODUCTION == "Spring2021") hs->Add(h_zud);
-  if (PRODUCTION == "Spring2021") hs->Add(h_zss);
-  hs->Add(h_zbb);
-  hs->Add(h_zcc);
+  //if (PRODUCTION == "Spring2021") hs->Add(h_zuds);
+  //if (PRODUCTION == "Spring2021") hs->Add(h_zud);
+  //if (PRODUCTION == "Spring2021") hs->Add(h_zss);
+  //hs->Add(h_zbb);
+  //hs->Add(h_zcc);
  
   hs->Draw(drawstack ? "HIST" : "HIST nostack");
 
@@ -183,11 +235,11 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
  
   //h_signalM->Draw("HIST same");
-  h_signal30->Draw("HIST same");
+  //h_signal30->Draw("HIST same");
   //h_signal50->Draw("HIST same");
   //h_signal70->Draw("HIST same");
 
-  gPad->SetLogy();
+  //gPad->SetLogy();
 
   auto leg = c1->BuildLegend();
   leg->SetMargin(0.25);

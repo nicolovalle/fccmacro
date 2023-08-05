@@ -4,11 +4,11 @@
 // WORKING WITH BOTH PRODUCTIONS
 
 // Can be drawn by hand on top of the TGraph if needed;
-const Int_t CustomLineNpoint = 9;
-// Prompt 8 sigma with 1 sigma bkg:
-Double_t CustomLineX[CustomLineNpoint] = { 5.0000000, 10.000000, 20.000000, 30.000000, 40.000000, 50.000000, 60.000000, 70.000000, 80.000000 };
-Double_t CustomLineY[CustomLineNpoint] = { -5.0979984, -6.8187302, -7.3975944, -7.8407836, -8.2860806, -8.4012408, -8.3185171, -7.8914532, -6.7709753 };
-TString CustomLineName = "Spring2021";
+const Int_t CustomLineNpoint = 8;
+// 
+Double_t CustomLineX[CustomLineNpoint] =  { 10.000000, 20.000000, 30.000000, 40.000000, 50.000000, 60.000000, 70.000000, 80.000000 };
+Double_t CustomLineY[CustomLineNpoint] = { -7.8362772, -7.8361960, -7.9008145, -8.4146903, -8.4750998, -8.3677520, -7.9183982, -6.7764234 };
+TString CustomLineName = "Spring2021 without Zmumu";
 
 
 Double_t AtlasZ(Double_t s, Double_t b, Double_t sig){
@@ -55,11 +55,10 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   // V[0][n] = n-th x coordinate of the curve
   // V[1][n] = n-th y coordinate of the curve
 
+  
 
   std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
-  std::vector<TString> mps = {"m","p"};
-
-  //std::vector<TString> lifetime = {"m1p0", "m1p5", "m2p0", "m2p5", "m3p0", "m3p5", "m4p0", "m4p5", "m5p0", "m5p5", "m6p0", "m6p5", "m7p0"};
+  
 
   TH2F* H = new TH2F("H","H",91,0-2.5,90+2.5,64,-12,-4);
   //TH2F* HBLACK = new TH2F("HBLACK","HBLACK",91,0-2.5,90+2.5,128,-12,-4);
@@ -102,9 +101,6 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
   for (int ip = 0; ip<AvailableDatapoints.size(); ip++){
 
     int m = AvailableDatapoints.at(ip).first;
-
-
-    if (m<10 || m>80) continue;
     
 
     TString lt = AvailableDatapoints.at(ip).second;
@@ -129,6 +125,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     if (PRODUCTION == "Winter2023") Zss =  bkgMapZss[m][myid];
     munuqq = bkgMapmunuqq[m][myid];
 
+
     
     Double_t SigmaBkg = TMath::Sqrt( TMath::Power(Get1Sig(Zmumu)*Weight("Zmumu"),2) + TMath::Power(Get1Sig(Ztautau)*Weight("Ztautau"),2) + TMath::Power(Get1Sig(Zbb)*Weight("Zbb"),2) + TMath::Power(Get1Sig(Zcc)*Weight("Zcc"),2) + TMath::Power(Get1Sig(munuqq)*Weight("munuqq"),2));
     if (PRODUCTION == "Spring2021") SigmaBkg = TMath::Sqrt(SigmaBkg*SigmaBkg + TMath::Power(Get1Sig(Zuds)*Weight("Zuds"),2));
@@ -141,7 +138,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     if (PRODUCTION == "Spring2021") totbkg = totbkg + Zuds * Weight("Zuds");
     else if (PRODUCTION == "Winter2023") totbkg = totbkg + Zud * Weight("Zud") + Zss * Weight("Zss");
 				      
-    //totbkg = WeightedLL[m];
+  
 
 
     cout<<"TwoDsignificance.C:: Sig/bkg: "<<totsig<<"/"<<totbkg<<endl;
@@ -349,14 +346,14 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString form
     TLatex *latex = new TLatex();
     latex->DrawLatexNDC(0.1,0.91,Form("#scale[0.7]{FCCee IDEA - %s - #sqrt{s}=91.2 GeV  L_{int}=%d ab^{-1}}",PRODUCTION.Data(),(int)(LUMI*1e-6)));
 
-    if (true){
+    if (false){
       auto gg2 = new TGraph(CustomLineNpoint,CustomLineX,CustomLineY);
       gg2->SetLineWidth(3);
       gg2->SetLineStyle(7);
       gg2->Draw("same L");
       auto legend = new TLegend();
       legend->AddEntry(gg,"Curve at Z #approx 2","l");
-      legend->AddEntry(gg2,"+1#sigma MC uncert.","l");
+      legend->AddEntry(gg2,CustomLineName,"l");
       legend->SetBorderSize(0);
       legend->SetFillStyle(0);
       legend->Draw("same");
@@ -399,7 +396,7 @@ void CompareAnalyses(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
-  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M gia_res [2,0.2]");
   XYref = XY;
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
@@ -416,7 +413,7 @@ void CompareAnalyses(){
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
-  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
@@ -430,7 +427,7 @@ void CompareAnalyses(){
   g1->SetLineWidth(2);
   colcounter++;
 
-
+  
   Double_t x2[50], y2[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
    XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
@@ -513,7 +510,7 @@ void CompareAnalyses(){
   
   g0->Draw("same");
   g1->Draw("same");
-  g2->Draw("same");
+  //g2->Draw("same");
   //g3->Draw("same");
   //g4->Draw("same");
   //g5->Draw("same");
@@ -562,7 +559,7 @@ void CompareAnalyses2(){
   
   Double_t x0[50], y0[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
-  XY = TwoDsignificance(100,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M giac_res [2,0.2]");
   XYref = XY;
   for (int i=0; i<XY[0].size(); i++){
     x0[i] = XY[0][i];
@@ -579,7 +576,7 @@ void CompareAnalyses2(){
 
   Double_t x1[50], y1[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.15]");
-  XY = TwoDsignificance(100,formula,1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
+  XY = TwoDsignificance(8,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2]");
   for (int i=0; i<XY[0].size(); i++){
     x1[i] = XY[0][i];
     y1[i] = XY[1][i];
@@ -594,7 +591,7 @@ void CompareAnalyses2(){
   g1->SetLineWidth(2);
   colcounter++;
 
-
+  /*
   Double_t x2[50], y2[50];
   //XY = TwoDsignificance(dcut,formula,0.,false,"../MyExternalAnalysis/results/skimmed/",2,"< d2d dsigma anymass1L2M window [2,0.2,2,0.3]");
   // XY = TwoDsignificance(100,formula,-1.,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M window [2,0.2]");
@@ -611,7 +608,7 @@ void CompareAnalyses2(){
   //g2->SetTitle("Without D_{#mu} cut");
   g2->SetLineWidth(2);
   colcounter++;
-
+  */
  
   
 
@@ -622,8 +619,8 @@ void CompareAnalyses2(){
   gax->SetTitle("");
   gax->GetYaxis()->SetRangeUser(-10,-5);
   if (makeratio) gax->GetYaxis()->SetRangeUser(0,10);
-  //gax->GetYaxis()->SetTitle("Log (U^{2})");
-  gax->GetYaxis()->SetTitle("U^{2} limit / U^{2} limit default analysis");
+  gax->GetYaxis()->SetTitle("Log (U^{2})");
+  if (makeratio) gax->GetYaxis()->SetTitle("U^{2} limit / U^{2} limit default analysis");
   gax->GetXaxis()->SetLimits(0,90);
   gax->GetXaxis()->SetTitle("M_{HN} (GeV)");
   
@@ -646,7 +643,8 @@ void CompareAnalyses2(){
   auto legend = new TLegend();
 
  legend->AddEntry(gax,"Curve at significance #approx 2","l");
- legend->AddEntry(g1,CustomLineName,"l");
+ legend->AddEntry(g0,"Full param","l");
+ legend->AddEntry(g1,"Simple param","l");
 
  legend->SetBorderSize(0);
  //legend->SetFillStyle(0);

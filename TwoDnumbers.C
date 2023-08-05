@@ -12,14 +12,13 @@ Double_t GetUpp(Double_t n){
 std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
 
 
-std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M window [2,0.2]"){
+std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dmm anymass1L2M window [2,0.2]"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
   
   // V[0][n] = n-th x coordinate of the curve
   // V[1][n] = n-th y coordinate of the curve
-
 
   
   std::vector<TString> mps = {"m","p"};
@@ -116,10 +115,12 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 
 }
 
+//void SliceSignal
 
-void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1, Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M"){
 
+void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1, Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [2,0.2]"){
 
+  
   TCanvas *c = new TCanvas("c","c",2500,2200);
 
   c->Divide(3,3);
@@ -128,6 +129,8 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   TH2F* HZbb, *HZbb_;
   TH2F* HZcc, *HZcc_;
   TH2F* HZuds, *HZuds_;
+  TH2F* HZud, *HZud_;
+  TH2F* HZss, *HZss_;
   TH2F* HZmumu, *HZmumu_;
   TH2F* HZtautau, *HZtautau_;
   TH2F* Hmunuqq, *Hmunuqq_;
@@ -138,9 +141,10 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
 
   std::vector<double> Values;
 
+  Int_t panelcounter = 1;
 
   
-  c->cd(1);
+  c->cd(panelcounter); panelcounter++;
   TString sample = "signal";
   
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
@@ -148,7 +152,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   Hsig_ = (TH2F*)Pair.second->Clone("Hsig_");
   Hsig->SetTitle(sample);
   Hsig->GetZaxis()->SetRangeUser(1e-1,1e5);
-  Hsig->Draw("colz");
+  Hsig->Draw("colz text");
   Hsig_->Draw("same BOX");
   gStyle->SetOptStat(0);
   gPad->SetLogz();
@@ -158,11 +162,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
 
   
 
-  c->cd(2);
+  c->cd(panelcounter); panelcounter++;
   sample = "Zbb";
 
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  HZbb = (TH2F*)Pair.first->Clone("HZbb");
+  HZbb = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
   HZbb_ = (TH2F*)Pair.second->Clone("HZbb_");
   HZbb->SetTitle(sample);
   HZbb->GetZaxis()->SetRangeUser(1e-1,1e5);
@@ -171,7 +175,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   //gStyle->SetOptStat(0);
   //gPad->SetLogz();
   //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hZbb = new TH1F("hZbb","hZbb",masses.size(),0,masses.size());
+  TH1F* hZbb = new TH1F("hZbb",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
   for (int i=0; i<masses.size(); i++) {
     hZbb->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
     double content = 0.;
@@ -185,11 +189,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   
 
   
-  c->cd(3);
+  c->cd(panelcounter); panelcounter++;
   sample = "Zcc";
   
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  HZcc = (TH2F*)Pair.first->Clone("HZcc");
+  HZcc = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
   HZcc_ = (TH2F*)Pair.second->Clone("HZcc_");
   HZcc->SetTitle(sample);
   HZcc->GetZaxis()->SetRangeUser(1e-1,1e5);
@@ -198,7 +202,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   //gStyle->SetOptStat(0);
   //gPad->SetLogz();
   //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hZcc = new TH1F("hZcc","hZcc",masses.size(),0,masses.size());
+  TH1F* hZcc = new TH1F("hZcc",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
   for (int i=0; i<masses.size(); i++) {
     hZcc->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
     double content = 0.;
@@ -211,37 +215,92 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   gPad->SetLogy();
 
 
-  c->cd(4);
-  sample = "Zuds";
-  
-  Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  HZuds = (TH2F*)Pair.first->Clone("HZuds");
-  HZuds_ = (TH2F*)Pair.second->Clone("HZuds_");
-  HZuds->SetTitle(sample);
-  HZuds->GetZaxis()->SetRangeUser(1e-1,1e5);
-  //HZuds->Draw("colz");
-  //HZuds_->Draw("same BOX");
-  //gStyle->SetOptStat(0);
-  //gPad->SetLogz();
-  //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hZuds = new TH1F("hZuds","hZuds",masses.size(),0,masses.size());
-  for (int i=0; i<masses.size(); i++) {
-    hZuds->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
-    double content = 0.;
-    for (int j = 1; j<HZuds->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZuds->GetBinContent( HZuds->GetXaxis()->FindBin(masses.at(i)) , j));
-    hZuds->SetBinContent(i+1,content);
+  if (PRODUCTION == "Spring2021"){
+  	c->cd(panelcounter); panelcounter++;
+  	sample = "Zuds";
+  	
+  	Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  	HZuds = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
+  	HZuds_ = (TH2F*)Pair.second->Clone("HZuds_");
+  	HZuds->SetTitle(sample);
+  	HZuds->GetZaxis()->SetRangeUser(1e-1,1e5);
+  	//HZuds->Draw("colz");
+  	//HZuds_->Draw("same BOX");
+  	//gStyle->SetOptStat(0);
+  	//gPad->SetLogz();
+  	//gStyle->SetPalette(kColorPrintableOnGrey);
+  	TH1F* hZuds = new TH1F("hZuds",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
+  	for (int i=0; i<masses.size(); i++) {
+  	  hZuds->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+  	  double content = 0.;
+  	  for (int j = 1; j<HZuds->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZuds->GetBinContent( HZuds->GetXaxis()->FindBin(masses.at(i)) , j));
+  	  hZuds->SetBinContent(i+1,content);
+  	}
+  	hZuds->Draw("hist text");
+  	hZuds->SetLineColor(1);
+  	gStyle->SetOptStat(0);
+  	gPad->SetLogy();
   }
-  hZuds->Draw("hist text");
-  hZuds->SetLineColor(1);
-  gStyle->SetOptStat(0);
-  gPad->SetLogy();
+
+  if (PRODUCTION == "Winter2023"){
+        c->cd(panelcounter); panelcounter++;
+  	sample = "Zud";
+  	
+  	Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  	HZud = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
+  	HZud_ = (TH2F*)Pair.second->Clone("HZud_");
+  	HZud->SetTitle(sample);
+  	HZud->GetZaxis()->SetRangeUser(1e-1,1e5);
+  	//HZud->Draw("colz");
+  	//HZud_->Draw("same BOX");
+  	//gStyle->SetOptStat(0);
+  	//gPad->SetLogz();
+  	//gStyle->SetPalette(kColorPrintableOnGrey);
+  	TH1F* hZud = new TH1F("hZud",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
+  	for (int i=0; i<masses.size(); i++) {
+  	  hZud->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+  	  double content = 0.;
+  	  for (int j = 1; j<HZud->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZud->GetBinContent( HZud->GetXaxis()->FindBin(masses.at(i)) , j));
+  	  hZud->SetBinContent(i+1,content);
+  	}
+  	hZud->Draw("hist text");
+  	hZud->SetLineColor(1);
+  	gStyle->SetOptStat(0);
+  	gPad->SetLogy();
+
+	c->cd(panelcounter); panelcounter++;
+  	sample = "Zss";
+  	
+  	Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
+  	HZss = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
+  	HZss_ = (TH2F*)Pair.second->Clone("HZss_");
+  	HZss->SetTitle(sample);
+  	HZss->GetZaxis()->SetRangeUser(1e-1,1e5);
+  	//HZss->Draw("colz");
+  	//HZss_->Draw("same BOX");
+  	//gStyle->SetOptStat(0);
+  	//gPad->SetLogz();
+  	//gStyle->SetPalette(kColorPrintableOnGrey);
+  	TH1F* hZss = new TH1F("hZss",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
+  	for (int i=0; i<masses.size(); i++) {
+  	  hZss->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
+  	  double content = 0.;
+  	  for (int j = 1; j<HZss->GetYaxis()->GetNbins(); j++) content = TMath::Max(content, HZss->GetBinContent( HZss->GetXaxis()->FindBin(masses.at(i)) , j));
+  	  hZss->SetBinContent(i+1,content);
+  	}
+  	hZss->Draw("hist text");
+  	hZss->SetLineColor(1);
+  	gStyle->SetOptStat(0);
+  	gPad->SetLogy();
+    
+  }
 
 
-  c->cd(5);
+  c->cd(panelcounter); panelcounter++;
   sample = "Ztautau";
   
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  HZtautau = (TH2F*)Pair.first->Clone("HZtautau");
+  HZtautau = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
   HZtautau_ = (TH2F*)Pair.second->Clone("HZtautau_");
   HZtautau->SetTitle(sample);
   HZtautau->GetZaxis()->SetRangeUser(1e-1,1e5);
@@ -250,7 +309,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   //gStyle->SetOptStat(0);
   //gPad->SetLogz();
   //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hZtautau = new TH1F("hZtautau","hZtautau",masses.size(),0,masses.size());
+  TH1F* hZtautau = new TH1F("hZtautau",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
   for (int i=0; i<masses.size(); i++) {
     hZtautau->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
     double content = 0.;
@@ -264,11 +323,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
 
 
 
-  c->cd(6);
+  c->cd(panelcounter); panelcounter++;
   sample = "Zmumu";
   
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  HZmumu = (TH2F*)Pair.first->Clone("HZmumu");
+  HZmumu = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
   HZmumu_ = (TH2F*)Pair.second->Clone("HZmumu_");
   HZmumu->SetTitle(sample);
   HZmumu->GetZaxis()->SetRangeUser(1e-1,1e5);
@@ -277,7 +336,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   //gStyle->SetOptStat(0);
   //gPad->SetLogz();
   //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hZmumu = new TH1F("hZmumu","hZmumu",masses.size(),0,masses.size());
+  TH1F* hZmumu = new TH1F("hZmumu",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
   for (int i=0; i<masses.size(); i++) {
     hZmumu->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
     double content = 0.;
@@ -291,11 +350,11 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   
   
 
-  c->cd(7);
+  c->cd(panelcounter); panelcounter++;
   sample = "munuqq";
   
   Pair = TwoDnumbers(dd0cut, sample, false, AnalysisResPath, RunOnN, Scaled, jalg, analysis_opt);
-  Hmunuqq = (TH2F*)Pair.first->Clone("Hmunuqq");
+  Hmunuqq = (TH2F*)Pair.first->Clone(Form("H%s (weight: %g)",sample.Data(),Weight(sample)));
   Hmunuqq_ = (TH2F*)Pair.second->Clone("Hmunuqq_");
   Hmunuqq->SetTitle(sample);
   Hmunuqq->GetZaxis()->SetRangeUser(1,1e5);
@@ -304,7 +363,7 @@ void DrawSamples(Int_t dd0cut = 8, TString AnalysisResPath = "../MyExternalAnaly
   //gStyle->SetOptStat(0);
   //gPad->SetLogz();
   //gStyle->SetPalette(kColorPrintableOnGrey);
-  TH1F* hmunuqq = new TH1F("hmunuqq","hmunuqq",masses.size(),0,masses.size());
+  TH1F* hmunuqq = new TH1F("hmunuqq",Form("H%s (weight: %g)",sample.Data(),Weight(sample)),masses.size(),0,masses.size());
   for (int i=0; i<masses.size(); i++) {
     hmunuqq->GetXaxis()->SetBinLabel(i+1,Form("%d",masses.at(i)));
     double content = 0.;

@@ -11,13 +11,17 @@ enum OBS_ID {
   od0sliding,
   omass1mm,
   omtot,
-  ocosjj,
+  ocosjj, // cosjj before evt selection
+  ocosjj_selection, //cosjj after evt selection
   ocospmiss,
   ocospmissmu,
   oMAXcosjmu,
   oMINcosjmu,
   oMINEjet,
+  omass, // Visible mass before event selection
   omass_selection, // Visible mass after event selection (no sliding cuts)
+  om_jjmu, // M(j+j[if exists]+mu) before evt selection
+  om_jjmu_selection, // M(j+j[if exists]+mu) after evt selection
   oemiss_selection, // Emiss after event selection (no sliding cuts)
   omass_after_dcut, // Visible mass after Dcut but no sliding cuts
   oemiss_after_dcut, // Emiss after Dcut but no sliding cuts
@@ -27,14 +31,16 @@ enum OBS_ID {
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
   oVtxXYZsliding,   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
+  oNjet, // Number of jets before evt selection
   oNjet_selection, //Number of jets after evt selection
-  oNtracks_selection // Number of tracks, after evt selection
+  oNtracks_selection, // Number of tracks, after evt selection
+  oEvtID_after_dcut //UniqueEventID after dcut, no sliding cuts (supported only if present in the Tree)
 };
 
 
 
 
-std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=8, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [1.5,0.2]", TString dir="../MyExternalAnalysis/results/"){
+std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=0, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [1.5,0.2]", TString dir="../MyExternalAnalysis/results/"){
   
   // getvalue.second is the scale factor
   // If sliding is not needed, you can use any mass.
@@ -45,14 +51,15 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
   if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection || obsID == oNtracks_selection ||
       obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
-      obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut )
+      obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut || obsID == ocosjj_selection ||
+      obsID == om_jjmu_selection || obsID ==  oEvtID_after_dcut)
     Dir = Dir+"/skimmed/"; // remember to check the target of the symlink!
 
   TString fname=Form("%s%s",Dir.Data(), AnalysisResults(opt,Form("%d",mass),lifetime).Data());
 
   cout<<"getvalues.C:: Opening file "<<fname<<endl;
 
-  std::vector<Double_t> toret;
+  std::vector<double> toret;
   toret.clear();
   
 
@@ -94,8 +101,25 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
       continue;
     }
 
+     if (obsID == oNjet){
+	toret.push_back(oNJet->at(jalg));
+	continue;
+      }
+
     if (obsID == omtot) {
       toret.push_back((lvvis + lvmiss).M());
+      continue;
+    }
+
+    if (obsID == omass){
+	toret.push_back(lvvis.M());
+	continue;
+      }
+
+    if (obsID == om_jjmu){
+      TLorentzVector lvJmu = lvj1 + lvmu;
+      if (oNJet->at(jalg)>1) lvJmu = lvJmu + lvj2;
+      toret.push_back(lvJmu.M());
       continue;
     }
 
@@ -176,6 +200,18 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 	continue;
       }
 
+      if (obsID == om_jjmu_selection){
+      TLorentzVector lvJmu = lvj1 + lvmu;
+      if (oNJet->at(jalg)>1) lvJmu = lvJmu + lvj2;
+      toret.push_back(lvJmu.M());
+      continue;
+      }
+
+      if (obsID == ocosjj_selection){
+      toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
+      continue;
+      }
+
       
       if (obsID == od0sel) {
 	toret.push_back(TMath::Abs(oMuD0sig));
@@ -228,7 +264,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
       
 
       if (obsID == omass_after_dcut || obsID == oemiss_after_dcut ||
-	  obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut){
+	  obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut || obsID == oEvtID_after_dcut){
 
 	Bool_t cut_condition = false;
 
@@ -247,6 +283,7 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
 
 	if (cut_condition && obsID == omass_after_dcut) toret.push_back(lvvis.M());
 	else if (cut_condition && obsID == oemiss_after_dcut) toret.push_back(oEMiss);
+	else if (cut_condition && obsID == oEvtID_after_dcut) toret.push_back(oEvtID);
 	else if (obsID == omass_encoded_dcut) toret.push_back(lvvis.M()*(cut_condition ? -1. : 1.));
 	else if (obsID == oemiss_encoded_dcut) toret.push_back(oEMiss*(cut_condition ? -1. : 1.));
 	
@@ -271,5 +308,5 @@ std::pair<std::vector<Double_t>, Double_t> getvalues(OBS_ID obsID, TString opt="
   cout<<"getvalues.C:: "<<fname<<" READ "<<endl;
   
   cout<<"getvalues.C:: returning array with "<<toret.size()<<" elements"<<endl<<endl;
-  return std::pair<std::vector<Double_t>, Double_t>{toret, SF};
+  return std::pair<std::vector<double>, Double_t>{toret, SF};
 }
