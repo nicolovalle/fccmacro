@@ -1,0 +1,367 @@
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Zmumu")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Zmumu.root
+CutFlowTable.C:: Running on 1940 entries out of 1940
+CutFlowTable.C:: Scale factor is 1
+0 / 1940
+CutFlowTable.C:: oNEntries = 5671
+===================
+Zmumu
+===================
+Ngen                   	 100000000
+Filter & 1 mu          	 1940
+& nlep==1              	 754
+------------------
+Filter, nlep=1, 2 jets 	 114
+& |cos th_miss|<0.94   	 23
+& cos_mu_emiss < 0.8   	 20
+& Ejet >= 3            	 19
+& cosjj > -0.8         	 10
+& cosjj < 0.98         	 10
+& max_cosjmu < 0.8     	 10
+& min_cosjmu > -0.98   	 9
+& Mj>0.2 and M2j>0     	 5
+& Mvis > 80            	 5
+------------------
+Filter, nlep=1, 1 jet  	 640
+& |cos th_miss|<0.94   	 17
+& cos_mu_emiss < 0.5   	 15
+& Ejet >= 3            	 13
+& cosjmu > -0.5        	 2
+& cosjmu < 0.96        	 2
+& Mvis > 80            	 0
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Ztautau")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Ztautau.root
+CutFlowTable.C:: Running on 4281605 entries out of 4281605
+CutFlowTable.C:: Scale factor is 1
+0 / 4281605
+CutFlowTable.C:: oNEntries = 4300006
+1000000 / 4281605
+2000000 / 4281605
+3000000 / 4281605
+4000000 / 4281605
+===================
+Ztautau
+===================
+Ngen                   	 100000000
+Filter & 1 mu          	 4281605
+& nlep==1              	 4154372
+------------------
+Filter, nlep=1, 2 jets 	 187202
+& |cos th_miss|<0.94   	 174582
+& cos_mu_emiss < 0.8   	 30711
+& Ejet >= 3            	 29876
+& cosjj > -0.8         	 10851
+& cosjj < 0.98         	 10851
+& max_cosjmu < 0.8     	 10819
+& min_cosjmu > -0.98   	 7169
+& Mj>0.2 and M2j>0     	 1886
+& Mvis > 80            	 295
+------------------
+Filter, nlep=1, 1 jet  	 3967170
+& |cos th_miss|<0.94   	 3694472
+& cos_mu_emiss < 0.5   	 291143
+& Ejet >= 3            	 290760
+& cosjmu > -0.5        	 1013
+& cosjmu < 0.96        	 935
+& Mvis > 80            	 34
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("munuqq")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-munuqq.root
+CutFlowTable.C:: Running on 415583 entries out of 415583
+CutFlowTable.C:: Scale factor is 1
+0 / 415583
+CutFlowTable.C:: oNEntries = 426722
+===================
+munuqq
+===================
+Ngen                   	 500000
+Filter & 1 mu          	 415583
+& nlep==1              	 402095
+------------------
+Filter, nlep=1, 2 jets 	 351311
+& |cos th_miss|<0.94   	 329358
+& cos_mu_emiss < 0.8   	 311807
+& Ejet >= 3            	 311160
+& cosjj > -0.8         	 210399
+& cosjj < 0.98         	 210399
+& max_cosjmu < 0.8     	 183659
+& min_cosjmu > -0.98   	 174090
+& Mj>0.2 and M2j>0     	 173604
+& Mvis > 80            	 171355
+------------------
+Filter, nlep=1, 1 jet  	 50784
+& |cos th_miss|<0.94   	 47472
+& cos_mu_emiss < 0.5   	 45502
+& Ejet >= 3            	 45501
+& cosjmu > -0.5        	 30440
+& cosjmu < 0.96        	 29406
+& Mvis > 80            	 29198
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Zbb")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Zbb_highstat.root
+CutFlowTable.C:: Running on 50053021 entries out of 50053021
+CutFlowTable.C:: Scale factor is 1
+0 / 50053021
+CutFlowTable.C:: oNEntries = 595463
+1000000 / 50053021
+2000000 / 50053021
+3000000 / 50053021
+4000000 / 50053021
+5000000 / 50053021
+6000000 / 50053021
+7000000 / 50053021
+8000000 / 50053021
+9000000 / 50053021
+10000000 / 50053021
+11000000 / 50053021
+12000000 / 50053021
+13000000 / 50053021
+14000000 / 50053021
+15000000 / 50053021
+16000000 / 50053021
+17000000 / 50053021
+18000000 / 50053021
+19000000 / 50053021
+20000000 / 50053021
+21000000 / 50053021
+22000000 / 50053021
+23000000 / 50053021
+24000000 / 50053021
+25000000 / 50053021
+26000000 / 50053021
+27000000 / 50053021
+28000000 / 50053021
+29000000 / 50053021
+30000000 / 50053021
+31000000 / 50053021
+32000000 / 50053021
+33000000 / 50053021
+34000000 / 50053021
+35000000 / 50053021
+36000000 / 50053021
+37000000 / 50053021
+38000000 / 50053021
+39000000 / 50053021
+40000000 / 50053021
+41000000 / 50053021
+42000000 / 50053021
+43000000 / 50053021
+44000000 / 50053021
+45000000 / 50053021
+46000000 / 50053021
+47000000 / 50053021
+48000000 / 50053021
+49000000 / 50053021
+50000000 / 50053021
+===================
+Zbb
+===================
+Ngen                   	 429991000
+Filter & 1 mu          	 50053021
+& nlep==1              	 37019838
+------------------
+Filter, nlep=1, 2 jets 	 37016710
+& |cos th_miss|<0.94   	 33674231
+& cos_mu_emiss < 0.8   	 3281514
+& Ejet >= 3            	 3281487
+& cosjj > -0.8         	 26025
+& cosjj < 0.98         	 26025
+& max_cosjmu < 0.8     	 21633
+& min_cosjmu > -0.98   	 20966
+& Mj>0.2 and M2j>0     	 20961
+& Mvis > 80            	 12437
+------------------
+Filter, nlep=1, 1 jet  	 3128
+& |cos th_miss|<0.94   	 960
+& cos_mu_emiss < 0.5   	 34
+& Ejet >= 3            	 34
+& cosjmu > -0.5        	 14
+& cosjmu < 0.96        	 5
+& Mvis > 80            	 1
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Zcc")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Zcc_highstat.root
+CutFlowTable.C:: Running on 26711812 entries out of 26711812
+CutFlowTable.C:: Scale factor is 1
+0 / 26711812
+CutFlowTable.C:: oNEntries = 289268
+1000000 / 26711812
+2000000 / 26711812
+3000000 / 26711812
+4000000 / 26711812
+5000000 / 26711812
+6000000 / 26711812
+7000000 / 26711812
+8000000 / 26711812
+9000000 / 26711812
+10000000 / 26711812
+11000000 / 26711812
+12000000 / 26711812
+13000000 / 26711812
+14000000 / 26711812
+15000000 / 26711812
+16000000 / 26711812
+17000000 / 26711812
+18000000 / 26711812
+19000000 / 26711812
+20000000 / 26711812
+21000000 / 26711812
+22000000 / 26711812
+23000000 / 26711812
+24000000 / 26711812
+25000000 / 26711812
+26000000 / 26711812
+===================
+Zcc
+===================
+Ngen                   	 489895000
+Filter & 1 mu          	 26711812
+& nlep==1              	 24470341
+------------------
+Filter, nlep=1, 2 jets 	 24465156
+& |cos th_miss|<0.94   	 22398857
+& cos_mu_emiss < 0.8   	 1166044
+& Ejet >= 3            	 1166019
+& cosjj > -0.8         	 6132
+& cosjj < 0.98         	 6132
+& max_cosjmu < 0.8     	 3228
+& min_cosjmu > -0.98   	 3074
+& Mj>0.2 and M2j>0     	 3073
+& Mvis > 80            	 1631
+------------------
+Filter, nlep=1, 1 jet  	 5185
+& |cos th_miss|<0.94   	 3265
+& cos_mu_emiss < 0.5   	 48
+& Ejet >= 3            	 48
+& cosjmu > -0.5        	 38
+& cosjmu < 0.96        	 7
+& Mvis > 80            	 1
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Zss")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Zss_highstat.root
+CutFlowTable.C:: Running on 137464 entries out of 137464
+CutFlowTable.C:: Scale factor is 1
+0 / 137464
+CutFlowTable.C:: oNEntries = 148623
+===================
+Zss
+===================
+Ngen                   	 499842440
+Filter & 1 mu          	 137464
+& nlep==1              	 124110
+------------------
+Filter, nlep=1, 2 jets 	 124094
+& |cos th_miss|<0.94   	 104794
+& cos_mu_emiss < 0.8   	 19159
+& Ejet >= 3            	 19157
+& cosjj > -0.8         	 658
+& cosjj < 0.98         	 658
+& max_cosjmu < 0.8     	 251
+& min_cosjmu > -0.98   	 248
+& Mj>0.2 and M2j>0     	 248
+& Mvis > 80            	 220
+------------------
+Filter, nlep=1, 1 jet  	 16
+& |cos th_miss|<0.94   	 11
+& cos_mu_emiss < 0.5   	 9
+& Ejet >= 3            	 9
+& cosjmu > -0.5        	 8
+& cosjmu < 0.96        	 2
+& Mvis > 80            	 2
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.26/10                        https://root.cern |
+  | (c) 1995-2021, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 16 2022, 10:42:54                 |
+  | From tags/v6-26-10@v6-26-10                                      |
+  | With g++ (Spack GCC) 11.2.0                                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+Processing PreciseNumbers.C("Zud")...
+CutFlowOK:: Running on a single file: ../MyExternalAnalysis/results/Winter2023/AnalysisResults-Zud_highstat.root
+CutFlowTable.C:: Running on 127203 entries out of 127203
+CutFlowTable.C:: Scale factor is 1
+0 / 127203
+CutFlowTable.C:: oNEntries = 137490
+===================
+Zud
+===================
+Ngen                   	 497658654
+Filter & 1 mu          	 127203
+& nlep==1              	 113837
+------------------
+Filter, nlep=1, 2 jets 	 113823
+& |cos th_miss|<0.94   	 94550
+& cos_mu_emiss < 0.8   	 10547
+& Ejet >= 3            	 10546
+& cosjj > -0.8         	 151
+& cosjj < 0.98         	 151
+& max_cosjmu < 0.8     	 92
+& min_cosjmu > -0.98   	 91
+& Mj>0.2 and M2j>0     	 91
+& Mvis > 80            	 79
+------------------
+Filter, nlep=1, 1 jet  	 14
+& |cos th_miss|<0.94   	 3
+& cos_mu_emiss < 0.5   	 2
+& Ejet >= 3            	 2
+& cosjmu > -0.5        	 2
+& cosjmu < 0.96        	 0
+& Mvis > 80            	 0

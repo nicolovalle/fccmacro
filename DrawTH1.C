@@ -5,7 +5,7 @@
 
 void DrawTH1SingleSample(TString opt="Zmumu", OBS_ID obsID=oNjet_selection, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999){
 
-  SetProduction("Spring2021");
+  //SetProduction("Spring2021");
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
   
@@ -53,15 +53,14 @@ void DrawTH2SingleSample(TString opt="Zmumu", OBS_ID obsID1=oNjet_selection, OBS
   
 }
 
-void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t drawstack = false){
+void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t bmax=1, Double_t vline1 = -999, Double_t vline2 = -999, Bool_t ScalePlots = true, Bool_t drawstack = false, Bool_t setLogy = true){
 
-  
+  //SetProduction("Spring2021");
   
   Int_t mass = 40;
   Int_t jalg = 2;
   TString lt = "m3p5";
-  Long64_t drawN = (Long64_t) 1.e5;
-  Bool_t ScalePlots = false;
+  Long64_t drawN = (Long64_t) 1e5;
   TString xlabel;
   if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
   if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
@@ -74,7 +73,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   if (obsID == omass_selection) xlabel = "M_{vis} (GeV/c^{2})";
   if (obsID == omass_after_dcut) xlabel = "M_{vis} (GeV/c^{2})";
   if (obsID == oemiss_selection) xlabel = "E_{miss} (GeV)";
-  if (obsID == oNjet_selection) xlabel = "Number of jet clusters";
+  if (obsID == oNjet_selection || obsID == oNjet ) xlabel = "Number of jet clusters";
   
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
@@ -121,13 +120,13 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   if (drawstack) h_zuds->SetFillColor(6);
   h_zuds->SetLineColor(6);
 
-  TH1F *h_zud = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
+  TH1F *h_zud = new TH1F("zud",Form("Z#rightarrowu/d ",Zud.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zud->SetFillColor(6);
   h_zud->SetLineColor(6);
 
-  TH1F *h_zss = new TH1F("zuds",Form("Z#rightarrowu/d/s ",Zuds.first.size()),nbin,bmin,bmax);
-  if (drawstack) h_zss->SetFillColor(6);
-  h_zss->SetLineColor(6);
+  TH1F *h_zss = new TH1F("zss",Form("Z#rightarrowss ",Zss.first.size()),nbin,bmin,bmax);
+  if (drawstack) h_zss->SetFillColor(7);
+  h_zss->SetLineColor(7);
   
   TH1F *h_zbb = new TH1F("zbb",Form("Z#rightarrowbb ",Zbb.first.size()),nbin,bmin,bmax);
   if (drawstack) h_zbb->SetFillColor(4);
@@ -219,14 +218,14 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
 
   auto hs = new THStack("hs",Form("%s;%s;%s","",xlabel.Data(),ScalePlots?"Events x Weight":"Events"));;
-  //hs->Add(h_munuqq);
+  hs->Add(h_munuqq);
   hs->Add(h_zmumu);
   hs->Add(h_ztautau);
-  //if (PRODUCTION == "Spring2021") hs->Add(h_zuds);
-  //if (PRODUCTION == "Spring2021") hs->Add(h_zud);
-  //if (PRODUCTION == "Spring2021") hs->Add(h_zss);
-  //hs->Add(h_zbb);
-  //hs->Add(h_zcc);
+  if (PRODUCTION == "Spring2021") hs->Add(h_zuds);
+  if (PRODUCTION == "Winter2023") hs->Add(h_zud);
+  if (PRODUCTION == "Winter2023") hs->Add(h_zss);
+  hs->Add(h_zbb);
+  hs->Add(h_zcc);
  
   hs->Draw(drawstack ? "HIST" : "HIST nostack");
 
@@ -235,11 +234,11 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
  
   //h_signalM->Draw("HIST same");
-  //h_signal30->Draw("HIST same");
-  //h_signal50->Draw("HIST same");
-  //h_signal70->Draw("HIST same");
+  h_signal30->Draw("HIST same");
+  h_signal50->Draw("HIST same");
+  h_signal70->Draw("HIST same");
 
-  //gPad->SetLogy();
+  if (setLogy) gPad->SetLogy();
 
   auto leg = c1->BuildLegend();
   leg->SetMargin(0.25);
@@ -264,7 +263,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
 
   c1->SaveAs("temp.pdf");
   c1->SaveAs("temp.png");
-  
+  c1->SaveAs("temp.root");
   
 }
 

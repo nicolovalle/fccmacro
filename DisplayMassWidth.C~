@@ -2,22 +2,13 @@
 
 double Zmass = 91.1876;
 
-double UseWeight(TString opt){
-  
-  if (opt == "Zbb") return  Weight("Zbb");
-  if (opt == "Zcc") return Weight("Zcc");
-  if (opt == "Zuds") return Weight("Zuds");
-  if (opt == "Zmumu") return Weight("Zmumu");
-  if (opt == "Ztautau") return Weight("Ztautau");
-  
-  if (opt == "munuqq") return Weight("munuqq");
-  return 0;
-}
+
 
 using namespace std;
 
-void temp2(){
+void DisplayMassWidth(){
 
+  
   
   double de = 0.01;
 
@@ -72,10 +63,10 @@ void temp2(){
   cout<<"dE70= "<<dE70<<endl;
   
 
-  double epsilon = -0.33;
+  double epsilon = 0; //-0.33;
  
-  TH1F *h50m = new TH1F("h50m","",60,40+epsilon,60+epsilon);
-  TH1F *h50msig = new TH1F("h50msig","; M_{vis} (GeV/c^{2}); counts",60,40+epsilon,60+epsilon);
+  TH1F *h50m = new TH1F("h50m","",60,46+epsilon,54+epsilon);
+  TH1F *h50msig = new TH1F("h50msig","; M_{vis} (GeV/c^{2}); counts",60,46+epsilon,54+epsilon);
   
   TH1F *h70m = new TH1F("h70m","h70m",30,40,60);
   TH1F *h50e = new TH1F("h50e","h50e",30,40,60);
@@ -91,6 +82,7 @@ void temp2(){
     if (TMath::Abs(h50msig->GetBinCenter(i) - 50 ) <= dM50) h50msig->SetBinContent(i, h50m->GetBinContent(i));
   }
 
+  h50msig->SetTitle("Visible mass distribution for signal sample with M_{HN} = 50 GeV/c^{2}");
 
   h50m->SetLineColor(1);
   h70m->SetLineColor(1);
@@ -105,7 +97,7 @@ void temp2(){
   h50msig->SetLineColor(0);
   h50msig->Draw("HIST ");
    h50m->Draw("HIST same");
-  //h70e->Draw("same HISO");
+   //h70e->Draw("same HISO");
   //h70m->Draw("same HISTO");
   //h70m->Draw("same HISTO");
 

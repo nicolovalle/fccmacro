@@ -154,6 +154,18 @@ else if (lifetime != "n/a") toret = Form("AnalysisResults-signal_10k_%s_%s.root"
 ```
 Starting from June 23, the production name "Spring2021" or "Winter2023" is returned as part of the name: e.g. `Winter2023/AnalysisResults-Zmumu.root`
 
+### Analysis class template
+
+The template for the `events` Tree analysis can be generated in the following way:
+
+```
+root <ntuple.root> --web=off
+TTree *t = (TTree*)_file0->Get("events")
+t->MakeClass()
+```
+
+It creates `events.h` and `events.C`
+
 ## Filtered trees
 
 A skimming task is available to filter the `AnalysisResults.root` with a first event selection. It reduces the Zbb size by a factor >1000. The root macro `SkimmingTask.C` is in `MyExternalAnalysis/`.

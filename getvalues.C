@@ -11,8 +11,8 @@ enum OBS_ID {
   od0sliding,
   omass1mm,
   omtot,
-  ocosjj, // cosjj before evt selection
-  ocosjj_selection, //cosjj after evt selection
+  ocosjj, // cosjj before evt selection, only for enevents with njet[jalg]==2
+  ocosjj_selection, //cosjj after evt selection, only for enevents with njet[jalg]==2
   ocospmiss,
   ocospmissmu,
   oMAXcosjmu,
@@ -69,8 +69,6 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
   Long64_t EntriesTree = TREE->GetEntries();
 
   
-
-  Double_t nPreselection = 0, nOneMuon = 0, nSelection = 0;
  
 
   Long64_t NN = EntriesTree;
@@ -79,7 +77,7 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
   cout<<"getvalues.C:: Running on "<<NN<<" entries out of "<<EntriesTree<<endl;
   cout<<"getvalues.C:: Scale factor is "<<SF<<endl;
 
-  nOneMuon = NN;
+
 
 
   for (Long64_t i = 0; i < NN; i++){
@@ -87,8 +85,6 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
     if (i%1000000 == 0) cout<<i<<" / "<<NN<<endl;
 
     TREE->GetEntry(i);
-
-    nPreselection = oNEntries * SF;
 
     
     BUILD_DERIVATE(jalg);
@@ -134,6 +130,7 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
     }
 
     if (obsID == ocosjj){
+      if (oNJet->at(jalg) == 2)
       toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
       continue;
     }
@@ -201,15 +198,16 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
       }
 
       if (obsID == om_jjmu_selection){
-      TLorentzVector lvJmu = lvj1 + lvmu;
-      if (oNJet->at(jalg)>1) lvJmu = lvJmu + lvj2;
-      toret.push_back(lvJmu.M());
-      continue;
+	TLorentzVector lvJmu = lvj1 + lvmu;
+	if (oNJet->at(jalg)>1) lvJmu = lvJmu + lvj2;
+	toret.push_back(lvJmu.M());
+	continue;
       }
 
       if (obsID == ocosjj_selection){
-      toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
-      continue;
+	if (oNJet->at(jalg) == 2)
+	  toret.push_back(TMath::Cos(lvj1.Angle(lvj2.Vect())));
+	continue;
       }
 
       
@@ -283,7 +281,7 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
 
 	if (cut_condition && obsID == omass_after_dcut) toret.push_back(lvvis.M());
 	else if (cut_condition && obsID == oemiss_after_dcut) toret.push_back(oEMiss);
-	else if (cut_condition && obsID == oEvtID_after_dcut) toret.push_back(oEvtID);
+	else if (cut_condition && obsID == oEvtID_after_dcut) toret.push_back(oEvtID_after_dcut);
 	else if (obsID == omass_encoded_dcut) toret.push_back(lvvis.M()*(cut_condition ? -1. : 1.));
 	else if (obsID == oemiss_encoded_dcut) toret.push_back(oEMiss*(cut_condition ? -1. : 1.));
 	

@@ -20,9 +20,10 @@ int dcut_id(int dcut){
 
 TString RoundWithUnits(double n){
   TString toret;
-  if (n < 1) toret = Form("%g",n);
-  if (n < 10) toret = Form("%.2f",n);
-  if (n < 1000) toret = Form("%.1f",n);
+  if (n < 1000 && (int)n == n) toret = Form("%d",(int)n);
+  else if (n < 1) toret = Form("%g",n);
+  else if (n < 10) toret = Form("%.2f",n);
+  else if (n < 1000) toret = Form("%.1f",n);
   else if (n < 1e6) toret = Form("%.1fk",n/1000.);
   else if (n < 1e9) toret = Form("%.1fM",n/1.e6);
   else if (n < 1e12) toret = Form("%.1fB",n/1.e9);
@@ -34,12 +35,21 @@ TString BkgLatex(TString opt){
   TString toret = opt;
   if (opt == "Zbb") toret = "$Z\\to bb$";
   if (opt == "Zcc") toret = "$Z\\to cc$";
+  if (opt == "Zss") toret = "$Z\\to ss$";
+  if (opt == "Zud") toret = "$Z\\to u/d$";
   if (opt == "Zuds") toret = "$Z\\to u/d/s$";
   if (opt == "Zmumu") toret = "$Z\\to \\mu\\mu$";
   if (opt == "Ztautau") toret = "$Z\\to \\tau\\tau$";
   if (opt == "munuqq") toret = "$\\mu\\nu qq$";
 
   return toret;
+}
+
+TString SampLatex(TString opt, int mass){
+
+  if (opt != "signal") return BkgLatex(opt);
+  else return (TString)Form("$%d \\egev$",mass);
+
 }
 
 TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/skimmed/", Long64_t RunOnN = -1, TString analysis_opt="withdcut anymass1L2M"){
@@ -97,6 +107,7 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
 
   Double_t Ngen = Nnocut(opt,Form("%d",mass),lifetime) * SF;
   Int_t NOneMuon = NN;
+  Int_t NOneLepton = NN;
   Int_t NTwoJets = 0;
   Int_t NOneJet = 0;
   
@@ -113,7 +124,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     if (i==0)
       cout<<"CutFlowTable.C:: oNEntries = "<<oNEntries<<endl;
 
-    if (oNMuon != 1  || oNJet->at(jalg) < 1 || oEMiss < 0) {Ngen -= SF; NOneMuon--; continue;}
+    if (oNMuon != 1  || oNJet->at(jalg) < 1 || oEMiss < 0) {Ngen -= SF; NOneMuon--; NOneLepton--; continue;} // this conditions should be always satifies in the root tree
+    if (oNElectron > 0 && (analysis_opt.Contains("only2M") || analysis_opt.Contains("only1L")) ) {Ngen -= SF; NOneLepton--; continue;} // this is an extra condition for the overleaf table
 
     
 
@@ -126,8 +138,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
     
     if (analysis_opt.Contains("combined_selection")){
 
-      //                            0
-      // Header:  sample, Ngen , event_selected , weight
+      //                            0        1    2         3          4    5     
+      // Header:  sample, Ngen , Evt_filter (1j + 2j) , event_selected (1j +2j) , weight
       //   
 
       Bool_t selection = false;
@@ -139,8 +151,15 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       
       }
 
-      if (selection)
-	Counters[0]++;
+      Counters[0]++;
+      if (oNJet->at(jalg) == 1) Counters[1]++;
+      else Counters[2]++;
+      
+      if (selection){
+	Counters[3]++;
+	if (oNJet->at(jalg) == 1) Counters[4]++;
+        else Counters[5]++;
+      }
      }
 
     if (analysis_opt.Contains("only2M")){
@@ -167,6 +186,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       Bool_t s21 = (TMath::Min(lvj1.M(), lvj2.M()) > 0.2 && TMath::Min(lvj1.M2(), lvj2.M2()) > 0);
       Bool_t s22 = (TMath::Min( cosj1mu, cosj2mu ) > -0.98);
       Bool_t s23 = ((lvj1 + lvj2 + lvmiss + lvmu).M() > 80.);
+
+      
 
 
       if (sel1)  Counters[0]++;
@@ -203,6 +224,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       Bool_t sel4up = (cosjmu < 0.96);
       Bool_t sel5 = ((lvvis+lvmiss).M() > 80);
 
+    
+
   
 
 
@@ -228,9 +251,9 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
 
 
   if (analysis_opt.Contains("only2M")){
-    TString toret = Form("%s $%d \\egev$ & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f \\\\",
-			 opt.Data(), mass,
-			 100.*NTwoJets/NOneMuon,
+    TString toret = Form("%s & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.0f  &   %3.6f \\\\",
+			 SampLatex(opt, mass).Data(),
+			 100.*NTwoJets/NOneLepton,
 			 100.*Counters[0]/NTwoJets,
 			 100.*Counters[1]/NTwoJets,
 			 100.*Counters[2]/NTwoJets,
@@ -245,9 +268,9 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
 
 
   if (analysis_opt.Contains("only1L")){
-    TString toret = Form("%s $%d \\egev$ & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &    %3.0f  &   %3.0f  &   %3.0f  &   %3.0f \\\\",
-			 opt.Data(), mass,
-			 100.*NOneJet/NOneMuon,
+    TString toret = Form("%s & \\textit{(%3.0f)}  &   %3.0f  &   %3.0f  &   %3.0f  &    %3.0f  &   %3.0f  &   %3.0f  &   %3.6f \\\\",
+			 SampLatex(opt, mass).Data(),
+			 100.*NOneJet/NOneLepton,
 			 100.*Counters[0]/NOneJet,
 			 100.*Counters[1]/NOneJet,
 			 100.*Counters[2]/NOneJet,
@@ -262,10 +285,12 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
 
 
   if (analysis_opt.Contains("combined_selection")){
-    TString toret = Form("%s $%d \\egev$ & %s & %s & %.1f \\\\",
-			 opt.Data(), mass,
+    cout<<"CutFlowTable.C:: !!!! IMPORTANT !!!!!  The event filter number is correct only if you are running on non skimmed data !!!"<<endl;
+    TString toret = Form("%s & %s & %s (%s+%s) & %s (%s+%s) & %.1f \\\\",
+			 SampLatex(opt, mass).Data(),
 			 RoundWithUnits(SF*Nnocut(opt,Form("%d",mass),lifetime)).Data(),
-			 RoundWithUnits(Counters[0]).Data(),
+			 RoundWithUnits(Counters[0]).Data(), RoundWithUnits(Counters[1]).Data(), RoundWithUnits(Counters[2]).Data(),
+			 RoundWithUnits(Counters[3]).Data(), RoundWithUnits(Counters[4]).Data(), RoundWithUnits(Counters[5]).Data(),
 			 Weight(opt,Form("%d",mass),lifetime,SF));
     return toret;
 			 
@@ -278,8 +303,8 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       //                                                            
       // Header:  Sample & Ngen, weight  &  Sliding,weighted  &  D<8sig,weighted   & D<20sig,weighted  & D<1mm,weighted  & D>1mm,weighted
 
-    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M", false);
-    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M", false);
+    std::map<int, std::vector<double>> MAPsigma = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "< d2d dsigma anymass1L2M window [2,0.2]", false);
+    std::map<int, std::vector<double>> MAPmm = CutFlowOK(opt, mass, lifetime, dir, RunOnN, false, jalg, "> d2d dmm anymass1L2M window [2,0.2]", false);
 
 
     TString toret;
@@ -291,7 +316,7 @@ TString CutFlowTable(TString opt="signal", Int_t mass=80, TString lifetime = "n/
       cout<<"----------------------------------------------"<<endl;
       cout<<"MASS = "<<m<<endl;
       TString temp = Form("%s & %s & %s & %s & %s & %s & %s \\\\ \n & %.1f  & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} & \\textit{%s} \\\\",
-			  BkgLatex(opt).Data(),
+			  SampLatex(opt,mass).Data(),
 			  RoundWithUnits(MAPsigma[m][0]).Data(), 
 			  RoundWithUnits(MAPsigma[m][3]).Data(),  
 			  RoundWithUnits(MAPsigma[m][dcut_id(8)]).Data(), 

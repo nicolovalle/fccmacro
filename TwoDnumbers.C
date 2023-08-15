@@ -12,7 +12,7 @@ Double_t GetUpp(Double_t n){
 std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
 
 
-std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="< d2d dmm anymass1L2M window [2,0.2]"){
+std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 100, TString sample = "signal", Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t RunOnN = -1,  Bool_t Scaled = false, Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M window [2,0.1]"){
   // formulas: atals simple
 
   // opt: same as CutFlowOK.C
@@ -20,7 +20,8 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
   // V[0][n] = n-th x coordinate of the curve
   // V[1][n] = n-th y coordinate of the curve
 
-  
+
+
   std::vector<TString> mps = {"m","p"};
 
   
@@ -59,7 +60,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 
 	  if (sample == "signal") MapSample = CutFlowOK("signal",m,lt,AnalysisResPath,RunOnN,false,jalg,analysis_opt);
 
-	  bin_content = 1.*MapSample[m][myid];
+	  bin_content = 1.*MapSample[m][myid] / 10000.;
 
 	  
 
@@ -88,7 +89,7 @@ std::pair<TH2F*, TH2F*> TwoDnumbers(Int_t dd0cut = 8, TString sample = "signal",
 
     auto c = new TCanvas();
 
-    //H->GetZaxis()->SetRangeUser(1e-6,1); //efficiency
+    H->GetZaxis()->SetRangeUser(1e-6,0.65); //efficiency
     //H->GetZaxis()->SetRangeUser(1e-4,1e5); //weights
     //H->GetZaxis()->SetRangeUser(1e-10,1e-1); // xsec
     //H->GetZaxis()->SetRangeUser(1e-1,1e5); // number of events

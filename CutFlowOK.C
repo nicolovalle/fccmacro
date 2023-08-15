@@ -16,7 +16,7 @@ int dcut_id(int dcut){
   else return -1;
 }
 
-std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.25]", Bool_t FixedMass = false){
+std::map<int, std::vector<double>> CutFlowOK(TString opt="signal", Int_t mass=80, TString lifetime = "n/a", TString dir="../MyExternalAnalysis/results/", Long64_t RunOnN = -1, Bool_t CutByCutFlow = false, Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M window [2,0.1]", Bool_t FixedMass = false){
 
 
   // analysis options available:
