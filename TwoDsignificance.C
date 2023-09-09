@@ -47,7 +47,7 @@ Double_t Get1Sig(Double_t n){
   
 
 
-std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="> d2d dmm anymass1L2M window [2,0.1]"){
+std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 8, TString formula = "myZ", double addsigmabkg=0., Bool_t Draw = true, TString AnalysisResPath = "../MyExternalAnalysis/results/skimmed/", Int_t jalg = 2, TString analysis_opt="< d2d dsigma anymass1L2M extra window [2,0.1]"){
   // formulas: atals simple signal myCL myZ
 
   // opt: same as CutFlowOK.C
@@ -57,7 +57,7 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
 
   
 
-  std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 70, 80, 85};
+  std::vector<int> masses = {5, 10, 20, 30, 40, 50, 60, 65, 70, 80, 85};
   
 
   TH2F* H = new TH2F("H","H",91,0-2.5,90+2.5,64,-12,-4);
@@ -134,6 +134,10 @@ std::vector<std::vector<double>> TwoDsignificance(Int_t dd0cut = 100, TString fo
     
     
     Double_t totsig = signal*Weight("signal", Form("%d",m), lt);
+
+    // ad hoc correction for long lived
+    //if (m==40 && Y > -7.5) totsig=0; 
+
     Double_t totbkg = Zmumu*Weight("Zmumu") + Ztautau * Weight("Ztautau") + Zbb * Weight("Zbb") + Zcc * Weight("Zcc") + munuqq * Weight("munuqq");
     if (PRODUCTION == "Spring2021") totbkg = totbkg + Zuds * Weight("Zuds");
     else if (PRODUCTION == "Winter2023") totbkg = totbkg + Zud * Weight("Zud") + Zss * Weight("Zss");
@@ -604,7 +608,7 @@ void CompareAnalyses2(){
 
 
   Double_t x3[50], y3[50];
-  XY = TwoDsignificance(200,"myZ",0,false);
+  XY = TwoDsignificance(0,"myZ",0,false,"../MyExternalAnalysis/results/skimmed/",2,"> d2d dmm anymass1L2M extra window [2,0.1]");
   for (int i=0; i<XY[0].size(); i++){
     x3[i] = XY[0][i];
     y3[i] = XY[1][i];
@@ -652,7 +656,7 @@ void CompareAnalyses2(){
  legend->AddEntry(g0,"Impact par cut = 4 #sigma","l");
  legend->AddEntry(g1,"Impact par cut = 8 #sigma","l");
  legend->AddEntry(g2,"Impact par cut = 30 #sigma","l");
- legend->AddEntry(g3,"Impact par cut = 200 #sigma","l");
+ legend->AddEntry(g3,"No impact par cut","l");
 
  legend->SetBorderSize(0);
  //legend->SetFillStyle(0);

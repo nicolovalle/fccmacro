@@ -13,8 +13,10 @@ void SetLumi(Double_t lumi){
 
 std::map<TString, double> Nsignal   {{"Spring2021", 1.e5},   {"Winter2023", 0}};
 std::map<TString, double> NsignalLT {{"Spring2021", 1.e4},   {"Winter2023", 1.e4}};
-std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.29991e8}};
-std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.89895e8}};
+//std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.29991e8}}; // up to V2305XX
+//std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.89895e8}}; // up to V2305XX
+std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.38738637e8*0.995}};
+std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.92127840e8}}; 
 std::map<TString, double> NZss      {{"Spring2021", 0},      {"Winter2023", 4.9984244e8 }};
 std::map<TString, double> NZud      {{"Spring2021", 0},      {"Winter2023", 4.97658654e8}};
 std::map<TString, double> NZuds     {{"Spring2021", 1.e9},   {"Winter2023", 0}};
@@ -276,6 +278,21 @@ Double_t xsec(TString opt, TString HNMass = "50", TString lifetime="n/a"){
     if (spec == "HNL_85_m6p0") return 2.1419744e-06;
     if (spec == "HNL_85_m6p5") return 6.773503e-06;
     if (spec == "HNL_85_m7p0") return 2.1419743e-05;
+    // supplementary added on Sep 09 23
+    if (spec == "HNL_65_m2p0") return 2.284514e-08  ;
+    if (spec == "HNL_65_m2p5") return 7.232742e-08  ;
+    if (spec == "HNL_65_m3p0") return 2.284484e-07  ;
+    if (spec == "HNL_65_m3p5") return 7.232742e-07  ;
+    if (spec == "HNL_65_m4p0") return 2.284514e-06  ;
+    if (spec == "HNL_65_m4p5") return 7.232742e-06  ;
+    if (spec == "HNL_65_m5p0") return 2.284484e-05  ;
+    if (spec == "HNL_65_m5p5") return 7.232742e-05  ;
+    if (spec == "HNL_65_m6p0") return 0.0002284514  ;
+    if (spec == "HNL_65_m6p5") return 0.0007232742  ;
+    if (spec == "HNL_65_m7p0") return 0.002284484   ;
+    if (spec == "HNL_85_m7p5") return 6.773503e-05  ;
+    if (spec == "HNL_85_m8p0") return 0.00021419744 ;
+    if (spec == "HNL_85_m8p5") return 0.0006773503  ;
 
 
     return -1;
@@ -466,6 +483,21 @@ Double_t Coupling(TString HNMass, TString lifetime){
   if (spec == "HNL_85_m6p0") return 1.087665e-04;
   if (spec == "HNL_85_m6p5") return 1.934173e-04;
   if (spec == "HNL_85_m7p0") return 3.439499e-04;
+  // supplementary added on Sept 09
+  if (spec == "HNL_65_m2p0") return 4.297601e-06;
+  if (spec == "HNL_65_m2p5") return 7.642335e-06;
+  if (spec == "HNL_65_m3p0") return 1.359021e-05;
+  if (spec == "HNL_65_m3p5") return 2.416719e-05;
+  if (spec == "HNL_65_m4p0") return 4.297601e-05;
+  if (spec == "HNL_65_m4p5") return 7.642335e-05;
+  if (spec == "HNL_65_m5p0") return 1.359021e-04;
+  if (spec == "HNL_65_m5p5") return 2.416719e-04;
+  if (spec == "HNL_65_m6p0") return 4.297601e-04;
+  if (spec == "HNL_65_m6p5") return 7.642335e-04;
+  if (spec == "HNL_65_m7p0") return 1.359021e-03;
+  if (spec == "HNL_85_m7p5") return 6.116391e-04;
+  if (spec == "HNL_85_m8p0") return 1.087665e-03;
+  if (spec == "HNL_85_m8p5") return 1.934173e-03;
 
 
   return -1;
@@ -538,7 +570,7 @@ void DrawCol()
 
 
 
-void MapPoint(TString path="../MyExternalAnalysis/results/", TString opt="U2"){
+void MapPoint(TString path="../MyExternalAnalysis/results/", TString opt="lt"){
   // opt : "lt" or "U2"
 
   GetAvailableDatapoints(path);
@@ -570,7 +602,7 @@ void MapPoint(TString path="../MyExternalAnalysis/results/", TString opt="U2"){
 
   g->GetListOfFunctions()->Add(ex);
   if (opt == "U2") g->GetYaxis()->SetRangeUser(-12,-2);
-  else if (opt == "lt") g->GetYaxis()->SetRangeUser(-8,3);
+  else if (opt == "lt") g->GetYaxis()->SetRangeUser(-9,3);
   g->GetXaxis()->SetLimits(0,90);
   g->GetXaxis()->SetTitle("M_{HN} (GeV)");
   if (opt == "U2") g->GetYaxis()->SetTitle("Log (U^{2})");
@@ -579,6 +611,7 @@ void MapPoint(TString path="../MyExternalAnalysis/results/", TString opt="U2"){
   g->SetMarkerSize(0);
   g->SetTitle("");
   g->Draw("A P");
+  
 
 
 }

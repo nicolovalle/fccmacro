@@ -60,9 +60,10 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   Int_t mass = 40;
   Int_t jalg = 2;
   TString lt = "m3p5";
-  Long64_t drawN = (Long64_t) 1e5;
+  Long64_t drawN = (Long64_t) -1;
   TString xlabel;
   if (obsID == oVtxXY) xlabel = "sqrt(Vtx_{x}^{2}+Vtx_{y}^{2}) (mm)";
+  if (obsID == oVtxPXY) xlabel = "log10(r_{vert}^{primary} / mm )";
   if (obsID == od0 || obsID == od0sel) xlabel = "D_{0,#mu}/#sigma_{D_{0}}";
   if (obsID == ocosjj) xlabel = "cos(j,j)";
   if (obsID == ocospmissmu) xlabel = "cos(#mu,p_{miss})";
@@ -78,8 +79,8 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   
   TCanvas *c1 = new TCanvas("c1","c1",0,0,1000,700);
 
-  TString analysis_opt = "< d2d dsigma anymass1L2M window [100,100]";
-  Int_t dcut = 8;
+  TString analysis_opt = "> d2d dsigma extra anymass1L2M window [100,100]";
+  Int_t dcut = 0;
 
   std::pair<std::vector<Double_t>, Double_t> munuqq, Zmumu, Ztautau, Zuds, Zbb, Zcc, Zss, Zud;
   
@@ -96,9 +97,9 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   std::pair<std::vector<Double_t>, Double_t> signalM = getvalues(obsID, "signal", mass, lt, -1, dcut, jalg, analysis_opt);
 
   
-  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m3p0", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal30 = getvalues(obsID, "signal", 30, "m6p0", -1, dcut, jalg, analysis_opt);
   std::pair<std::vector<Double_t>, Double_t> signal50 = getvalues(obsID, "signal", 50, "m3p5", -1, dcut, jalg, analysis_opt);
-  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m4p0", -1, dcut, jalg, analysis_opt);
+  std::pair<std::vector<Double_t>, Double_t> signal70 = getvalues(obsID, "signal", 70, "m6p0", -1, dcut, jalg, analysis_opt);
 
   
   std::pair<std::vector<Double_t>, Double_t> signal20 = getvalues(obsID, "signal", 20, "m2p0", -1, dcut, jalg, analysis_opt);
@@ -227,7 +228,8 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
   hs->Add(h_zbb);
   hs->Add(h_zcc);
  
-  hs->Draw(drawstack ? "HIST" : "HIST nostack");
+  
+  hs->Draw(drawstack ? "HIST" : "HIST nostack ");
 
   hs->SetMinimum(1);
 
@@ -235,7 +237,7 @@ void DrawTH1(OBS_ID obsID=oMAXcosjmu, Int_t nbin=50, Double_t bmin=-1, Double_t 
  
   //h_signalM->Draw("HIST same");
   h_signal30->Draw("HIST same");
-  h_signal50->Draw("HIST same");
+  //h_signal50->Draw("HIST same");
   h_signal70->Draw("HIST same");
 
   if (setLogy) gPad->SetLogy();

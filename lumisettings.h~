@@ -11,10 +11,12 @@ void SetLumi(Double_t lumi){
   LUMI = lumi;
 }
 
-std::map<TString, double> Nsignal   {{"Spring2021", 1.e5},   {"Winter2023", 1.e5}};
-std::map<TString, double> NsignalLT {{"Spring2021", 1.e4},   {"Winter2023", 0}};
-std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.29991e8}};
-std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.89895e8}};
+std::map<TString, double> Nsignal   {{"Spring2021", 1.e5},   {"Winter2023", 0}};
+std::map<TString, double> NsignalLT {{"Spring2021", 1.e4},   {"Winter2023", 1.e4}};
+//std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.29991e8}}; // up to V2305XX
+//std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.89895e8}}; // up to V2305XX
+std::map<TString, double> NZbb      {{"Spring2021", 9.8e8},  {"Winter2023", 4.38738637e8*0.995}};
+std::map<TString, double> NZcc      {{"Spring2021", 9.9e8},  {"Winter2023", 4.92127840e8}}; 
 std::map<TString, double> NZss      {{"Spring2021", 0},      {"Winter2023", 4.9984244e8 }};
 std::map<TString, double> NZud      {{"Spring2021", 0},      {"Winter2023", 4.97658654e8}};
 std::map<TString, double> NZuds     {{"Spring2021", 1.e9},   {"Winter2023", 0}};

@@ -41,11 +41,23 @@ Double_t oMjjMu;
 Double_t oMVis;
 Double_t oMjjMuPmiss;
 Double_t oNtracks;
+Double_t oNtracksP;
+Double_t oNtracksS;
 Double_t oVtx_x;
 Double_t oVtx_y;
 Double_t oVtx_z;
 Double_t oVtx_chi2;
 Double_t oVtx_ntrk;
+Double_t oVtx_xP;
+Double_t oVtx_yP;
+Double_t oVtx_zP;
+Double_t oVtx_chi2P;
+Double_t oVtx_ntrkP;
+Double_t oVtx_xS;
+Double_t oVtx_yS;
+Double_t oVtx_zS;
+Double_t oVtx_chi2S;
+Double_t oVtx_ntrkS;
 
 
 void TREESetBranch(){
@@ -88,11 +100,23 @@ void TREESetBranch(){
   TREE->SetBranchAddress("MVis",&oMVis);
   TREE->SetBranchAddress("MjjMuPmiss",&oMjjMuPmiss);
   TREE->SetBranchAddress("Ntracks",&oNtracks);
+  TREE->SetBranchAddress("NtracksP",&oNtracksP);
+  TREE->SetBranchAddress("NtracksS",&oNtracksS);
   TREE->SetBranchAddress("Vtx_x",&oVtx_x);
   TREE->SetBranchAddress("Vtx_y",&oVtx_y);
   TREE->SetBranchAddress("Vtx_z",&oVtx_z);
   TREE->SetBranchAddress("Vtx_chi2",&oVtx_chi2);
   TREE->SetBranchAddress("Vtx_ntrk",&oVtx_ntrk);
+  TREE->SetBranchAddress("Vtx_xP",&oVtx_xP);
+  TREE->SetBranchAddress("Vtx_yP",&oVtx_yP);
+  TREE->SetBranchAddress("Vtx_zP",&oVtx_zP);
+  TREE->SetBranchAddress("Vtx_chi2P",&oVtx_chi2P);
+  TREE->SetBranchAddress("Vtx_ntrkP",&oVtx_ntrkP);
+  TREE->SetBranchAddress("Vtx_xS",&oVtx_xS);
+  TREE->SetBranchAddress("Vtx_yS",&oVtx_yS);
+  TREE->SetBranchAddress("Vtx_zS",&oVtx_zS);
+  TREE->SetBranchAddress("Vtx_chi2S",&oVtx_chi2S);
+  TREE->SetBranchAddress("Vtx_ntrkS",&oVtx_ntrkS);
 }
 
 // Variable filled at each Fill by BUILD_DERIVATE
@@ -113,6 +137,10 @@ void BUILD_DERIVATE(int jalg){
    lvvis = TLorentzVector(oPxVis, oPyVis, oPzVis, oEVis);
   
 }
+
+
+
+
 
 // Mass/EMiss
 Bool_t SELECTION_MASS_EMISS(double mass, double masswidth, double emissw=-1){
@@ -257,12 +285,42 @@ std::vector<float> GetFloatArray(TString opt){
 }
   
 
-  
+
+
+
+
 
 /////////////////////
 // SELECTIONS DRIVEN BY ANALYSIS OPTION
 /////////////////////
+
+
+// THIS IS TO IMPLEMENT CUTS ON THE FLY (MAINLY FOR TEST). IT IS CALLED BY ALL THE NEXT ONES. BUT RETURNS TRUE IF THE ANALYSIS OPT DOESN'T CONTAIN "extra"
+Bool_t EXTRA(TString analysis_opt){
+
+  if (!analysis_opt.Contains("extra")){
+    return true;
+  }
+
+  bool sel1 = (oNtracks - oNtracksP) < 5;
+  bool sel2 = TMath::Log10(oVtx_chi2P) < 1;
+
+  if (!sel1) return false;
+  if (!sel2) return false;
+
+  bool selv = TMath::Sqrt(oVtx_xP*oVtx_xP + oVtx_yP*oVtx_yP) < 0.5;
+
+  if (!selv) return false;
+
+  return true;
+
+
+}
+
+
 Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ // at the moment it is implemented only for the default "anymass1L2M"
+
+  if (!EXTRA(analysis_opt)) return false;
 
   bool selection = false;
 
@@ -278,6 +336,8 @@ Bool_t SELECTION_STRING_KINE(int jalg, TString analysis_opt){ // at the moment i
 }
 
 Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
+
+  if (!EXTRA(analysis_opt)) return false;
 
   bool slid1 = false, slid2 = false;
   
@@ -306,9 +366,11 @@ Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
     double MZ = 91.1876;
     double precoil = (MZ*MZ - mass*mass)/(2.*MZ);
     double evis_th = 91.2 - precoil;
-    double wwidth = vcut[0]*vcut[1]*TMath::Sqrt(evis_th);
 
-    if (TMath::Abs(oEVis - evis_th) > wwidth) return false;
+    //double wwidth = vcut[0]*vcut[1]*TMath::Sqrt(evis_th);
+    //if (TMath::Abs(oEVis - evis_th) > wwidth) return false;
+    double wwidth = vcut[0]*vcut[1]*TMath::Sqrt(precoil);
+    if (TMath::Abs(oEMiss - precoil) > wwidth) return false;
 
     double f1 = mass/ (MZ * (TMath::Sqrt(2.*MZ*oEVis - MZ*MZ) - mass));
 
@@ -325,6 +387,8 @@ Bool_t SELECTION_STRING_SLIDING(int mass, TString analysis_opt, TString opt){
 }
 
 Bool_t SELECTION_STRING_DCUT(int dcut, TString analysis_opt){
+
+  if (!EXTRA(analysis_opt)) return false;
 
   bool selection = false;
 

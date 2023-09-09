@@ -8,6 +8,7 @@ Double_t Z_mass = 91.1876;
 enum OBS_ID {
   od0,      // oMuD0sig after 1 muon selection
   od0sel,   // oMuD0sig after event selection driven by analysis_opt and jalg
+  oVtxPXY,  // log of primary vertex in x-y plane after event selection driven by analysis_opt and jalg
   od0sliding,
   omass1mm,
   omtot,
@@ -30,7 +31,7 @@ enum OBS_ID {
   oVtxXY,   // Vtx distance to 0 on XY after 1 muon selection
   oVtxXYZ,   // Vtx distance to 0 in 3D after 1 muon selection
   oVtxXYsliding,   // Vtx distance to 0 on XY after selection driven by analysis_opt and jalg + sliding cuts
-  oVtxXYZsliding,   // Vtx distance to 0 in 3D after selection driven by analysis_opt and jalg + sliding cuts
+  oVtxXYZsliding,   // Vtx distance to 0 in 3D after selection drivesn by analysis_opt and jalg + sliding cuts
   oNjet, // Number of jets before evt selection
   oNjet_selection, //Number of jets after evt selection
   oNtracks_selection, // Number of tracks, after evt selection
@@ -40,7 +41,7 @@ enum OBS_ID {
 
 
 
-std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=0, Int_t jalg = 2, TString analysis_opt = "< d2d dsigma anymass1L2M window [1.5,0.2]", TString dir="../MyExternalAnalysis/results/"){
+std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="signal", Int_t mass = 50, TString lifetime = "n/a", Long64_t RunOnN = -1, Double_t d0cut=0, Int_t jalg = 2, TString analysis_opt = "> d2d dmm extra anymass1L2M window [1.5,0.2]", TString dir="../MyExternalAnalysis/results/"){  // using "extra" as option forces the condition ALWAYS
   
   // getvalue.second is the scale factor
   // If sliding is not needed, you can use any mass.
@@ -49,7 +50,7 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
 
   TString Dir = dir;
 
-  if (obsID == od0sel || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection || obsID == oNtracks_selection ||
+  if (obsID == od0sel || obsID == oVtxPXY || obsID == od0sliding || obsID == omass1mm || obsID == oNjet_selection || obsID == oNtracks_selection ||
       obsID == oVtxXYsliding || obsID == oVtxXYZsliding || obsID == omass_selection || obsID == oemiss_selection ||
       obsID == omass_after_dcut || obsID == oemiss_after_dcut || obsID == omass_encoded_dcut || obsID == oemiss_encoded_dcut || obsID == ocosjj_selection ||
       obsID == om_jjmu_selection || obsID ==  oEvtID_after_dcut)
@@ -88,6 +89,8 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
 
     
     BUILD_DERIVATE(jalg);
+
+    if (!EXTRA(analysis_opt)) continue;
 
     //cout<<"Njet: "<<oNJet->at(0)<<" "<<oNJet->at(1)<<" "<<oNJet->at(2)<<endl;
 
@@ -214,6 +217,11 @@ std::pair<std::vector<double>, Double_t> getvalues(OBS_ID obsID, TString opt="si
       if (obsID == od0sel) {
 	toret.push_back(TMath::Abs(oMuD0sig));
 	continue;
+      }
+
+      if (obsID == oVtxPXY){
+	toret.push_back(TMath::Log10(TMath::Sqrt(oVtx_xP*oVtx_xP + oVtx_yP*oVtx_yP)));
+        continue;
       }
 
      
